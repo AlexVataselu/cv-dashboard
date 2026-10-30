@@ -3,6 +3,8 @@
 //   LH_BASE_URL=http://localhost:4318   (the deployed URL in CI; no trailing slash)
 const preset = process.env.LH_PRESET === "desktop" ? "desktop" : "mobile";
 const base = (process.env.LH_BASE_URL || "http://localhost:4318").replace(/\/+$/, "");
+// Optional: lets LHCI through Vercel Deployment Protection on previews.
+const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 const routes = ["/", "/experience", "/skills", "/projects", "/education"];
 
 module.exports = {
@@ -13,6 +15,7 @@ module.exports = {
       settings: {
         // "mobile" is Lighthouse's default emulation, so only desktop needs a preset.
         ...(preset === "desktop" ? { preset: "desktop" } : {}),
+        ...(bypass ? { extraHeaders: { "x-vercel-protection-bypass": bypass } } : {}),
         chromeFlags: "--no-sandbox --headless=new",
       },
     },

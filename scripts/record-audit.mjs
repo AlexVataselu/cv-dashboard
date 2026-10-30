@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -28,6 +28,7 @@ export function buildAudit(reports, now = new Date()) {
 export function readReports(dirs) {
   const reports = [];
   for (const dir of dirs) {
+    if (!existsSync(dir)) throw new Error(`Lighthouse reports directory not found: ${dir}`);
     for (const f of readdirSync(dir)) {
       if (/^lhr-.*\.json$/.test(f)) reports.push(JSON.parse(readFileSync(join(dir, f), "utf8")));
     }
@@ -37,7 +38,13 @@ export function readReports(dirs) {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const dirs = process.argv.slice(2);
-  const reports = readReports(dirs);
+  let reports;
+  try {
+    reports = readReports(dirs);
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
   if (reports.length === 0) {
     console.error("no Lighthouse reports found in: " + dirs.join(", "));
     process.exit(1);

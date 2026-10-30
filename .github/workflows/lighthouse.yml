@@ -30,20 +30,47 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      - name: Preflight (target reachable, all routes 200)
+        env:
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          base="${TARGET_URL%/}"
+          for route in "" /experience /skills /projects /education; do
+            echo "GET $base$route/"
+            if [ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+              curl -fsS -o /dev/null -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" "$base$route/"                 || { echo "::error::$base$route/ unreachable, 401 or 404. If Deployment Protection is on, set the VERCEL_AUTOMATION_BYPASS_SECRET repo secret."; exit 1; }
+            else
+              curl -fsS -o /dev/null "$base$route/"                 || { echo "::error::$base$route/ unreachable, 401 or 404. If Deployment Protection is on, turn it off for previews or set the VERCEL_AUTOMATION_BYPASS_SECRET repo secret."; exit 1; }
+            fi
+          done
+
       # Config asserts 100 in all four categories, LCP <= 1200 ms, CLS = 0 and TBT <= 100 ms
       # (TBT is the lab proxy for INP, which needs real interaction). One run per preset.
+      # collect clears .lighthouseci/ each time, so each preset's reports are moved aside.
       - name: Lighthouse mobile
         env:
           LH_PRESET: mobile
           LH_BASE_URL: ${{ env.TARGET_URL }}
-        run: pnpm dlx @lhci/cli@0.15.1 autorun
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          status=0
+          pnpm dlx @lhci/cli@0.15.1 autorun || status=$?
+          rm -rf .lighthouseci-mobile
+          mv .lighthouseci .lighthouseci-mobile
+          exit $status
         continue-on-error: true
         id: mobile
       - name: Lighthouse desktop
         env:
           LH_PRESET: desktop
           LH_BASE_URL: ${{ env.TARGET_URL }}
-        run: pnpm dlx @lhci/cli@0.15.1 autorun --collect.outputDir=.lighthouseci-desktop
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          status=0
+          pnpm dlx @lhci/cli@0.15.1 autorun || status=$?
+          rm -rf .lighthouseci-desktop
+          mv .lighthouseci .lighthouseci-desktop
+          exit $status
         continue-on-error: true
         id: desktop
 
@@ -52,7 +79,7 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm build
-          node scripts/record-audit.mjs .lighthouseci .lighthouseci-desktop
+          node scripts/record-audit.mjs .lighthouseci-mobile .lighthouseci-desktop
 
       - name: Commit refreshed audit data
         if: env.IS_PRODUCTION == 'true'

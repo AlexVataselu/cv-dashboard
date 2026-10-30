@@ -52,3 +52,11 @@ deployment. It audits the five routes on mobile and desktop against `lighthouser
 any miss. On Production it also writes the date and worst scores to `data/last-audit.json`, refreshes
 `data/build-stats.json`, and commits both to `main` with `[skip ci]`. The status bar therefore shows
 the previous deploy's values.
+
+### Preview protection
+
+Vercel Deployment Protection answers 401 to the audit. Either turn protection off for previews, or
+enable Protection Bypass for Automation in the Vercel project and add its value as the GitHub repo
+secret `VERCEL_AUTOMATION_BYPASS_SECRET`; the workflow then sends it as `x-vercel-protection-bypass`.
+A preflight step requests every route first and fails with a clear message if the target is
+unreachable, 401 or 404.
