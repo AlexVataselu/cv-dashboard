@@ -97,6 +97,25 @@ test("page source has no +40 and no telephone", async ({ request }) => {
   }
 });
 
+// Mobile performance guard (Task 10b). Lighthouse's simulated LCP counts every
+// request that finishes before the first paint, so the critical path must stay lean.
+test("critical path: only latin fonts preloaded, hydration yields, content not hidden", async ({
+  request,
+}) => {
+  for (const r of ROUTES) {
+    const html = await (await request.get(r.path)).text();
+    const fontPreloads = html.match(/<link[^>]*rel="preload"[^>]*as="font"[^>]*>/g) ?? [];
+    expect(fontPreloads.length, `${r.path} font preloads`).toBe(2);
+    expect(html, `${r.path} hydration yield`).toContain('"id":"yield-before-hydration"');
+    // The main content is plain server HTML: no Suspense template, no hidden attribute.
+    const start = html.indexOf('<main id="main"');
+    expect(start, `${r.path} main`).toBeGreaterThan(-1);
+    const main = html.slice(start, html.indexOf("</main>", start));
+    expect(main, r.path).not.toContain("<template");
+    expect(main, r.path).not.toMatch(/<[a-z][a-z0-9]*(?:\s+[\w:-]+(?:="[^"]*")?)*\s+hidden(?:=""|\s|\/?>)/);
+  }
+});
+
 test("metadata: title, description, canonical, OG, Twitter and JSON-LD", async ({ page }) => {
   await page.goto("/projects");
   await expect(page).toHaveTitle("Projects · Alex Vataselu");

@@ -1,20 +1,24 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import { ProfileRail } from "@/components/ProfileRail";
 import { StatusBar } from "@/components/StatusBar";
 import { SkillParamSync } from "@/components/SkillParamSync";
 import { SITE_URL, pageMetadata, personJsonLd } from "@/lib/site";
 import "./globals.css";
 
+// `subsets` only decides which files get a preload. The latin-ext faces are still
+// declared (with unicode-range) and load on demand for the few glyphs that need
+// them (the "ș" in the location line), so they stay off the critical path.
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   display: "swap",
 });
 
@@ -41,6 +45,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }}
         />
+        {/*
+          Yield point. Next.js runs inline beforeInteractive scripts before it starts
+          the app, and resumes in a new task (setTimeout) after each one. That splits
+          "evaluate the framework chunks" from "instantiate React + router and hydrate",
+          so neither blocks the main thread long enough to count as a long task on a
+          throttled phone.
+        */}
+        <Script id="yield-before-hydration" strategy="beforeInteractive">
+          {"void 0"}
+        </Script>
         <SkillParamSync />
         <div className="flex min-h-screen flex-col md:flex-row">
           <ProfileRail />
