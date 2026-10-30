@@ -16,12 +16,14 @@ describe("useSkillParam", () => {
     window.history.replaceState(null, "", "/?skill=react");
     renderHook(() => useSkillParam());
     expect(useUiStore.getState().selectedSkill).toBe("react");
+    expect(window.location.search).toContain("skill=react");
   });
 
   it.each(["?skill=cobol", "?skill="])("ignores invalid value %s", (qs) => {
     window.history.replaceState(null, "", `/${qs}`);
     expect(() => renderHook(() => useSkillParam())).not.toThrow();
     expect(useUiStore.getState().selectedSkill).toBeNull();
+    expect(new URLSearchParams(window.location.search).has("skill")).toBe(false);
   });
 
   it("writes the selected skill to the URL, keeping other params and hash", () => {
