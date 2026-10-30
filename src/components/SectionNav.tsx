@@ -14,6 +14,7 @@ export function SectionNav({ current }: { current: SectionId }) {
           <li key={s.id}>
             <Link
               href={`${s.href}${query}`}
+              prefetch={false}
               aria-current={s.id === current ? "page" : undefined}
               className="block whitespace-nowrap rounded-full border border-border px-3 py-1 text-sm text-text hover:border-muted aria-[current=page]:border-accent aria-[current=page]:bg-accent/10 aria-[current=page]:text-accent"
             >
