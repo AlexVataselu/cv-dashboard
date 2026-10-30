@@ -15,7 +15,8 @@ export function SectionShell({
   return (
     <>
       <SectionNav current={current} />
-      <main id="main" className="section-fade p-3 md:p-4">
+      {/* tabIndex -1: the skip link moves focus here, not just the scroll position. */}
+      <main id="main" tabIndex={-1} className="section-fade p-3 outline-none md:p-4">
         <Panel title={title}>{children}</Panel>
       </main>
     </>

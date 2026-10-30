@@ -42,10 +42,10 @@ export function ProfileRail() {
         </a>
         <PaletteTrigger />
         <div className="hidden gap-2 md:flex">
-          <a href={cv.links.linkedin} className={`${outline} flex-1`} aria-label="LinkedIn">
+          <a href={cv.links.linkedin} className={`${outline} flex-1`}>
             LinkedIn
           </a>
-          <a href={cv.links.github} className={`${outline} flex-1`} aria-label="GitHub">
+          <a href={cv.links.github} className={`${outline} flex-1`}>
             GitHub
           </a>
         </div>

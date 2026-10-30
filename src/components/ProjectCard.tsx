@@ -1,6 +1,7 @@
 "use client";
 
 import type { Project } from "@/content/types";
+import { SkillBadge } from "@/components/SkillBadge";
 import { useUiStore } from "@/state/uiStore";
 
 export function ProjectCard({ project }: { project: Project }) {
@@ -9,10 +10,14 @@ export function ProjectCard({ project }: { project: Project }) {
   );
   return (
     <article
+      id={`project-${project.id}`}
       data-highlight={highlighted ? "true" : undefined}
-      className="rounded-md border border-border bg-bg p-3 data-[highlight=true]:border-accent data-[highlight=true]:bg-accent/10"
+      className="scroll-mt-4 rounded-md border border-border bg-bg p-3 data-[highlight=true]:border-accent data-[highlight=true]:bg-accent/10"
     >
-      <p className="font-mono text-xs text-muted">{project.label}</p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="shrink-0 font-mono text-xs leading-4 text-muted">{project.label}</p>
+        <SkillBadge skillIds={project.skillIds} />
+      </div>
       <h2 className="text-base font-semibold text-heading">{project.title}</h2>
       <p className="mt-1 text-sm text-text">{project.description}</p>
       <ul className="mt-2 flex flex-wrap gap-1.5">

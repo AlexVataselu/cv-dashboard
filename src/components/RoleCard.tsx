@@ -2,6 +2,7 @@
 
 import type { MouseEvent } from "react";
 import type { Role } from "@/content/types";
+import { SkillBadge } from "@/components/SkillBadge";
 import { useUiStore } from "@/state/uiStore";
 
 const period = (r: Role) => `${r.start} – ${r.end === "now" ? "now" : r.end}`;
@@ -21,15 +22,19 @@ export function RoleCard({ role }: { role: Role }) {
 
   return (
     <details
+      id={`role-${role.id}`}
       open={open}
       data-highlight={highlighted ? "true" : undefined}
-      className="rounded-md border border-border bg-bg data-[highlight=true]:border-accent data-[highlight=true]:bg-accent/10"
+      className="scroll-mt-4 rounded-md border border-border bg-bg data-[highlight=true]:border-accent data-[highlight=true]:bg-accent/10"
     >
       <summary
         onClick={onSummaryClick}
         className="cursor-pointer list-none p-3 [&::-webkit-details-marker]:hidden"
       >
-        <span className="block font-mono text-xs text-muted">{period(role)}</span>
+        <span className="flex items-center justify-between gap-2">
+          <span className="shrink-0 font-mono text-xs leading-4 text-muted">{period(role)}</span>
+          <SkillBadge skillIds={role.skillIds} />
+        </span>
         <span className="block text-base font-semibold text-heading">{role.title}</span>
         <span className="block text-sm text-text">
           {role.company}
