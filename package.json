@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
+        "prebuild": "node scripts/check-site-url.mjs",
         "build": "next build",
         "postbuild": "node scripts/measure-bundle.mjs",
         "start": "next start",

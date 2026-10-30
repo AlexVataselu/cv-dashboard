@@ -22,6 +22,16 @@ export function measureFirstLoadJsKb(outDir) {
   return Math.round((bytes / 1024) * 10) / 10;
 }
 
+/** First-load JS budget for the home route, in KB gzipped. */
+export const FIRST_LOAD_JS_BUDGET_KB = 150;
+
+/** Returns an error message when the measured size is over budget, otherwise null. */
+export function budgetViolation(kb, budget = FIRST_LOAD_JS_BUDGET_KB) {
+  return kb > budget
+    ? `first-load JS budget exceeded: ${kb} KB gzipped > ${budget} KB budget`
+    : null;
+}
+
 export function writeBuildStats(outDir, target) {
   const firstLoadJsKb = measureFirstLoadJsKb(outDir);
   writeFileSync(target, JSON.stringify({ firstLoadJsKb }, null, 2) + "\n");
@@ -30,5 +40,10 @@ export function writeBuildStats(outDir, target) {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const kb = writeBuildStats(join(root, "out"), join(root, "data", "build-stats.json"));
-  console.log(`first-load JS: ${kb} KB gzipped`);
+  console.log(`first-load JS: ${kb} KB gzipped (budget ${FIRST_LOAD_JS_BUDGET_KB} KB)`);
+  const violation = budgetViolation(kb);
+  if (violation) {
+    console.error(violation);
+    process.exit(1);
+  }
 }

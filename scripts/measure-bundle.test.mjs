@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
-import { measureFirstLoadJsKb, writeBuildStats } from "./measure-bundle.mjs";
+import { budgetViolation, measureFirstLoadJsKb, writeBuildStats } from "./measure-bundle.mjs";
 
 function fixture() {
   const out = mkdtempSync(join(tmpdir(), "measure-"));
@@ -36,5 +36,11 @@ describe("measure-bundle", () => {
     const parsed = JSON.parse(readFileSync(target, "utf8"));
     expect(typeof parsed.firstLoadJsKb).toBe("number");
     expect(parsed.firstLoadJsKb).toBeGreaterThan(0);
+  });
+
+  it("flags a first-load size over the 150 KB budget and accepts one at or under it", () => {
+    expect(budgetViolation(150.1)).toMatch(/150 KB budget/);
+    expect(budgetViolation(150)).toBeNull();
+    expect(budgetViolation(145.1)).toBeNull();
   });
 });
