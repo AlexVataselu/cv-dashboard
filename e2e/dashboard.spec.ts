@@ -89,6 +89,44 @@ test("/projects?skill=expo highlights Powderino without layout shift", async ({ 
   expect(after).toEqual(before);
 });
 
+test("?skill stays in step with the highlight across navigation and Back/Forward", async ({
+  page,
+}) => {
+  const nav = page.getByRole("navigation", { name: "Sections" });
+  const expoChip = page.getByRole("button", { name: /^Expo\b/ });
+  const reactChip = page.getByRole("button", { name: /^React ·/ });
+  const powderino = page.locator("article", { hasText: "Powderino" });
+  const reamp = page.locator("article", { hasText: "ReAMP" });
+
+  await page.goto("/projects");
+  await nav.getByRole("link", { name: "Skills" }).click();
+  await expect(page).toHaveURL(/\/skills$/);
+  await expoChip.click();
+  await expect(page).toHaveURL(/\/skills\?skill=expo$/);
+
+  await nav.getByRole("link", { name: "Projects" }).click();
+  await expect(page).toHaveURL(/\/projects\?skill=expo$/);
+  await expect(powderino).toHaveAttribute("data-highlight", "true");
+  await expect(reamp).not.toHaveAttribute("data-highlight", "true");
+
+  // Back to /skills?skill=expo: the chip is still pressed.
+  await page.goBack();
+  await expect(page).toHaveURL(/\/skills\?skill=expo$/);
+  await expect(expoChip).toHaveAttribute("aria-pressed", "true");
+  await reactChip.click();
+  await expect(page).toHaveURL(/\/skills\?skill=react$/);
+
+  // Back to the first /projects entry, which had no ?skill: nothing is highlighted.
+  await page.goBack();
+  await expect(page).toHaveURL(/\/projects$/);
+  await expect(page.locator('[data-highlight="true"]')).toHaveCount(0);
+
+  // Forward again: the URL says react, so the highlight follows the URL.
+  await page.goForward();
+  await expect(page).toHaveURL(/\/skills\?skill=react$/);
+  await expect(reactChip).toHaveAttribute("aria-pressed", "true");
+});
+
 test("page source has no +40 and no telephone", async ({ request }) => {
   for (const r of ROUTES) {
     const html = await (await request.get(r.path)).text();

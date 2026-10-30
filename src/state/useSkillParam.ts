@@ -1,8 +1,11 @@
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { cv } from "@/content/cv";
 import { useUiStore } from "./uiStore";
 
 const PARAM = "skill";
+
+const isSkill = (id: string | null): id is string => !!id && cv.skills.some((s) => s.id === id);
 
 function writeUrl(skill: string | null) {
   const url = new URL(window.location.href);
@@ -14,17 +17,31 @@ function writeUrl(skill: string | null) {
   }
 }
 
+/**
+ * Keeps `selectedSkill` and `?skill=` in sync. The URL is the source of truth: on mount and
+ * after every navigation (links, Back/Forward) the store is re-derived from it, so a store
+ * that still holds a skill while the URL has none is cleared. Selecting a skill rewrites
+ * the current URL in place (replaceState, no new history entry).
+ */
 export function useSkillParam(): void {
+  // Re-render triggers only. The effect reads the live URL, so a stale render can never
+  // write an old value back.
+  const urlSkill = useSearchParams().get(PARAM);
+  const pathname = usePathname();
+
+  useEffect(
+    () =>
+      useUiStore.subscribe((state, prev) => {
+        if (state.selectedSkill !== prev.selectedSkill) writeUrl(state.selectedSkill);
+      }),
+    [],
+  );
+
   useEffect(() => {
     const id = new URLSearchParams(window.location.search).get(PARAM);
-    if (id && cv.skills.some((s) => s.id === id)) {
-      useUiStore.getState().selectSkill(id);
-    } else {
-      // Invalid or empty value: leave state null and drop the param.
-      writeUrl(null);
-    }
-    return useUiStore.subscribe((state, prev) => {
-      if (state.selectedSkill !== prev.selectedSkill) writeUrl(state.selectedSkill);
-    });
-  }, []);
+    const skill = isSkill(id) ? id : null;
+    if (useUiStore.getState().selectedSkill !== skill) useUiStore.getState().selectSkill(skill);
+    // Invalid or empty value: drop the param.
+    if (id !== null && skill === null) writeUrl(null);
+  }, [urlSkill, pathname]);
 }

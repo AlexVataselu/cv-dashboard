@@ -44,7 +44,11 @@ function PaletteDialog() {
         label: s.label,
         hint: "Section",
         keywords: s.label,
-        run: () => go(s.href),
+        // Same hrefs as SectionNav: a selected skill travels with the jump.
+        run: () => {
+          const skill = useUiStore.getState().selectedSkill;
+          go(skill ? `${s.href}?skill=${encodeURIComponent(skill)}` : s.href);
+        },
       })),
       ...cv.skills.map((s) => ({
         id: `skill-${s.id}`,

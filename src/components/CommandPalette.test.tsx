@@ -57,6 +57,14 @@ describe("CommandPalette", () => {
     expect(useUiStore.getState().paletteOpen).toBe(false);
   });
 
+  it("a section jump keeps the selected skill in the URL", async () => {
+    const user = userEvent.setup();
+    useUiStore.setState({ selectedSkill: "react" });
+    await openViaKey({ key: "k", ctrlKey: true });
+    await user.type(screen.getByRole("combobox"), "projects{Enter}");
+    expect(push).toHaveBeenCalledWith("/projects?skill=react");
+  });
+
   it("Enter on a skill selects it and navigates to /skills?skill=<id>", async () => {
     const user = userEvent.setup();
     await openViaKey({ key: "k", ctrlKey: true });

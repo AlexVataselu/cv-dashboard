@@ -1,6 +1,13 @@
 import { renderHook } from "@testing-library/react";
 import { act } from "react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+// The real hooks need the App Router; these read the jsdom URL on every render instead.
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => new URLSearchParams(window.location.search),
+  usePathname: () => window.location.pathname,
+}));
+
 import { useUiStore } from "./uiStore";
 import { useSkillParam } from "./useSkillParam";
 
@@ -24,6 +31,26 @@ describe("useSkillParam", () => {
     expect(() => renderHook(() => useSkillParam())).not.toThrow();
     expect(useUiStore.getState().selectedSkill).toBeNull();
     expect(new URLSearchParams(window.location.search).has("skill")).toBe(false);
+  });
+
+  it("clears a store skill when the URL has none on mount (the URL wins)", () => {
+    useUiStore.setState({ selectedSkill: "react" });
+    window.history.replaceState(null, "", "/projects");
+    renderHook(() => useSkillParam());
+    expect(useUiStore.getState().selectedSkill).toBeNull();
+    expect(window.location.search).toBe("");
+  });
+
+  it("re-derives the store from the URL after a navigation (Back/Forward)", () => {
+    window.history.replaceState(null, "", "/skills?skill=react");
+    const { rerender } = renderHook(() => useSkillParam());
+    expect(useUiStore.getState().selectedSkill).toBe("react");
+    window.history.replaceState(null, "", "/projects");
+    rerender();
+    expect(useUiStore.getState().selectedSkill).toBeNull();
+    window.history.replaceState(null, "", "/skills?skill=vitest");
+    rerender();
+    expect(useUiStore.getState().selectedSkill).toBe("vitest");
   });
 
   it("writes the selected skill to the URL, keeping other params and hash", () => {
