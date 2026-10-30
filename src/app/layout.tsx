@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { ProfileRail } from "@/components/ProfileRail";
+import { StatusBar } from "@/components/StatusBar";
 import { SkillParamSync } from "@/components/SkillParamSync";
 import "./globals.css";
 
@@ -34,7 +35,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SkillParamSync />
         <div className="flex min-h-screen flex-col md:flex-row">
           <ProfileRail />
-          <div className="min-w-0 flex-1">{children}</div>
+          <div className="flex min-w-0 flex-1 flex-col">
+            <div className="flex-1">{children}</div>
+            <StatusBar />
+          </div>
         </div>
       </body>
     </html>
