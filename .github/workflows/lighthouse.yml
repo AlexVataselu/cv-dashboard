@@ -5,21 +5,166 @@ on:
   deployment_status:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: lighthouse-${{ github.event.deployment_status.target_url }}
   cancel-in-progress: true
 
 jobs:
+  # Read-only: audits the deployment and uploads the reports.
   audit:
+    # Vercel can name environments "Production – <project>", so match on the prefix.
     if: >-
       github.event.deployment_status.state == 'success' &&
-      (github.event.deployment.environment == 'Preview' || github.event.deployment.environment == 'Production')
+      (startsWith(github.event.deployment.environment, 'Preview') ||
+       startsWith(github.event.deployment.environment, 'Production'))
     runs-on: ubuntu-latest
-    env:
-      TARGET_URL: ${{ github.event.deployment_status.environment_url || github.event.deployment_status.target_url }}
-      IS_PRODUCTION: ${{ github.event.deployment.environment == 'Production' }}
+    permissions:
+      contents: read
+    outputs:
+      skipped: ${{ steps.author.outputs.skip }}
+      production: ${{ steps.target.outputs.production }}
+      reports: ${{ steps.reports.outputs.ready }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
+
+      # The record job's audit-data commit must not start another audit round.
+      # (vercel.json's ignoreCommand already stops Vercel from deploying it.)
+      - name: Skip commits made by github-actions[bot]
+        id: author
+        run: |
+          if [ "$(git log -1 --format=%ae)" = "41898282+github-actions[bot]@users.noreply.github.com" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::The deployed commit was made by github-actions[bot]; nothing to audit."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Production audits the public alias (repo variable SITE_URL, the same value as
+      # NEXT_PUBLIC_SITE_URL). Per-deployment *.vercel.app URLs carry `X-Robots-Tag: noindex`,
+      # so they are audited with LH_TARGET=preview, which leaves out "is-crawlable".
+      - name: Resolve audit target
+        id: target
+        if: steps.author.outputs.skip == 'false'
+        env:
+          IS_PRODUCTION: ${{ startsWith(github.event.deployment.environment, 'Production') }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          DEPLOY_URL: ${{ github.event.deployment_status.environment_url || github.event.deployment_status.target_url }}
+        run: |
+          if [ "$IS_PRODUCTION" = "true" ] && [ -n "$SITE_URL" ]; then
+            url="$SITE_URL"; lh_target=production
+          else
+            url="$DEPLOY_URL"; lh_target=preview
+            if [ "$IS_PRODUCTION" = "true" ]; then
+              echo "::warning::Repo variable SITE_URL is not set; auditing the deployment URL as a preview (is-crawlable skipped)."
+            fi
+          fi
+          {
+            echo "production=$IS_PRODUCTION"
+            echo "url=${url%/}"
+            echo "lh_target=$lh_target"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: pnpm/action-setup@v4
+        if: steps.author.outputs.skip == 'false'
+      - uses: actions/setup-node@v4
+        if: steps.author.outputs.skip == 'false'
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Preflight (target reachable, all routes 200)
+        if: steps.author.outputs.skip == 'false'
+        env:
+          BASE_URL: ${{ steps.target.outputs.url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          headers=()
+          if [ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+            headers=(-H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET")
+          fi
+          for route in / /experience /skills /projects /education; do
+            url="$BASE_URL$route"
+            echo "GET $url"
+            curl -fsSL --max-time 20 -o /dev/null "${headers[@]}" "$url" || {
+              echo "::error::$url failed (unreachable, timeout or HTTP error). If Deployment Protection is on, turn it off for previews or set the VERCEL_AUTOMATION_BYPASS_SECRET repo secret."
+              exit 1
+            }
+          done
+
+      # Assertions depend on LH_PRESET and LH_TARGET (see lighthouserc.cjs); each URL runs
+      # three times and LHCI asserts on the median. collect clears .lighthouseci/ each time,
+      # so each preset's reports are moved aside.
+      - name: Lighthouse mobile
+        id: mobile
+        if: steps.author.outputs.skip == 'false'
+        continue-on-error: true
+        env:
+          LH_PRESET: mobile
+          LH_TARGET: ${{ steps.target.outputs.lh_target }}
+          LH_BASE_URL: ${{ steps.target.outputs.url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          status=0
+          pnpm dlx @lhci/cli@0.15.1 autorun || status=$?
+          rm -rf .lighthouseci-mobile
+          mv .lighthouseci .lighthouseci-mobile
+          exit $status
+      - name: Lighthouse desktop
+        id: desktop
+        if: steps.author.outputs.skip == 'false'
+        continue-on-error: true
+        env:
+          LH_PRESET: desktop
+          LH_TARGET: ${{ steps.target.outputs.lh_target }}
+          LH_BASE_URL: ${{ steps.target.outputs.url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          status=0
+          pnpm dlx @lhci/cli@0.15.1 autorun || status=$?
+          rm -rf .lighthouseci-desktop
+          mv .lighthouseci .lighthouseci-desktop
+          exit $status
+
+      - name: Check reports exist
+        id: reports
+        if: steps.author.outputs.skip == 'false'
+        run: |
+          if ls .lighthouseci-mobile/lhr-*.json .lighthouseci-desktop/lhr-*.json > /dev/null 2>&1; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Upload reports
+        if: steps.reports.outputs.ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: |
+            .lighthouseci-mobile/
+            .lighthouseci-desktop/
+          include-hidden-files: true
+          retention-days: 14
+
+      - name: Fail if an audit failed
+        if: steps.mobile.outcome == 'failure' || steps.desktop.outcome == 'failure'
+        run: exit 1
+
+  # The only job with write access: records production scores and commits them to main.
+  # Runs even when an assertion failed, so the status bar shows the real scores.
+  record:
+    needs: audit
+    if: >-
+      !cancelled() &&
+      needs.audit.outputs.skipped == 'false' &&
+      needs.audit.outputs.production == 'true' &&
+      needs.audit.outputs.reports == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,60 +174,21 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      - uses: actions/download-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .
 
-      - name: Preflight (target reachable, all routes 200)
-        env:
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        run: |
-          base="${TARGET_URL%/}"
-          for route in "" /experience /skills /projects /education; do
-            echo "GET $base$route/"
-            if [ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
-              curl -fsS -o /dev/null -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" "$base$route/"                 || { echo "::error::$base$route/ unreachable, 401 or 404. If Deployment Protection is on, set the VERCEL_AUTOMATION_BYPASS_SECRET repo secret."; exit 1; }
-            else
-              curl -fsS -o /dev/null "$base$route/"                 || { echo "::error::$base$route/ unreachable, 401 or 404. If Deployment Protection is on, turn it off for previews or set the VERCEL_AUTOMATION_BYPASS_SECRET repo secret."; exit 1; }
-            fi
-          done
-
-      # Config asserts 100 in all four categories, LCP <= 1200 ms, CLS = 0 and TBT <= 100 ms
-      # (TBT is the lab proxy for INP, which needs real interaction). One run per preset.
-      # collect clears .lighthouseci/ each time, so each preset's reports are moved aside.
-      - name: Lighthouse mobile
-        env:
-          LH_PRESET: mobile
-          LH_BASE_URL: ${{ env.TARGET_URL }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        run: |
-          status=0
-          pnpm dlx @lhci/cli@0.15.1 autorun || status=$?
-          rm -rf .lighthouseci-mobile
-          mv .lighthouseci .lighthouseci-mobile
-          exit $status
-        continue-on-error: true
-        id: mobile
-      - name: Lighthouse desktop
-        env:
-          LH_PRESET: desktop
-          LH_BASE_URL: ${{ env.TARGET_URL }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        run: |
-          status=0
-          pnpm dlx @lhci/cli@0.15.1 autorun || status=$?
-          rm -rf .lighthouseci-desktop
-          mv .lighthouseci .lighthouseci-desktop
-          exit $status
-        continue-on-error: true
-        id: desktop
-
-      - name: Record scores (production only)
-        if: env.IS_PRODUCTION == 'true'
+      - name: Record scores and build stats
         run: |
           pnpm install --frozen-lockfile
           pnpm build
           node scripts/record-audit.mjs .lighthouseci-mobile .lighthouseci-desktop
 
+      # Committed as github-actions[bot]: vercel.json skips deploying that author and the
+      # audit job skips auditing it, so this commit does not start another round.
+      # ([skip ci] only affects GitHub Actions; it does not stop Vercel.)
       - name: Commit refreshed audit data
-        if: env.IS_PRODUCTION == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -94,7 +200,3 @@ jobs:
             git pull --rebase origin main
             git push origin HEAD:main
           fi
-
-      - name: Fail if an audit failed
-        if: steps.mobile.outcome == 'failure' || steps.desktop.outcome == 'failure'
-        run: exit 1

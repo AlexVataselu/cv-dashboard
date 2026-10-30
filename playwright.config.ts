@@ -7,6 +7,9 @@ const PORT = 4317;
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
+  // CI: a stray test.only fails the run, and one retry absorbs a flaky runner.
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 1 : 0,
   reporter: "list",
   use: { baseURL: `http://localhost:${PORT}` },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],

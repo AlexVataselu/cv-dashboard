@@ -1,7 +1,9 @@
 name: CI
 
+# Pull requests are verified on their own; push covers what lands on main.
 on:
   push:
+    branches: [main]
   pull_request:
 
 permissions:
@@ -22,7 +24,6 @@ jobs:
       - run: pnpm lint
       - run: pnpm test
       - run: pnpm exec playwright install --with-deps chromium
-      # e2e builds first (pnpm build), then runs Playwright against out/
+      # e2e builds first (pnpm build), then runs Playwright against out/.
+      # The build's postbuild step fails when first-load JS is over the 150 KB gzipped budget.
       - run: pnpm e2e
-      # Fails when first-load JS is over the 150 KB gzipped budget
-      - run: node scripts/measure-bundle.mjs
