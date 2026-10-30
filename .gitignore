@@ -45,3 +45,7 @@ next-env.d.ts
 # lighthouse ci
 /.lighthouseci/
 /.lighthouseci-*/
+
+# agent instruction files that `next dev` (re)creates
+/AGENTS.md
+/CLAUDE.md

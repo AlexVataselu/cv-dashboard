@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
 import { cv } from "@/content/cv";
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+// No trailing slash, so `${SITE_URL}/path` never doubles it.
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000"
+).replace(/\/+$/, "");
 
 export const SITE_NAME = cv.name;
+
+export const HOME_DESCRIPTION =
+  "Senior Frontend Engineer in Brașov, Romania, working remotely across the EU. 9 years building for the web with React, Next.js, TypeScript and React Native.";
 
 // Pages that set their own openGraph/twitter do not inherit the file-convention image, so name it.
 const OG_IMAGE = {

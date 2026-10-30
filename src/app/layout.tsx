@@ -4,7 +4,7 @@ import Script from "next/script";
 import { ProfileRail } from "@/components/ProfileRail";
 import { StatusBar } from "@/components/StatusBar";
 import { SkillParamSync } from "@/components/SkillParamSync";
-import { SITE_URL, pageMetadata, personJsonLd } from "@/lib/site";
+import { HOME_DESCRIPTION, SITE_URL, pageMetadata, personJsonLd } from "@/lib/site";
 import "./globals.css";
 
 // `subsets` only decides which files get a preload. The latin-ext faces are still
@@ -24,11 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  ...pageMetadata({
-    description:
-      "Senior Frontend Engineer in Brașov, Romania, working remotely across the EU. 9 years building for the web with React, Next.js, TypeScript and React Native.",
-    path: "/",
-  }),
+  ...pageMetadata({ description: HOME_DESCRIPTION, path: "/" }),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -54,10 +50,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           This relies on undocumented Next.js internals (appBootstrap /
           loadScriptsInSequence), verified against next 16.4.3 only. An upgrade can
           turn it into a silent no-op: the e2e test only checks that the script is
-          present. The real guard is the Lighthouse mobile assertion TBT <= 150 ms
-          (lighthouserc.cjs): ~128 ms with this script, ~165 ms without. Mobile
-          thresholds: performance >= 95, a11y/best practices/SEO 100, CLS 0,
-          LCP <= 1200 ms as a warning only.
+          present. The real guard is the Lighthouse mobile Total Blocking Time
+          assertion in lighthouserc.cjs, which also documents the thresholds.
           Inline script: it needs a nonce if a Content-Security-Policy is added.
         */}
         <Script id="yield-before-hydration" strategy="beforeInteractive">

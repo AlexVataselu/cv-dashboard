@@ -97,7 +97,7 @@ test("page source has no +40 and no telephone", async ({ request }) => {
   }
 });
 
-// Mobile performance guard (Task 10b). Lighthouse's simulated LCP counts every
+// Mobile performance guard. Lighthouse's simulated LCP counts every
 // request that finishes before the first paint, so the critical path must stay lean.
 test("critical path: only latin fonts preloaded, yield script present, content not hidden", async ({
   request,

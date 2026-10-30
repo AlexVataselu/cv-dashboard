@@ -1,15 +1,11 @@
 import { BandHeading } from "@/components/BandHeading";
-import { pageMetadata } from "@/lib/site";
+import { HOME_DESCRIPTION, pageMetadata } from "@/lib/site";
 import { SectionShell } from "@/components/SectionShell";
 import { SkillGroups } from "@/components/SkillGroups";
 import { StatTile } from "@/components/StatTile";
 import { cv } from "@/content/cv";
 
-export const metadata = pageMetadata({
-  description:
-    "Senior Frontend Engineer in Brașov, Romania, working remotely across the EU. 9 years building for the web with React, Next.js, TypeScript and React Native.",
-  path: "/",
-});
+export const metadata = pageMetadata({ description: HOME_DESCRIPTION, path: "/" });
 
 export default function Home() {
   return (
