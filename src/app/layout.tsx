@@ -54,7 +54,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           This relies on undocumented Next.js internals (appBootstrap /
           loadScriptsInSequence), verified against next 16.4.3 only. An upgrade can
           turn it into a silent no-op: the e2e test only checks that the script is
-          present. The real guard is the Lighthouse mobile TBT assertion in CI.
+          present. The real guard is the Lighthouse mobile assertion TBT <= 150 ms
+          (lighthouserc.cjs): ~128 ms with this script, ~165 ms without. Mobile
+          thresholds: performance >= 95, a11y/best practices/SEO 100, CLS 0,
+          LCP <= 1200 ms as a warning only.
           Inline script: it needs a nonce if a Content-Security-Policy is added.
         */}
         <Script id="yield-before-hydration" strategy="beforeInteractive">

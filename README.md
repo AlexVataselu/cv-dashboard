@@ -29,9 +29,21 @@ pnpm exec serve out -l 4318
 pnpm dlx @lhci/cli@0.15.1 autorun
 ```
 
-`lighthouserc.cjs` holds the assertions: 100 in performance, accessibility, best practices and SEO,
-LCP at most 1200 ms, CLS 0, and Total Blocking Time at most 100 ms (the lab proxy for INP, which
-needs real interaction). Set `CHROME_PATH` if Chrome is not found. `LH_BASE_URL` points the audit at a deployed URL.
+`lighthouserc.cjs` holds the assertions, which depend on `LH_PRESET`:
+
+- Desktop: 100 in performance, accessibility, best practices and SEO, LCP at most 1200 ms, CLS 0,
+  and Total Blocking Time at most 100 ms. TBT is the lab proxy for INP, which needs real interaction.
+- Mobile:
+  - performance at least 95
+  - accessibility, best practices and SEO at 100
+  - CLS 0
+  - TBT at most 150 ms
+  - LCP above 1200 ms is a warning only
+
+  These thresholds were accepted after Task 10b: on the simulated slow-4G, 4x-CPU profile, the React and
+  Next.js bootstrap and the web fonts keep LCP around 2.5 s. Mobile TBT at most 150 ms is also the regression
+  guard for the hydration yield script in `src/app/layout.tsx`. It measures about 128 ms with the script
+  and about 165 ms without. Set `CHROME_PATH` if Chrome is not found. `LH_BASE_URL` points the audit at a deployed URL.
 
 ## Deploy
 
