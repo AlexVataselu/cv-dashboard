@@ -11,7 +11,7 @@ export const metadata = pageMetadata({
 export default function SkillsPage() {
   return (
     <SectionShell current="skills" title="Skills">
-      <SkillGroups />
+      <SkillGroups showUsage />
     </SectionShell>
   );
 }

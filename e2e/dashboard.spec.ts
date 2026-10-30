@@ -79,14 +79,32 @@ test("320x640 has no horizontal overflow on any route", async ({ page }) => {
   }
 });
 
-test("/projects?skill=expo highlights Powderino without layout shift", async ({ page }) => {
-  await page.goto("/projects?skill=expo");
+test("/projects?skill=expo highlights Powderino with a text badge and no layout shift", async ({
+  page,
+}) => {
+  await page.goto("/projects");
   const card = page.locator("article", { hasText: "Powderino" });
+  const plain = await card.boundingBox();
+  await page.goto("/projects?skill=expo");
   await expect(card).toHaveAttribute("data-highlight", "true");
+  // WCAG 1.4.1: the highlight is not colour alone.
+  await expect(card.getByText("Uses Expo")).toBeVisible();
   const before = await card.boundingBox();
   await page.waitForTimeout(300);
   const after = await card.boundingBox();
   expect(after).toEqual(before);
+  expect(before).toEqual(plain);
+});
+
+test("/skills shows where each skill was used, linking with ?skill kept", async ({ page }) => {
+  await page.goto("/skills");
+  const row = page
+    .getByRole("listitem")
+    .filter({ has: page.getByRole("button", { name: /^Expo\b/ }) });
+  await expect(row).toContainText("Used in");
+  await row.getByRole("link", { name: "Powderino" }).click();
+  await expect(page).toHaveURL(/\/projects\?skill=expo#project-powderino$/);
+  await expect(page.locator("#project-powderino")).toHaveAttribute("data-highlight", "true");
 });
 
 test("?skill stays in step with the highlight across navigation and Back/Forward", async ({

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { cv } from "@/content/cv";
-import { deriveAllSkillLevels, deriveSkillLevel } from "@/content/skillLevels";
+import {
+  deriveAllSkillLevels,
+  deriveSkillLevel,
+  formatLevel,
+  usageIndex,
+} from "@/content/skillLevels";
 
 const YEAR = 2026;
 
@@ -69,5 +74,30 @@ describe("deriveSkillLevel", () => {
     const all = deriveAllSkillLevels(cv, YEAR);
     expect(Object.keys(all)).toHaveLength(cv.skills.length);
     expect(all.react.skillId).toBe("react");
+  });
+});
+
+describe("formatLevel", () => {
+  it("uses the singular for one year", () => {
+    expect(formatLevel(deriveSkillLevel("vitest", cv, YEAR))).toBe("since 2025 · 1 yr");
+  });
+  it("uses the plural otherwise", () => {
+    expect(formatLevel(deriveSkillLevel("react", cv, YEAR))).toBe("since 2021 · 5 yrs");
+  });
+  it("is empty without a year", () => {
+    expect(formatLevel(deriveSkillLevel("redux", cv, YEAR))).toBeUndefined();
+  });
+});
+
+describe("usageIndex", () => {
+  const index = usageIndex(cv);
+  it("names roles by company and projects by title, up to the first comma", () => {
+    expect(index.pentalog).toEqual({ id: "pentalog", kind: "role", name: "Pentalog (Globant)" });
+    expect(index.tryangle.name).toBe("TryAngle Labs");
+    expect(index.powderino).toEqual({ id: "powderino", kind: "project", name: "Powderino" });
+  });
+  it("tells repeated names apart by start year", () => {
+    expect(index["freelance-2025"].name).toBe("Freelance 2025");
+    expect(index["freelance-2021"].name).toBe("Freelance 2021");
   });
 });
