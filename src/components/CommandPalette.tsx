@@ -62,7 +62,12 @@ function PaletteDialog() {
         hint: "Action",
         keywords: "copy email contact",
         run: () => {
-          void navigator.clipboard.writeText(cv.email).then(() => setCopied(true));
+          const clip = typeof navigator !== "undefined" ? navigator.clipboard : undefined;
+          if (!clip) return;
+          void clip
+            .writeText(cv.email)
+            .then(() => setCopied(true))
+            .catch(() => {});
         },
       },
     ];
@@ -129,6 +134,13 @@ function PaletteDialog() {
         aria-modal="true"
         aria-labelledby={titleId}
         onKeyDown={onKeyDown}
+        onMouseDown={(e) => {
+          // Keep focus on the input so Esc/Tab handling and aria-activedescendant stay valid.
+          if (e.target !== inputRef.current && !(e.target as HTMLElement).closest("button")) {
+            e.preventDefault();
+            inputRef.current?.focus();
+          }
+        }}
         className="palette-in w-full max-w-lg rounded-lg border border-border bg-panel shadow-2xl"
       >
         <div className="flex items-center gap-2 border-b border-border p-3">
@@ -161,11 +173,6 @@ function PaletteDialog() {
           </button>
         </div>
         <ul id={listId} role="listbox" aria-label="Results" className="max-h-72 overflow-y-auto p-1">
-          {results.length === 0 ? (
-            <li role="presentation" className="px-3 py-2 text-sm text-muted">
-              No matches
-            </li>
-          ) : null}
           {results.map((item, i) => (
             <li
               key={item.id}
@@ -183,6 +190,11 @@ function PaletteDialog() {
             </li>
           ))}
         </ul>
+        {results.length === 0 ? (
+          <p role="status" className="px-4 py-2 text-sm text-muted">
+            No matches
+          </p>
+        ) : null}
       </div>
     </div>
   );

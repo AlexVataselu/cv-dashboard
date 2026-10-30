@@ -35,7 +35,7 @@ describe("CommandPalette", () => {
   it("does not load the dialog until opened", () => {
     render(<PaletteTrigger />);
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(screen.getByRole("button", { name: "Open command palette" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Open command palette/ })).toBeTruthy();
   });
 
   it("filters to Skills and skill items when typing 'sk'", async () => {
@@ -106,7 +106,7 @@ describe("CommandPalette", () => {
     await user.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(document.activeElement).toBe(
-      screen.getByRole("button", { name: "Open command palette" }),
+      screen.getByRole("button", { name: /Open command palette/ }),
     );
   });
 
@@ -116,5 +116,43 @@ describe("CommandPalette", () => {
       fireEvent.mouseDown(dialog.parentElement!);
     });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+
+  it("after clicking an option, Esc still closes and focus goes to the trigger", async () => {
+    const user = userEvent.setup();
+    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    await openViaKey({ key: "k", ctrlKey: true });
+    await user.click(screen.getByRole("option", { name: /Copy email/ }));
+    expect(writeText).toHaveBeenCalled();
+    expect(document.activeElement).toBe(screen.getByRole("combobox"));
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: /Open command palette/ }),
+    );
+  });
+
+  it("after clicking an option, Tab stays within the dialog", async () => {
+    const user = userEvent.setup();
+    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    const dialog = await openViaKey({ key: "k", ctrlKey: true });
+    await user.click(screen.getByRole("option", { name: /Copy email/ }));
+    for (let i = 0; i < 3; i++) {
+      await user.tab();
+      expect(dialog.contains(document.activeElement)).toBe(true);
+    }
+  });
+
+  it("ignores Ctrl+Shift+K and survives a missing clipboard", async () => {
+    render(<PaletteTrigger />);
+    fireEvent.keyDown(window, { key: "K", ctrlKey: true, shiftKey: true });
+    expect(screen.queryByRole("dialog")).toBeNull();
+    fireEvent.keyDown(window, { key: "k", ctrlKey: true });
+    await screen.findByRole("dialog");
+    Object.defineProperty(navigator, "clipboard", { value: undefined, configurable: true });
+    const user = userEvent.setup();
+    Object.defineProperty(navigator, "clipboard", { value: undefined, configurable: true });
+    await user.type(screen.getByRole("combobox"), "copy{Enter}");
+    expect(screen.getByRole("dialog")).toBeTruthy();
   });
 });

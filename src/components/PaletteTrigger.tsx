@@ -19,7 +19,7 @@ export function PaletteTrigger() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "k") {
         e.preventDefault();
         useUiStore.getState().setPaletteOpen(true);
       }
@@ -42,7 +42,7 @@ export function PaletteTrigger() {
       <button
         ref={ref}
         type="button"
-        aria-label="Open command palette"
+        aria-label="⌘K Open command palette"
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
         className="inline-flex items-center justify-center rounded-md border border-border px-3 py-1.5 font-mono text-sm text-text hover:border-muted"
