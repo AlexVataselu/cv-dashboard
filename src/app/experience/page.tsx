@@ -1,7 +1,14 @@
 import { FilterNotice } from "@/components/FilterNotice";
+import { pageMetadata } from "@/lib/site";
 import { RoleCard } from "@/components/RoleCard";
 import { SectionShell } from "@/components/SectionShell";
 import { cv } from "@/content/cv";
+
+export const metadata = pageMetadata({
+  title: "Experience",
+  description: "Nine years of frontend work across Pentalog, TryAngle Labs and independent contracting: healthcare, fintech and cultural heritage products in React, Next.js, TypeScript and React Native.",
+  path: "/experience",
+});
 
 export default function ExperiencePage() {
   return (

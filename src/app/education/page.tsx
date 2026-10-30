@@ -1,6 +1,13 @@
 import { BandHeading } from "@/components/BandHeading";
+import { pageMetadata } from "@/lib/site";
 import { SectionShell } from "@/components/SectionShell";
 import { cv } from "@/content/cv";
+
+export const metadata = pageMetadata({
+  title: "Education",
+  description: "Degrees and spoken languages of Alex Vataselu, Senior Frontend Engineer.",
+  path: "/education",
+});
 
 export default function EducationPage() {
   return (

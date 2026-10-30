@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { ProfileRail } from "@/components/ProfileRail";
 import { StatusBar } from "@/components/StatusBar";
 import { SkillParamSync } from "@/components/SkillParamSync";
+import { SITE_URL, pageMetadata, personJsonLd } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -18,8 +19,12 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Alex Vataselu · Senior Frontend Engineer",
-  description: "Senior Frontend Engineer based in Brașov, Romania, working remotely across the EU.",
+  metadataBase: new URL(SITE_URL),
+  ...pageMetadata({
+    description:
+      "Senior Frontend Engineer in Brașov, Romania, working remotely across the EU. 9 years building for the web with React, Next.js, TypeScript and React Native.",
+    path: "/",
+  }),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -32,6 +37,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }}
+        />
         <SkillParamSync />
         <div className="flex min-h-screen flex-col md:flex-row">
           <ProfileRail />
