@@ -19,7 +19,7 @@ const PLACEHOLDER = "–";
 
 function Vital({ name, value, width }: { name: string; value: string | null; width: string }) {
   return (
-    <span aria-label={name}>
+    <span role="group" aria-label={name}>
       {name}{" "}
       <span className="inline-block text-left tabular-nums" style={{ minWidth: width }}>
         {value ?? PLACEHOLDER}
@@ -40,9 +40,12 @@ export function StatusBar({
   const [inp, setInp] = useState<number | null>(null);
 
   useEffect(() => {
-    onLCP((m) => setLcp(m.value));
-    onCLS((m) => setCls(m.value));
-    onINP((m) => setInp(m.value));
+    // reportAllChanges: show values as they settle, so a visitor who never leaves or
+    // hides the tab still sees numbers instead of placeholders.
+    const opts = { reportAllChanges: true };
+    onLCP((m) => setLcp(m.value), opts);
+    onCLS((m) => setCls(m.value), opts);
+    onINP((m) => setInp(m.value), opts);
   }, []);
 
   const { date, scores } = audit;
@@ -63,7 +66,7 @@ export function StatusBar({
       <span>{`JS ~${Math.round(jsKb)} KB`}</span>
       <Vital name="LCP" value={lcp === null ? null : `${(lcp / 1000).toFixed(1)}s`} width="4ch" />
       <Vital name="CLS" value={cls === null ? null : cls.toFixed(2)} width="4ch" />
-      <Vital name="INP" value={inp === null ? null : `${Math.round(inp)}ms`} width="5ch" />
+      <Vital name="INP" value={inp === null ? null : `${Math.round(inp)}ms`} width="6ch" />
     </footer>
   );
 }

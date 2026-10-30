@@ -1,11 +1,21 @@
 import { act, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const handlers: Record<string, (m: { value: number }) => void> = {};
+type Cb = (m: { value: number }) => void;
+type Opts = { reportAllChanges?: boolean } | undefined;
+const { handlers, options, register } = vi.hoisted(() => {
+  const handlers: Record<string, Cb> = {};
+  const options: Record<string, Opts> = {};
+  const register = (k: string) => (cb: Cb, opts?: Opts) => {
+    handlers[k] = cb;
+    options[k] = opts;
+  };
+  return { handlers, options, register };
+});
 vi.mock("web-vitals", () => ({
-  onLCP: (cb: (m: { value: number }) => void) => void (handlers.lcp = cb),
-  onCLS: (cb: (m: { value: number }) => void) => void (handlers.cls = cb),
-  onINP: (cb: (m: { value: number }) => void) => void (handlers.inp = cb),
+  onLCP: register("lcp"),
+  onCLS: register("cls"),
+  onINP: register("inp"),
 }));
 
 import { StatusBar } from "./StatusBar";
@@ -49,5 +59,10 @@ describe("StatusBar", () => {
     expect(screen.getByLabelText("LCP").textContent).toBe("LCP 0.8s");
     expect(screen.getByLabelText("CLS").textContent).toBe("CLS 0.00");
     expect(screen.getByLabelText("INP").textContent).toBe("INP 40ms");
+  });
+
+  it("asks web-vitals for every change, so passive visitors see values", () => {
+    render(<StatusBar audit={{ date: null, scores: null }} jsKb={92.4} />);
+    for (const k of ["lcp", "cls", "inp"]) expect(options[k]).toEqual({ reportAllChanges: true });
   });
 });
