@@ -1,3 +1,4 @@
+import { PaletteTrigger } from "@/components/PaletteTrigger";
 import { cv } from "@/content/cv";
 
 const btn =
@@ -39,6 +40,7 @@ export function ProfileRail() {
         <a href={cv.links.pdf} className={outline}>
           CV PDF
         </a>
+        <PaletteTrigger />
         <div className="hidden gap-2 md:flex">
           <a href={cv.links.linkedin} className={`${outline} flex-1`} aria-label="LinkedIn">
             LinkedIn
