@@ -99,14 +99,34 @@ test("page source has no +40 and no telephone", async ({ request }) => {
 
 // Mobile performance guard (Task 10b). Lighthouse's simulated LCP counts every
 // request that finishes before the first paint, so the critical path must stay lean.
-test("critical path: only latin fonts preloaded, hydration yields, content not hidden", async ({
+test("critical path: only latin fonts preloaded, yield script present, content not hidden", async ({
   request,
 }) => {
+  const attrs = (tag: string) =>
+    Object.fromEntries([...tag.matchAll(/([\w:-]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
   for (const r of ROUTES) {
     const html = await (await request.get(r.path)).text();
-    const fontPreloads = html.match(/<link[^>]*rel="preload"[^>]*as="font"[^>]*>/g) ?? [];
+    const links = [...html.matchAll(/<link\b[^>]*>/g)].map((m) => attrs(m[0]));
+    const fontPreloads = links.filter((l) => l.rel === "preload" && l.as === "font");
     expect(fontPreloads.length, `${r.path} font preloads`).toBe(2);
-    expect(html, `${r.path} hydration yield`).toContain('"id":"yield-before-hydration"');
+    // Each preloaded file must be a latin subset: its @font-face covers U+0000-00FF
+    // (the minifier writes that as the wildcard U+??).
+    const css = (
+      await Promise.all(
+        links
+          .filter((l) => l.rel === "stylesheet")
+          .map(async (l) => (await request.get(l.href)).text()),
+      )
+    ).join("");
+    for (const font of fontPreloads) {
+      const file = font.href.split("/").pop()!;
+      const face = css.match(new RegExp(`@font-face\\{[^}]*${file.replace(/[.]/g, "\\.")}[^}]*\\}`));
+      expect(face?.[0], `${r.path} ${file} @font-face`).toBeTruthy();
+      expect(face![0], `${r.path} ${file} is latin`).toMatch(/unicode-range:\s*U\+(?:0{0,4}-0{0,2}FF|\?\?)[,;}]/i);
+    }
+    // Presence only. Whether Next.js still yields a task after it is not testable
+    // here; Lighthouse mobile TBT in CI is the real guard.
+    expect(html, `${r.path} yield script present`).toContain('"id":"yield-before-hydration"');
     // The main content is plain server HTML: no Suspense template, no hidden attribute.
     const start = html.indexOf('<main id="main"');
     expect(start, `${r.path} main`).toBeGreaterThan(-1);

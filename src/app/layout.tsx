@@ -51,6 +51,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           "evaluate the framework chunks" from "instantiate React + router and hydrate",
           so neither blocks the main thread long enough to count as a long task on a
           throttled phone.
+          This relies on undocumented Next.js internals (appBootstrap /
+          loadScriptsInSequence), verified against next 16.4.3 only. An upgrade can
+          turn it into a silent no-op: the e2e test only checks that the script is
+          present. The real guard is the Lighthouse mobile TBT assertion in CI.
+          Inline script: it needs a nonce if a Content-Security-Policy is added.
         */}
         <Script id="yield-before-hydration" strategy="beforeInteractive">
           {"void 0"}
