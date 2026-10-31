@@ -1,28 +1,91 @@
 @import "tailwindcss";
 
 /*
-  The printed CV as the object. Colours come from Alex's two-page A4 CV (DESIGN.md in the CV
-  project): white paper, near-black ink, one slate grey, the warm grey portrait band and graphite.
-  The ground the paper lies on is a deeper graphite. No hue: the action is solid ink.
+  Mustard and black, with one royal blue. Two first-class themes, not one inverted:
+  - Light: a mustard desk; the sheet is warm paper; fields of mustard, royal blue and black.
+  - Dark: a black desk; the sheet is near-black; the same mustard and blue fields carry the colour,
+    and mustard takes over as the action colour.
+  The theme follows prefers-color-scheme until the visitor picks one; the inline script in
+  layout.tsx sets data-theme before the first paint. Every text pair below is AA or better.
 */
 :root {
-  --ground: #232629;
-  --ground-2: #2e3236;
-  --paper: #ffffff;
-  --band: #ecebe8;
-  --band-2: #d9d6d0;
-  --ink: #15191c;
-  --slate: #59626a;
-  --graphite: #33373b;
-  --on-ground: #f3f2ef;
-  --on-ground-soft: #c4c8cc;
+  --ground: #e1ac10; /* mustard desk */
+  --ground-2: #cd9d0f;
+  --paper: #ffffff; /* the sheet */
+  --band: #f3e9c6; /* a pale mustard step on the sheet */
+  --band-2: #e9d89c;
+  --ink: #0b0b0b;
+  --slate: #5b5340; /* 7.2:1 on paper, 6.3:1 on band */
+  --graphite: #24338f; /* the year column and the big figures */
+  --on-ground: #0b0b0b; /* 9.5:1 on mustard */
+  --on-ground-soft: #3d3008; /* 6.5:1 on mustard */
+  --accent: #24338f; /* royal blue, the action */
+  --accent-ink: #ffffff;
+  --mustard: #e1ac10;
+  --mustard-ink: #0b0b0b;
+  --blue: #24338f;
+  --blue-ink: #ffffff;
+  --blue-soft: #d6dcff;
+  --night: #0b0b0b;
+  --night-ink: #efefeb;
+  --tab: #f0d77a;
+  --name: #0b0b0b;
+}
 
+:root[data-theme="dark"] {
+  --ground: #0b0b0b;
+  --ground-2: #16130c;
+  --paper: #141311;
+  --band: #1f1c15;
+  --band-2: #2c2719;
+  --ink: #efefeb;
+  --slate: #b9b0a0; /* 8.9:1 on paper */
+  --graphite: #e1ac10;
+  --on-ground: #efefeb;
+  --on-ground-soft: #b9b0a0;
+  --accent: #e1ac10;
+  --accent-ink: #0b0b0b;
+  --blue: #2a3aa3;
+  --blue-ink: #ffffff;
+  --blue-soft: #d6dcff;
+  --night: #e1ac10;
+  --night-ink: #0b0b0b;
+  --tab: #2c2719;
+  --name: #e1ac10;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0b0b0b;
+    --ground-2: #16130c;
+    --paper: #141311;
+    --band: #1f1c15;
+    --band-2: #2c2719;
+    --ink: #efefeb;
+    --slate: #b9b0a0;
+    --graphite: #e1ac10;
+    --on-ground: #efefeb;
+    --on-ground-soft: #b9b0a0;
+    --accent: #e1ac10;
+    --accent-ink: #0b0b0b;
+    --blue: #2a3aa3;
+    --blue-ink: #ffffff;
+    --blue-soft: #d6dcff;
+    --night: #e1ac10;
+    --night-ink: #0b0b0b;
+    --tab: #2c2719;
+  --name: #e1ac10;
+  }
+}
+
+:root {
   --step-small: 0.875rem;
   --step-body: 1.0625rem;
   --step-lead: clamp(1.1875rem, 1.05rem + 0.45vw, 1.375rem);
-  --step-head: clamp(1.75rem, 1.2rem + 1.6vw, 2.25rem);
-  --step-display: clamp(3.25rem, 1.6rem + 5.6vw, 7rem);
-  --step-giant: clamp(9rem, 4rem + 16vw, 17.5rem);
+  --step-head: clamp(1.75rem, 1.2rem + 1.4vw, 2.25rem);
+  --step-poster: clamp(2.5rem, 0.8rem + 4.6vw, 5.25rem);
+  --step-display: clamp(4rem, 2rem + 7vw, 9rem);
+  --step-giant: clamp(11rem, 5rem + 20vw, 22rem);
 
   --margin: 16px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -45,12 +108,23 @@
   --color-graphite: var(--graphite);
   --color-on-ground: var(--on-ground);
   --color-on-ground-soft: var(--on-ground-soft);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-bricolage);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-mustard: var(--mustard);
+  --color-mustard-ink: var(--mustard-ink);
+  --color-blue: var(--blue);
+  --color-blue-ink: var(--blue-ink);
+  --color-blue-soft: var(--blue-soft);
+  --color-night: var(--night);
+  --color-night-ink: var(--night-ink);
+  --color-tab: var(--tab);
+  --font-sans: var(--font-work);
+  --font-display: var(--font-anton);
   --text-small: var(--step-small);
   --text-body: var(--step-body);
   --text-lead: var(--step-lead);
   --text-head: var(--step-head);
+  --text-poster: var(--step-poster);
   --text-display: var(--step-display);
   --text-giant: var(--step-giant);
 }
@@ -58,11 +132,20 @@
 html {
   color-scheme: light;
 }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+}
+
 
 body {
   background: var(--ground);
   color: var(--ink);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-work), system-ui, sans-serif;
   font-size: var(--step-body);
   line-height: 1.55;
 }
@@ -81,16 +164,22 @@ summary:focus-visible,
 }
 
 @layer components {
-  /* Display face: Bricolage Grotesque, set heavy and tight, as on the printed CV. */
+  /* Display face: Anton, compressed heavy capitals set as a poster. */
   .display {
-    font-family: var(--font-bricolage), var(--font-inter), system-ui, sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.035em;
-    line-height: 0.92;
+    font-family: var(--font-anton), Impact, "Arial Narrow", sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+    line-height: 0.9;
   }
 
   .tnum {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* The poster name takes the theme's title colour; the theme button shows its pressed state from data-theme, so it is right from the first paint. */
+  .poster-name {
+    color: var(--name);
   }
 
   /* Folder tabs: filled trapezoids cut with clip-path. The clip would also cut an outline, so the
@@ -229,4 +318,84 @@ summary:focus-visible,
   to {
     transform: scale(1.12) translate3d(-2%, 1.5%, 0);
   }
+}
+
+/* Unlayered, so it wins over the button's utility classes. */
+:root[data-theme="dark"] .theme-toggle {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Shipped work: the large frame shows the row being pointed at or focused, else the first. */
+.work-preview {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 240ms var(--ease-out), visibility 0s linear 240ms;
+}
+.work-preview[data-i="0"] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.work-index:has(.work-row:hover, .work-row:focus-visible) .work-preview[data-i="0"] {
+  opacity: 0;
+  visibility: hidden;
+}
+.work-index:has(.work-row[data-i="0"]:hover, .work-row[data-i="0"]:focus-visible) .work-preview[data-i="0"] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.work-index:has(.work-row[data-i="1"]:hover, .work-row[data-i="1"]:focus-visible) .work-preview[data-i="1"] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.work-index:has(.work-row[data-i="2"]:hover, .work-row[data-i="2"]:focus-visible) .work-preview[data-i="2"] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.work-index:has(.work-row[data-i="3"]:hover, .work-row[data-i="3"]:focus-visible) .work-preview[data-i="3"] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.work-index:has(.work-row[data-i="4"]:hover, .work-row[data-i="4"]:focus-visible) .work-preview[data-i="4"] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.work-index:has(.work-row[data-i="5"]:hover, .work-row[data-i="5"]:focus-visible) .work-preview[data-i="5"] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.work-index:has(.work-row[data-i="6"]:hover, .work-row[data-i="6"]:focus-visible) .work-preview[data-i="6"] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.work-index:has(.work-row[data-i="7"]:hover, .work-row[data-i="7"]:focus-visible) .work-preview[data-i="7"] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.work-index:not(:has(.work-row:hover, .work-row:focus-visible)) .work-row[data-i="0"] {
+  background: var(--band);
+}
+
+/* The hero frame: a reel of the live sites passing behind the split sentence. */
+@media (prefers-reduced-motion: no-preference) {
+  .reel {
+    animation: reel 20s var(--ease-out) infinite;
+  }
+}
+@keyframes reel {
+  0%, 16% { transform: translateY(0); }
+  20%, 36% { transform: translateY(-20%); }
+  40%, 56% { transform: translateY(-40%); }
+  60%, 76% { transform: translateY(-60%); }
+  80%, 96% { transform: translateY(-80%); }
+  100% { transform: translateY(0); }
 }

@@ -27,7 +27,7 @@ export function YearsReceipt() {
   const total = GROUPS.flatMap((g) => g.roleIds).reduce((sum, id) => sum + length(id), 0);
 
   return (
-    <div className="rise zigzag w-full self-start bg-paper px-6 pt-6 md:px-8 md:pt-8">
+    <div className="rise zigzag w-full self-start bg-paper text-ink px-6 pt-6 md:px-8 md:pt-8">
       <p className="display text-lead">Every dated role on the CV</p>
       {GROUPS.map((g) => (
         <div key={g.name} className="mt-6">

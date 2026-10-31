@@ -40,7 +40,7 @@ export function SkillGroups({
       className={
         showUsage
           ? "scallop-both -mx-5 gap-x-14 bg-band px-2 py-14 md:-mx-10 md:px-7 md:py-16 xl:-mx-13 xl:columns-2 xl:px-10 [&>section]:mb-14 [&>section]:break-inside-avoid"
-          : "grid gap-x-10 gap-y-12 sm:grid-cols-2"
+          : "grid gap-x-10 gap-y-12 sm:grid-cols-2 xl:grid-cols-3"
       }
     >
       {GROUPS.map((g) => {

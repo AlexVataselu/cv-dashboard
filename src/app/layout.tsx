@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Inter } from "next/font/google";
+import { Anton, Work_Sans } from "next/font/google";
 import Script from "next/script";
 import { ProfileRail } from "@/components/ProfileRail";
 import { StatusBar } from "@/components/StatusBar";
@@ -10,18 +10,24 @@ import "./globals.css";
 
 // `subsets` only decides which files get a preload. The latin-ext faces are still
 // declared (with unicode-range) and load on demand for the few glyphs that need
-// them (the "ș" in the location line), so they stay off the critical path.
-const inter = Inter({
-  variable: "--font-inter",
+// them (the "ș" in the location line), so they stay off the critical path; keep "ș"
+// out of text a phone shows, or it pulls a latin-ext file into the first load.
+const work = Work_Sans({
+  variable: "--font-work",
   subsets: ["latin"],
   display: "swap",
 });
 
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+const anton = Anton({
+  variable: "--font-anton",
+  weight: "400",
   subsets: ["latin"],
   display: "swap",
 });
+
+// Runs in <head> before the first paint: the saved choice wins, otherwise the system setting.
+// Wrapped in try/catch because storage can throw (private windows, blocked site data).
+const THEME_SCRIPT = 'try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -30,7 +36,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} ${bricolage.variable} antialiased`}>
+    <html lang="en" className={`${work.variable} ${anton.variable} antialiased`} suppressHydrationWarning>
+      <head>
+        {/* Inline, so it needs a nonce if a Content-Security-Policy is added. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-svh bg-ground text-ink">
         <a
           href="#main"
@@ -59,7 +69,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {"void 0"}
         </Script>
         <SkillParamSync />
-        <div className="grid min-h-svh gap-(--margin) p-(--margin) lg:grid-cols-[minmax(340px,31vw)_minmax(0,1fr)]">
+        <div className="grid min-h-svh gap-(--margin) p-(--margin) lg:grid-cols-[minmax(340px,30vw)_minmax(0,1fr)] lg:gap-6">
           <ProfileRail />
           <div className="flex min-w-0 flex-col">
             {children}

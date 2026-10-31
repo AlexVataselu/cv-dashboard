@@ -18,7 +18,7 @@ export function SectionNav({ current }: { current: SectionId }) {
               href={`${s.href}${query}`}
               prefetch={false}
               aria-current={s.id === current ? "page" : undefined}
-              className="folder-tab block whitespace-nowrap bg-band-2 px-4 pb-2.5 pt-3 text-body font-semibold text-ink hover:bg-band aria-[current=page]:bg-paper md:px-7 md:pb-3 md:pt-3.5"
+              className="folder-tab block whitespace-nowrap bg-tab px-4 pb-2.5 pt-3 text-body font-semibold text-ink hover:bg-paper aria-[current=page]:bg-paper md:px-7 md:pb-3 md:pt-3.5"
             >
               {s.label}
             </Link>

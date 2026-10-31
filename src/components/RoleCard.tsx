@@ -30,7 +30,7 @@ export function RoleCard({ role }: { role: Role }) {
   return (
     <div className="grid gap-3 md:grid-cols-[9rem_minmax(0,1fr)] md:gap-8 lg:grid-cols-[11rem_minmax(0,1fr)]">
       <div className="md:sticky md:top-8 md:self-start">
-        <p aria-hidden="true" className="display tnum text-head text-graphite md:text-[clamp(2.75rem,1.8rem+2.4vw,4rem)]">
+        <p aria-hidden="true" className="display tnum text-head text-graphite md:text-poster">
           {role.start}
         </p>
       </div>

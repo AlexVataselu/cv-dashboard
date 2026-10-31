@@ -20,7 +20,7 @@ export default function ProjectsPage() {
       lead="Three things I build for myself, and the client sites I designed and built end to end."
     >
       <FilterNotice />
-      <div className="-mx-5 mt-4 grid gap-2 md:-mx-7">
+      <div className="-mx-5 mt-4 grid gap-10 md:-mx-7 md:gap-16">
         {cv.projects.map((p) => (
           <ProjectCard key={p.id} project={p} />
         ))}
