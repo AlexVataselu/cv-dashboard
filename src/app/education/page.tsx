@@ -77,11 +77,11 @@ export default function EducationPage() {
       </div>
 
       <section aria-labelledby="based" className="mt-24 md:mt-36">
-        <BandHeading id="based">Based in Brașov</BandHeading>
+        <BandHeading id="based">Where I work from</BandHeading>
         <p className="rise mt-4 max-w-[52ch]">
-          Brașov, Romania, working remotely across the EU.
+          My city in Romania, where I work remotely across the EU.
         </p>
-        <div className="mt-10 grid items-start gap-6 md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <div className="defer mt-10 grid items-start gap-6 md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
           <Photo
             base="/place/old-town"
             alt="The roofs of Brașov's old town seen from Tâmpa, between the cables of the cable car"
@@ -90,7 +90,7 @@ export default function EducationPage() {
             sizes="(min-width: 1024px) 36vw, (min-width: 768px) 55vw, 90vw"
             caption={
               <>
-                The old town from Tâmpa. Photograph by Txllxt TxllxT,{" "}
+                The old town from Tâmpa, the mountain over the city. Photograph by Txllxt TxllxT,{" "}
                 <a
                   className="text-ink underline underline-offset-2"
                   href="https://commons.wikimedia.org/wiki/File:Romania_-_Bra%C8%99ov_-_View_NW_on_Old_Town_from_Tampa_Mountain.jpg"
@@ -109,7 +109,7 @@ export default function EducationPage() {
             sizes="(min-width: 1024px) 22vw, (min-width: 768px) 35vw, 90vw"
             caption={
               <>
-                Kronstadt, the German name of Brașov, on an old postcard.{" "}
+                The city under its German name, Kronstadt, on an old postcard.{" "}
                 <a
                   className="text-ink underline underline-offset-2"
                   href="https://commons.wikimedia.org/wiki/File:Piata_Sfatului_Brasov_1910.jpg"

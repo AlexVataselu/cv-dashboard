@@ -5,7 +5,7 @@ import { sites } from "@/content/sites";
 export function SitesGallery() {
   const [first, ...others] = sites;
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="defer grid gap-4 sm:grid-cols-2">
       <div className="sm:col-span-2">
         <SitePlate site={first} sizes="(min-width: 1024px) 60vw, 90vw" />
       </div>

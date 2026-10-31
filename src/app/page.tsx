@@ -16,7 +16,7 @@ export default function Home() {
     <SectionShell
       current="overview"
       title="Overview"
-      lead="A senior frontend engineer in Brașov with nine years on the web, the last five on React, Next.js, TypeScript and React Native."
+      lead="A senior frontend engineer with nine years on the web, the last five on React, Next.js, TypeScript and React Native."
     >
       {/* The total and its receipt */}
       <section aria-labelledby="glance" className={`mt-16 bg-band py-14 md:mt-24 md:py-20 ${bleed}`}>

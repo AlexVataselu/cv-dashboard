@@ -19,7 +19,7 @@ export function ShippedWork() {
   ];
   const cls = "text-slate decoration-2 underline-offset-[0.18em] hover:text-ink hover:underline";
   return (
-    <section aria-labelledby="shipped" className="mt-24 md:mt-36">
+    <section aria-labelledby="shipped" className="defer mt-24 md:mt-36">
       <div className="rise text-[clamp(1.5rem,1rem+1.6vw,2.25rem)] font-semibold leading-[1.22] tracking-[-0.02em]">
         <h2 id="shipped" className="display inline text-[1em] leading-[1.22] tracking-[-0.02em]">
           Shipped work:{" "}

@@ -12,24 +12,33 @@ export function ProfileRail() {
   return (
     <aside className="relative flex flex-col overflow-hidden bg-ground-2 lg:sticky lg:top-(--margin) lg:h-[calc(100svh-2*var(--margin))] lg:justify-end">
       <picture className="block h-44 w-full overflow-hidden md:h-60 lg:absolute lg:inset-0 lg:h-full">
+        {/* Art-directed: a tall crop for the desktop column, a wide band around the letters below it. */}
         <source
+          media="(min-width: 1024px)"
           type="image/avif"
           srcSet="/place/tampa-560.avif 560w, /place/tampa-960.avif 960w"
-          sizes="(min-width: 1024px) 31vw, 100vw"
-        />
-        <source
-          type="image/webp"
-          srcSet="/place/tampa-560.webp 560w, /place/tampa-960.webp 960w"
-          sizes="(min-width: 1024px) 31vw, 100vw"
-        />
-        <img
-          src="/place/tampa-560.webp"
-          alt="The BRAȘOV letters on the forested slope of Tâmpa, the mountain over Brașov"
+          sizes="31vw"
           width={960}
           height={1344}
+        />
+        <source
+          media="(min-width: 1024px)"
+          type="image/webp"
+          srcSet="/place/tampa-560.webp 560w, /place/tampa-960.webp 960w"
+          sizes="31vw"
+          width={960}
+          height={1344}
+        />
+        <source type="image/avif" srcSet="/place/tampa-band-800.avif 800w, /place/tampa-band-1200.avif 1200w" sizes="100vw" />
+        <source type="image/webp" srcSet="/place/tampa-band-800.webp 800w, /place/tampa-band-1200.webp 1200w" sizes="100vw" />
+        <img
+          src="/place/tampa-band-800.webp"
+          alt="The BRAȘOV letters on the forested slope of Tâmpa, the mountain over Brașov"
+          width={1200}
+          height={513}
           fetchPriority="high"
           decoding="async"
-          className="drift h-full w-full object-cover object-[70%_31%] lg:object-[78%_14%]"
+          className="drift h-full w-full object-cover object-[60%_45%] lg:object-[78%_14%]"
         />
       </picture>
       <div className="relative -mt-16 mx-3 bg-band p-5 md:mx-6 md:-mt-20 md:p-6 lg:m-(--margin) lg:p-7">
@@ -53,7 +62,8 @@ export function ProfileRail() {
           </div>
         </div>
         <div className="enter mt-4 grid gap-0.5" style={{ "--i": 2 } as React.CSSProperties}>
-          <p className="text-slate">{cv.location}</p>
+          {/* Hidden on phones, as the spec’s compact header has it; its ș would also pull Inter’s 85 KB latin-ext file onto the critical path. */}
+          <p className="hidden text-slate md:block">{cv.location}</p>
           <p className="font-semibold">{cv.availability}</p>
         </div>
         <div className="enter mt-5 grid gap-2" style={{ "--i": 3 } as React.CSSProperties}>
