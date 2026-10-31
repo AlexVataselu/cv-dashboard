@@ -49,3 +49,6 @@ next-env.d.ts
 # agent instruction files that `next dev` (re)creates
 /AGENTS.md
 /CLAUDE.md
+
+# taste skill working files
+/.taste-skill/
