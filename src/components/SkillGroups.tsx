@@ -4,6 +4,7 @@ import { FIRST_YEAR } from "@/content/career";
 import { deriveAllSkillLevels, formatLevel, usageIndex, type Usage } from "@/content/skillLevels";
 import type { SkillGroup } from "@/content/types";
 import { SkillChip } from "@/components/SkillChip";
+import { SkillPicker } from "@/components/SkillPicker";
 
 export const GROUPS: SkillGroup[] = ["Frontend", "State & data", "Backend", "Testing & quality", "Tooling"];
 
@@ -33,7 +34,7 @@ export function SkillGroups({
   const scale = now - FIRST_YEAR;
   const Heading = headingLevel;
   return (
-    <div
+    <SkillPicker
       className={
         showUsage
           ? "gap-(--gap) md:columns-2 xl:columns-3 [&>section]:mb-(--gap) [&>section]:break-inside-avoid"
@@ -87,6 +88,6 @@ export function SkillGroups({
           </section>
         );
       })}
-    </div>
+    </SkillPicker>
   );
 }

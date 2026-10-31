@@ -35,8 +35,9 @@ export function CareerTimeline({ headingLevel = "h2" }: { headingLevel?: "h2" | 
   const reactSince = react.since ?? now;
 
   const Heading = headingLevel;
+  // One set of year lines behind every row (the roles and the React span), not one per row.
   const lines = (
-    <span className="tl-lines" aria-hidden="true">
+    <span className="tl-lines" aria-hidden="true" style={{ gridColumn: 2, gridRow: `1 / ${roles.length + 2}` }}>
       {years.map((y, i) => (
         <span key={y} style={{ left: pct(y), transform: i === span ? "translateX(-1px)" : undefined }} />
       ))}
@@ -62,6 +63,7 @@ export function CareerTimeline({ headingLevel = "h2" }: { headingLevel?: "h2" | 
       </ul>
 
       <div className="tl tl-years">
+        {lines}
         {roles.map((r) => {
           const k = kindOf(r.id);
           const n = roleYears(r, now);
@@ -73,7 +75,6 @@ export function CareerTimeline({ headingLevel = "h2" }: { headingLevel?: "h2" | 
                 <span className="tnum">{period(r)}</span>
               </div>
               <div className="tl-track">
-                {lines}
                 <span className="tl-bar tnum" data-kind={k} data-short={n < 2 ? "" : undefined} style={style} title={`${KIND_LABEL[k]}, ${period(r)}`}>
                   <span className="sr-only">{KIND_LABEL[k]}, </span>
                   <span className="tl-bar-text">{yrs(n)}</span>
@@ -89,7 +90,6 @@ export function CareerTimeline({ headingLevel = "h2" }: { headingLevel?: "h2" | 
           </span>
         </div>
         <div className="tl-track mt-1 border-t border-rule pt-1">
-          {lines}
           <span className="tl-span" style={{ left: pct(reactSince), right: 0 }} aria-hidden="true" />
         </div>
         <div aria-hidden="true" />
