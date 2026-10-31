@@ -1,62 +1,57 @@
 <!doctype html>
 <!--
-  Source of src/app/opengraph-image.png. Rendered at 1200x630 by headless Chrome against the built
-  site (it borrows the site's own CSS for the two fonts); see the comment at the end for the command.
+  Source of src/app/opengraph-image.png. Rendered at 1200x630 against the built site (it borrows the
+  site's own CSS for the two fonts, Anton and Work Sans), so it needs no extra dependency.
+  To regenerate: pnpm build, copy this file into out/ with __CSS__ replaced by the name of the built
+  stylesheet that declares Anton, serve out/, and screenshot /og-image.html with a 1200x630 viewport
+  (Playwright: page.screenshot after document.fonts.ready) into src/app/opengraph-image.png.
+  Then delete the copy from out/.
 -->
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <link rel="stylesheet" href="/_next/static/chunks/__CSS__">
 <style>
   html, body { margin: 0; }
-  body { width: 1200px; height: 630px; background: #232629; font-family: Inter, sans-serif; color: #15191c; overflow: hidden; }
-  .wrap { display: grid; grid-template-columns: 380px 1fr; gap: 28px; padding: 28px; height: 630px; box-sizing: border-box; }
-  .room { position: relative; overflow: hidden; background: #2e3236; }
-  .room img.place { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 78% 14%; }
-  .card { position: absolute; left: 24px; right: 24px; bottom: 24px; background: #ecebe8; padding: 24px; }
-  .card img { width: 120px; height: 120px; object-fit: cover; filter: grayscale(1); display: block; }
-  .d { font-family: "Bricolage Grotesque", Inter, sans-serif; font-weight: 800; letter-spacing: -0.035em; line-height: 0.92; }
-  .name { font-size: 44px; margin: 18px 0 8px; }
-  .t { font-size: 20px; font-weight: 600; margin: 0; }
-  .right { display: flex; flex-direction: column; min-width: 0; }
+  body { width: 1200px; height: 630px; background: #e1ac10; color: #0b0b0b; overflow: hidden; font-family: "Work Sans", sans-serif; }
+  .wrap { box-sizing: border-box; height: 630px; padding: 40px 0 0 52px; display: grid; grid-template-columns: 430px 1fr; gap: 36px; }
+  .a { font-family: Anton, Impact, sans-serif; text-transform: uppercase; line-height: 0.9; margin: 0; }
+  .name { font-size: 118px; }
+  .t { font-size: 26px; font-weight: 600; margin: 18px 0 0; }
+  .me { display: flex; align-items: center; gap: 18px; margin-top: 46px; }
+  .me img { width: 120px; height: 120px; object-fit: cover; filter: grayscale(1); }
+  .me p { margin: 0; font-size: 22px; font-weight: 600; }
+  .btn { display: inline-block; margin-top: 10px; background: #24338f; color: #fff; font-weight: 600; font-size: 20px; padding: 12px 22px; }
+  .right { display: flex; flex-direction: column; }
   .tabs { display: flex; gap: 6px; }
-  .tab { clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%); background: #d9d6d0; padding: 12px 26px 10px; font-size: 18px; font-weight: 600; }
+  .tab { clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%); background: #f0d77a; padding: 12px 26px 10px; font-size: 18px; font-weight: 600; }
   .tab.on { background: #fff; }
-  .sheet { flex: 1; background: #fff; padding: 40px 48px; display: flex; flex-direction: column; }
-  .lead { font-size: 24px; line-height: 1.35; margin: 22px 0 0; max-width: 34ch; }
-  .foot { margin-top: auto; display: flex; align-items: flex-end; gap: 28px; }
-  .nine { font-size: 190px; line-height: 0.78; }
-  .cap { font-size: 24px; font-weight: 600; margin: 0 0 10px; }
-  .cap span { display: block; font-weight: 400; color: #59626a; margin-top: 6px; font-size: 20px; }
+  .sheet { flex: 1; background: #fff; padding: 38px 44px 0; display: flex; flex-direction: column; }
+  .split p { white-space: nowrap; }
+  .split { display: flex; align-items: center; gap: 22px; }
+  .split img { width: 170px; aspect-ratio: 16/9; object-fit: cover; object-position: top; }
+  .field { flex: 1; margin: 34px -44px 0; background: #24338f; color: #fff; padding: 26px 44px; display: flex; align-items: center; gap: 26px; }
+  .nine { font-size: 150px; line-height: 0.78; }
+  .cap { margin: 0 0 6px; font-size: 24px; font-weight: 600; }
 </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="room">
-      <img class="place" src="/place/tampa-960.webp" alt="">
-      <div class="card">
+    <div>
+      <p class="a name">Alex<br>Vataselu</p>
+      <p class="t">Senior Frontend Engineer</p>
+      <div class="me">
         <img src="/photo.webp" alt="">
-        <p class="d name">Alex Vataselu</p>
-        <p class="t">Senior Frontend Engineer</p>
+        <div><p>Open to work</p><span class="btn">Email me</span></div>
       </div>
     </div>
     <div class="right">
       <div class="tabs"><span class="tab on">Overview</span><span class="tab">Experience</span><span class="tab">Skills</span><span class="tab">Projects</span></div>
       <div class="sheet">
-        <p class="d" style="font-size:70px;margin:0">Frontend, end to end</p>
-        <p class="lead">React, Next.js, TypeScript and React Native. Brașov, Romania, remote across the EU.</p>
-        <div class="foot">
-          <p class="d nine" style="margin:0">9</p>
-          <p class="cap">years building for the web<span>Healthcare, fintech, cultural heritage</span></p>
-        </div>
+        <div class="split"><p class="a" style="font-size:64px">Design</p><img src="/work/azuga365-640.webp" alt=""><p class="a" style="font-size:64px">to launch</p></div>
+        <div class="field"><p class="a nine">9</p><p class="cap">years on the web, the last five on React,<br>Next.js, TypeScript and React Native</p></div>
       </div>
     </div>
   </div>
 </body>
 </html>
-<!--
-  To regenerate: pnpm build, copy this file into out/ with __CSS__ replaced by the name of the built
-  stylesheet that declares Bricolage Grotesque, serve out/, and screenshot /og-image.html with a
-  1200x630 viewport (Playwright: page.screenshot after document.fonts.ready) into
-  src/app/opengraph-image.png. Then delete the copy from out/.
--->
