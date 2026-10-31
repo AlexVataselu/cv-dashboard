@@ -29,7 +29,7 @@ export function ProfileRail() {
           height={1344}
           fetchPriority="high"
           decoding="async"
-          className="drift h-full w-full object-cover object-[70%_22%] lg:object-[78%_14%]"
+          className="drift h-full w-full object-cover object-[70%_31%] lg:object-[78%_14%]"
         />
       </picture>
       <div className="relative -mt-16 mx-3 bg-band p-5 md:mx-6 md:-mt-20 md:p-6 lg:m-(--margin) lg:p-7">

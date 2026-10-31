@@ -1,0 +1,62 @@
+<!doctype html>
+<!--
+  Source of src/app/opengraph-image.png. Rendered at 1200x630 by headless Chrome against the built
+  site (it borrows the site's own CSS for the two fonts); see the comment at the end for the command.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/_next/static/chunks/__CSS__">
+<style>
+  html, body { margin: 0; }
+  body { width: 1200px; height: 630px; background: #232629; font-family: Inter, sans-serif; color: #15191c; overflow: hidden; }
+  .wrap { display: grid; grid-template-columns: 380px 1fr; gap: 28px; padding: 28px; height: 630px; box-sizing: border-box; }
+  .room { position: relative; overflow: hidden; background: #2e3236; }
+  .room img.place { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 78% 14%; }
+  .card { position: absolute; left: 24px; right: 24px; bottom: 24px; background: #ecebe8; padding: 24px; }
+  .card img { width: 120px; height: 120px; object-fit: cover; filter: grayscale(1); display: block; }
+  .d { font-family: "Bricolage Grotesque", Inter, sans-serif; font-weight: 800; letter-spacing: -0.035em; line-height: 0.92; }
+  .name { font-size: 44px; margin: 18px 0 8px; }
+  .t { font-size: 20px; font-weight: 600; margin: 0; }
+  .right { display: flex; flex-direction: column; min-width: 0; }
+  .tabs { display: flex; gap: 6px; }
+  .tab { clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%); background: #d9d6d0; padding: 12px 26px 10px; font-size: 18px; font-weight: 600; }
+  .tab.on { background: #fff; }
+  .sheet { flex: 1; background: #fff; padding: 40px 48px; display: flex; flex-direction: column; }
+  .lead { font-size: 24px; line-height: 1.35; margin: 22px 0 0; max-width: 34ch; }
+  .foot { margin-top: auto; display: flex; align-items: flex-end; gap: 28px; }
+  .nine { font-size: 190px; line-height: 0.78; }
+  .cap { font-size: 24px; font-weight: 600; margin: 0 0 10px; }
+  .cap span { display: block; font-weight: 400; color: #59626a; margin-top: 6px; font-size: 20px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="room">
+      <img class="place" src="/place/tampa-960.webp" alt="">
+      <div class="card">
+        <img src="/photo.webp" alt="">
+        <p class="d name">Alex Vataselu</p>
+        <p class="t">Senior Frontend Engineer</p>
+      </div>
+    </div>
+    <div class="right">
+      <div class="tabs"><span class="tab on">Overview</span><span class="tab">Experience</span><span class="tab">Skills</span><span class="tab">Projects</span></div>
+      <div class="sheet">
+        <p class="d" style="font-size:70px;margin:0">Frontend, end to end</p>
+        <p class="lead">React, Next.js, TypeScript and React Native. Brașov, Romania, remote across the EU.</p>
+        <div class="foot">
+          <p class="d nine" style="margin:0">9</p>
+          <p class="cap">years building for the web<span>Healthcare, fintech, cultural heritage</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+<!--
+  To regenerate: pnpm build, copy this file into out/ with __CSS__ replaced by the name of the built
+  stylesheet that declares Bricolage Grotesque, serve out/, and screenshot /og-image.html with a
+  1200x630 viewport (Playwright: page.screenshot after document.fonts.ready) into
+  src/app/opengraph-image.png. Then delete the copy from out/.
+-->
