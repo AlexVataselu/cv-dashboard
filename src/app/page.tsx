@@ -15,7 +15,7 @@ export const metadata = pageMetadata({ description: HOME_DESCRIPTION, path: "/" 
 
 /*
   Grid: 12 columns, one 20px gap across and down.
-  Row 1, the KPI strip, full width. Row 2, the career timeline (8) beside the results (4).
+  Row 1, the KPI strip, full width. Row 2, the career timeline (7) beside the results (5).
   Row 3, skill levels, full width. Row 4, About (5) beside shipped work (7).
 */
 export default function Home() {
@@ -34,10 +34,10 @@ export default function Home() {
       <KpiStrip />
 
       <div className="mt-(--gap) grid gap-(--gap) xl:grid-cols-12">
-        <div className="xl:col-span-8">
+        <div className="xl:col-span-7">
           <CareerTimeline />
         </div>
-        <div className="xl:col-span-4">
+        <div className="xl:col-span-5">
           <ImpactList />
         </div>
       </div>

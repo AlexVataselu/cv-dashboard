@@ -17,14 +17,16 @@ export function ImpactList() {
           return (
             <li
               key={i.label}
-              className={`grid gap-x-4 gap-y-1 sm:grid-cols-[7.25rem_minmax(0,1fr)] py-3 ${n > 0 ? "border-t border-rule" : "pt-0"}`}
+              className={`grid gap-x-4 gap-y-1 sm:grid-cols-[6.75rem_minmax(0,1fr)] py-3 ${n > 0 ? "border-t border-rule" : "pt-0"}`}
             >
-              <p className="tnum text-[19px] font-semibold leading-tight">{i.value}</p>
+              <p className="tnum text-[18px] font-semibold leading-tight">{i.value}</p>
               <div className="min-w-0">
                 <p className="text-[14px] leading-snug">{i.label}</p>
                 <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-[13px] text-muted" data-kind={roleId ? kindOf(roleId) : undefined}>
-                  <span className="key size-2.5!" aria-hidden="true" />
-                  <span className="whitespace-nowrap">{i.source}</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="key size-2.5!" aria-hidden="true" />
+                    {i.source}
+                  </span>
                   {role ? <span className="tnum whitespace-nowrap">· {period(role)}</span> : null}
                 </p>
               </div>

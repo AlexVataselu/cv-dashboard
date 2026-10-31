@@ -51,7 +51,7 @@ export function CareerTimeline({ headingLevel = "h2" }: { headingLevel?: "h2" | 
         </Heading>
         <p className="meta tnum">{yrs(total)} in dated roles</p>
       </div>
-      <ul className="mb-4 flex flex-wrap gap-x-5 gap-y-2 text-[13px]" aria-label="Kinds of work, with years">
+      <ul className="mb-4 flex flex-wrap gap-x-4 gap-y-2 text-[13px]" aria-label="Kinds of work, with years">
         {kinds.map((k) => (
           <li key={k} className="flex items-center gap-2" data-kind={k}>
             <span className="key" aria-hidden="true" />
@@ -59,10 +59,6 @@ export function CareerTimeline({ headingLevel = "h2" }: { headingLevel?: "h2" | 
             <span className="tnum text-muted">{yrs(byKind(k))}</span>
           </li>
         ))}
-        <li className="flex items-center gap-2">
-          <span className="h-1.5 w-4 rounded-full bg-primary" aria-hidden="true" />
-          <span>React, Next.js, TypeScript</span>
-        </li>
       </ul>
 
       <div className="tl tl-years">
@@ -80,7 +76,7 @@ export function CareerTimeline({ headingLevel = "h2" }: { headingLevel?: "h2" | 
                 {lines}
                 <span className="tl-bar tnum" data-kind={k} data-short={n < 2 ? "" : undefined} style={style} title={`${KIND_LABEL[k]}, ${period(r)}`}>
                   <span className="sr-only">{KIND_LABEL[k]}, </span>
-                  {yrs(n)}
+                  <span className="tl-bar-text">{yrs(n)}</span>
                 </span>
               </div>
             </div>

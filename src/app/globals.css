@@ -390,6 +390,24 @@ summary:focus-visible,
   .tab:hover {
     color: var(--ink);
   }
+  /* phones from 380px: the five tabs share the width, so none is cut at the screen edge */
+  @media (min-width: 380px) and (max-width: 767px) {
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0;
+    }
+    .tab {
+      justify-content: center;
+      width: 100%;
+      padding: 0 2px;
+      font-size: 13px;
+    }
+    .tabs .tab[aria-current="page"]::after {
+      left: 8px;
+      right: 8px;
+    }
+  }
   .tab[aria-current="page"] {
     color: var(--ink);
     font-weight: 600;
@@ -441,6 +459,7 @@ summary:focus-visible,
     position: relative;
     min-height: 44px;
   }
+
   .tl-lines {
     position: absolute;
     inset: 0;
@@ -489,12 +508,7 @@ summary:focus-visible,
     transform: translateX(-50%);
     white-space: nowrap;
   }
-  .tl-axis > span:first-child {
-    transform: none;
-  }
-  .tl-axis > span:last-child {
-    transform: translateX(-100%);
-  }
+  /* every year label is centred on its line; the first and last sit in the column gap and the card's padding */
   .tl-years {
     container-type: inline-size;
   }
@@ -507,8 +521,8 @@ summary:focus-visible,
       display: none;
     }
     /* a one-year bar is too short for its words here; its row label carries the dates */
-    .tl-bar[data-short] {
-      font-size: 0;
+    .tl-bar[data-short] .tl-bar-text {
+      display: none;
     }
     .tl-label > :first-child {
       font-size: 13px;

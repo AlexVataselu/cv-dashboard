@@ -9,7 +9,7 @@ export function SectionNav({ current }: { current: SectionId }) {
   const skill = useUiStore((s) => s.selectedSkill);
   const query = skill ? `?skill=${encodeURIComponent(skill)}` : "";
   return (
-    <nav aria-label="Sections" className="px-2 md:px-3 lg:px-1 lg:pt-2">
+    <nav aria-label="Sections" className="px-4 md:px-3 lg:px-1 lg:pt-2">
       <ul className="tabs">
         {SECTIONS.map((s) => (
           <li key={s.id}>
