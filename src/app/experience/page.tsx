@@ -12,19 +12,22 @@ export const metadata = pageMetadata({
 
 export default function ExperiencePage() {
   return (
-    <SectionShell current="experience" title="Experience">
+    <SectionShell
+      current="experience"
+      title="Experience"
+      lead="Product teams at Pentalog and TryAngle Labs, and my own clients in healthcare, fintech and cultural heritage. Newest first."
+    >
       <FilterNotice />
-      <ol className="grid gap-3">
+      <ol className="mt-6 grid gap-16 md:gap-14">
         {cv.roles.map((r) => (
           <li key={r.id}>
             <RoleCard role={r} />
           </li>
         ))}
       </ol>
-      <p className="mt-4 text-sm text-muted">
-        <span className="font-mono text-xs uppercase tracking-wider">Before 2017</span>
-        {" · "}
-        {cv.before2017}
+      <p className="rise mt-14 grid gap-3 md:grid-cols-[9rem_minmax(0,1fr)] md:gap-8 lg:grid-cols-[11rem_minmax(0,1fr)]">
+        <span className="display text-lead text-graphite">Before 2017</span>
+        <span>{cv.before2017}</span>
       </p>
     </SectionShell>
   );

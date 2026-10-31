@@ -10,8 +10,14 @@ export const metadata = pageMetadata({
 
 export default function SkillsPage() {
   return (
-    <SectionShell current="skills" title="Skills">
-      <SkillGroups showUsage />
+    <SectionShell
+      current="skills"
+      title="Skills"
+      lead="Each level counts from the first dated role or project on the CV that uses the skill. Pick one to mark it across Experience and Projects."
+    >
+      <div className="mt-14 md:mt-20">
+        <SkillGroups showUsage />
+      </div>
     </SectionShell>
   );
 }

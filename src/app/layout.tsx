@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Inter } from "next/font/google";
 import Script from "next/script";
 import { ProfileRail } from "@/components/ProfileRail";
 import { StatusBar } from "@/components/StatusBar";
 import { SkillParamSync } from "@/components/SkillParamSync";
+import { Credits } from "@/components/Credits";
 import { HOME_DESCRIPTION, SITE_URL, pageMetadata, personJsonLd } from "@/lib/site";
 import "./globals.css";
 
@@ -16,8 +17,8 @@ const inter = Inter({
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
   display: "swap",
 });
@@ -29,11 +30,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
-      <body className="min-h-screen bg-bg text-text">
+    <html lang="en" className={`${inter.variable} ${bricolage.variable} antialiased`}>
+      <body className="min-h-svh bg-ground text-ink">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-accent focus:px-3 focus:py-2 focus:text-bg"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:bg-paper focus:px-4 focus:py-3 focus:font-semibold focus:text-ink"
         >
           Skip to content
         </a>
@@ -58,11 +59,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {"void 0"}
         </Script>
         <SkillParamSync />
-        <div className="flex min-h-screen flex-col md:flex-row">
+        <div className="grid min-h-svh gap-(--margin) p-(--margin) lg:grid-cols-[minmax(340px,31vw)_minmax(0,1fr)]">
           <ProfileRail />
-          <div className="flex min-w-0 flex-1 flex-col">
-            <div className="flex-1">{children}</div>
+          <div className="flex min-w-0 flex-col">
+            {children}
             <StatusBar />
+            <Credits />
           </div>
         </div>
       </body>

@@ -57,12 +57,9 @@ export function StatusBar({
   return (
     <footer
       aria-label="Site performance"
-      className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border bg-panel px-3 py-2 font-mono text-xs text-muted md:px-4"
+      className="tnum flex flex-wrap items-center gap-x-6 gap-y-1 bg-band px-5 py-4 text-small text-slate md:px-10 xl:px-13"
     >
-      <span className="flex items-center gap-2">
-        <span aria-hidden="true" className="inline-block size-1.5 rounded-full bg-accent" />
-        <span>{auditText}</span>
-      </span>
+      <span>{auditText}</span>
       <span>{`JS ~${Math.round(jsKb)} KB`}</span>
       <Vital name="LCP" value={lcp === null ? null : `${(lcp / 1000).toFixed(1)}s`} width="4ch" />
       <Vital name="CLS" value={cls === null ? null : cls.toFixed(2)} width="4ch" />

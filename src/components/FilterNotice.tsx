@@ -9,16 +9,16 @@ export function FilterNotice() {
   const selectSkill = useUiStore((s) => s.selectSkill);
   const name = cv.skills.find((s) => s.id === id)?.name;
   return (
-    <p className="mb-3 min-h-6 text-sm text-muted" aria-live="polite">
+    <p className="mt-8 min-h-7 text-body" aria-live="polite">
       {name ? (
         <>
-          Filtered by <span className="text-accent">{name}</span> ·{" "}
+          Marked: where <span className="font-semibold">{name}</span> was used.{" "}
           <button
             type="button"
             onClick={() => selectSkill(null)}
-            className="underline hover:text-heading"
+            className="font-semibold underline decoration-2 underline-offset-4 hover:decoration-4"
           >
-            clear
+            Clear
           </button>
         </>
       ) : null}

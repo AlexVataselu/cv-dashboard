@@ -1,56 +1,226 @@
 @import "tailwindcss";
 
+/*
+  The printed CV as the object. Colours come from Alex's two-page A4 CV (DESIGN.md in the CV
+  project): white paper, near-black ink, one slate grey, the warm grey portrait band and graphite.
+  The ground the paper lies on is a deeper graphite. No hue: the action is solid ink.
+*/
 :root {
-  --bg: #0d1117;
-  --panel: #161b22;
-  --border: #30363d;
-  --text: #c9d1d9;
-  --heading: #e6edf3;
-  --muted: #8b949e;
-  --accent: #3fb950;
-  --rail: #0b0f14;
+  --ground: #232629;
+  --ground-2: #2e3236;
+  --paper: #ffffff;
+  --band: #ecebe8;
+  --band-2: #d9d6d0;
+  --ink: #15191c;
+  --slate: #59626a;
+  --graphite: #33373b;
+  --on-ground: #f3f2ef;
+  --on-ground-soft: #c4c8cc;
+
+  --step-small: 0.875rem;
+  --step-body: 1.0625rem;
+  --step-lead: clamp(1.1875rem, 1.05rem + 0.45vw, 1.375rem);
+  --step-head: clamp(1.75rem, 1.2rem + 1.6vw, 2.25rem);
+  --step-display: clamp(3.25rem, 1.6rem + 5.6vw, 7rem);
+  --step-giant: clamp(9rem, 4rem + 16vw, 17.5rem);
+
+  --margin: 16px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --margin: 24px;
+  }
 }
 
 @theme inline {
-  --color-bg: var(--bg);
-  --color-panel: var(--panel);
-  --color-border: var(--border);
-  --color-text: var(--text);
-  --color-heading: var(--heading);
-  --color-muted: var(--muted);
-  --color-accent: var(--accent);
-  --color-rail: var(--rail);
+  --color-ground: var(--ground);
+  --color-ground-2: var(--ground-2);
+  --color-paper: var(--paper);
+  --color-band: var(--band);
+  --color-band-2: var(--band-2);
+  --color-ink: var(--ink);
+  --color-slate: var(--slate);
+  --color-graphite: var(--graphite);
+  --color-on-ground: var(--on-ground);
+  --color-on-ground-soft: var(--on-ground-soft);
   --font-sans: var(--font-inter);
-  --font-mono: var(--font-jetbrains-mono);
+  --font-display: var(--font-bricolage);
+  --text-small: var(--step-small);
+  --text-body: var(--step-body);
+  --text-lead: var(--step-lead);
+  --text-head: var(--step-head);
+  --text-display: var(--step-display);
+  --text-giant: var(--step-giant);
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
+  background: var(--ground);
+  color: var(--ink);
   font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: var(--step-body);
+  line-height: 1.55;
 }
 
 a:focus-visible,
-button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+button:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
 }
 
+.on-ground a:focus-visible,
+.on-ground button:focus-visible {
+  outline-color: var(--on-ground);
+}
+
+@layer components {
+  /* Display face: Bricolage Grotesque, set heavy and tight, as on the printed CV. */
+  .display {
+    font-family: var(--font-bricolage), var(--font-inter), system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Folder tabs: filled trapezoids cut with clip-path. The clip would also cut an outline, so the
+     focused tab turns solid ink instead. */
+  .folder-tab {
+    clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%);
+  }
+  .folder-tab:focus-visible {
+    outline: none;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* The receipt slip: its bottom edge is a zigzag. */
+  .zigzag {
+    --tooth: 14px;
+    padding-bottom: calc(var(--tooth) + 8px);
+    clip-path: polygon(
+      0 0, 100% 0, 100% 100%,
+      96% calc(100% - var(--tooth)), 92% 100%, 88% calc(100% - var(--tooth)), 84% 100%,
+      80% calc(100% - var(--tooth)), 76% 100%, 72% calc(100% - var(--tooth)), 68% 100%,
+      64% calc(100% - var(--tooth)), 60% 100%, 56% calc(100% - var(--tooth)), 52% 100%,
+      48% calc(100% - var(--tooth)), 44% 100%, 40% calc(100% - var(--tooth)), 36% 100%,
+      32% calc(100% - var(--tooth)), 28% 100%, 24% calc(100% - var(--tooth)), 20% 100%,
+      16% calc(100% - var(--tooth)), 12% 100%, 8% calc(100% - var(--tooth)), 4% 100%,
+      0 calc(100% - var(--tooth))
+    );
+  }
+
+  /* Scalloped paper edges, drawn by an SVG mask: a row of half circles plus a solid body. */
+  .scallop-bottom {
+    padding-bottom: 20px;
+    -webkit-mask:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Ccircle cx='12' cy='0' r='12'/%3E%3C/svg%3E") left bottom / 24px 12px repeat-x,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect width='1' height='1'/%3E%3C/svg%3E") left top / 100% calc(100% - 11px) no-repeat;
+    mask:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Ccircle cx='12' cy='0' r='12'/%3E%3C/svg%3E") left bottom / 24px 12px repeat-x,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect width='1' height='1'/%3E%3C/svg%3E") left top / 100% calc(100% - 11px) no-repeat;
+  }
+  .scallop-both {
+    padding-block: 28px;
+    -webkit-mask:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Ccircle cx='12' cy='12' r='12'/%3E%3C/svg%3E") left top / 24px 12px repeat-x,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect width='1' height='1'/%3E%3C/svg%3E") left 11px / 100% calc(100% - 22px) no-repeat,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Ccircle cx='12' cy='0' r='12'/%3E%3C/svg%3E") left bottom / 24px 12px repeat-x;
+    mask:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Ccircle cx='12' cy='12' r='12'/%3E%3C/svg%3E") left top / 24px 12px repeat-x,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect width='1' height='1'/%3E%3C/svg%3E") left 11px / 100% calc(100% - 22px) no-repeat,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Ccircle cx='12' cy='0' r='12'/%3E%3C/svg%3E") left bottom / 24px 12px repeat-x;
+  }
+
+  /* A perforation: a row of round 5px dots. */
+  .perforation {
+    border-top: 5px dotted var(--band-2);
+  }
+
+  /* Leader dots between a receipt row's name and its value. */
+  .leader {
+    flex: 1;
+    min-width: 16px;
+    margin-inline: 8px;
+    transform: translateY(-5px);
+    border-bottom: 4px dotted var(--band-2);
+  }
+}
+
+/* ---------- Motion. Transform only, so nothing is ever hidden and LCP is untouched. ---------- */
 @media (prefers-reduced-motion: no-preference) {
-  .section-fade {
-    animation: section-fade-in 150ms ease-out;
+  .enter {
+    animation: rise 640ms var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
   }
+
+  .drift {
+    animation: drift 38s ease-in-out infinite alternate;
+  }
+
+  @supports (animation-timeline: view()) {
+    .rise {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+  }
+
+  .press {
+    transition: transform 160ms var(--ease-out), background-color 160ms var(--ease-out),
+      color 160ms var(--ease-out);
+  }
+  .press:hover {
+    transform: translateY(-2px);
+  }
+  .press:active {
+    transform: translateY(0) scale(0.97);
+  }
+
+  .folder-tab {
+    transition: transform 200ms var(--ease-out), background-color 160ms var(--ease-out);
+  }
+  .folder-tab:hover {
+    transform: translateY(-4px);
+  }
+
+  .frame-grow {
+    transition: transform 240ms var(--ease-out);
+    transform-origin: left center;
+  }
+  a:hover > .frame-grow,
+  a:focus-visible > .frame-grow {
+    transform: scale(1.6);
+  }
+
   .palette-in {
-    animation: section-fade-in 120ms ease-out;
+    animation: rise 180ms var(--ease-out) both;
   }
 }
 
-@keyframes section-fade-in {
+@keyframes rise {
   from {
-    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.12) translate3d(-2%, 1.5%, 0);
   }
 }

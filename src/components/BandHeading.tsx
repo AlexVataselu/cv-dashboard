@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 
-export function BandHeading({ children }: { children: ReactNode }) {
+/** A section heading on the sheet. */
+export function BandHeading({ children, id }: { children: ReactNode; id?: string }) {
   return (
-    <h2 className="mb-2 mt-6 font-mono text-xs font-semibold uppercase tracking-wider text-muted first:mt-0">
+    <h2 id={id} className="rise display text-head leading-none">
       {children}
     </h2>
   );

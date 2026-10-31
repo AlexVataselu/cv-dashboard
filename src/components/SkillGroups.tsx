@@ -22,7 +22,8 @@ function usageHref(skillId: string, u: Usage) {
 
 /**
  * Server-rendered, so it costs no client JS and causes no layout shift.
- * `showUsage` (the Skills page) adds where each skill was used, as plain links.
+ * Without `showUsage` (the Overview) the groups sit side by side as compact columns.
+ * With it (the Skills page) they are set as one printed sheet, each skill with where it was used.
  */
 export function SkillGroups({
   headingLevel = "h2",
@@ -35,31 +36,38 @@ export function SkillGroups({
   const usage = usageIndex(cv);
   const Heading = headingLevel;
   return (
-    <div className="grid gap-4">
+    <div
+      className={
+        showUsage
+          ? "scallop-both -mx-5 gap-x-14 bg-band px-2 py-14 md:-mx-10 md:px-7 md:py-16 xl:-mx-13 xl:columns-2 xl:px-10 [&>section]:mb-14 [&>section]:break-inside-avoid"
+          : "grid gap-x-10 gap-y-12 sm:grid-cols-2"
+      }
+    >
       {GROUPS.map((g) => {
         const headingId = `skill-group-${slug(g)}`;
         return (
-          <section key={g} aria-labelledby={headingId}>
+          <section key={g} aria-labelledby={headingId} className="rise">
             <Heading
               id={headingId}
-              className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-muted"
+              className={
+                showUsage
+                  ? "display mb-5 text-center text-lead leading-none"
+                  : "display mb-3 px-3 text-lead leading-none"
+              }
             >
               {g}
             </Heading>
-            <ul className={showUsage ? "grid gap-2" : "flex flex-wrap gap-2"}>
+            <ul className={showUsage ? "grid gap-2" : "grid"}>
               {cv.skills
                 .filter((s) => s.group === g)
                 .map((s) => {
                   const lvl = levels[s.id];
                   const usedIn = showUsage ? (lvl?.usedIn ?? []).map((id) => usage[id]) : [];
                   return (
-                    <li
-                      key={s.id}
-                      className={showUsage ? "flex flex-wrap items-center gap-x-3 gap-y-1" : undefined}
-                    >
+                    <li key={s.id}>
                       <SkillChip skillId={s.id} name={s.name} levelText={formatLevel(lvl)} />
                       {usedIn.length > 0 ? (
-                        <p className="text-xs text-muted">
+                        <p className="px-3 pb-1 text-small text-slate">
                           Used in{" "}
                           {usedIn.map((u, i) => (
                             <span key={u.id}>
@@ -67,7 +75,7 @@ export function SkillGroups({
                               <Link
                                 href={usageHref(s.id, u)}
                                 prefetch={false}
-                                className="text-text underline decoration-border underline-offset-2 hover:text-heading hover:decoration-muted"
+                                className="text-ink underline decoration-slate underline-offset-2 hover:decoration-2"
                               >
                                 {u.name}
                               </Link>

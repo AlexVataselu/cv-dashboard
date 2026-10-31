@@ -1,22 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { SECTIONS, type SectionId } from "@/lib/sections";
 import { useUiStore } from "@/state/uiStore";
 
+/** The sections as folder tabs standing on the top edge of the sheet. The open one is the sheet's own paper. */
 export function SectionNav({ current }: { current: SectionId }) {
   const skill = useUiStore((s) => s.selectedSkill);
   const query = skill ? `?skill=${encodeURIComponent(skill)}` : "";
   return (
-    <nav aria-label="Sections" className="overflow-x-auto border-b border-border">
-      <ul className="flex w-max gap-1 px-3 py-2 md:w-auto">
-        {SECTIONS.map((s) => (
-          <li key={s.id}>
+    <nav aria-label="Sections" className="pt-2">
+      <ul className="flex flex-wrap items-end gap-x-1 gap-y-1.5 md:gap-x-1.5">
+        {SECTIONS.map((s, i) => (
+          <li key={s.id} className="enter" style={{ "--i": i } as CSSProperties}>
             <Link
               href={`${s.href}${query}`}
               prefetch={false}
               aria-current={s.id === current ? "page" : undefined}
-              className="block whitespace-nowrap rounded-full border border-border px-3 py-1 text-sm text-text hover:border-muted aria-[current=page]:border-accent aria-[current=page]:bg-accent/10 aria-[current=page]:text-accent"
+              className="folder-tab block whitespace-nowrap bg-band-2 px-4 pb-2.5 pt-3 text-body font-semibold text-ink hover:bg-band aria-[current=page]:bg-paper md:px-7 md:pb-3 md:pt-3.5"
             >
               {s.label}
             </Link>
