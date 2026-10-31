@@ -31,11 +31,11 @@ export default function Home() {
               <p className="display tnum text-giant leading-[0.8]">{total.value}</p>
               <p className="mt-3 text-lead font-semibold">{total.label}</p>
             </div>
-            <ul className="mt-10 grid gap-6 sm:grid-cols-3">
+            <ul className="mt-10 grid gap-6 sm:grid-cols-3 lg:grid-cols-1 lg:gap-4">
               {rest.map((g) => (
-                <li key={g.label} className="rise">
-                  <p className="display tnum text-head">{g.value}</p>
-                  <p className="mt-1">{g.label}</p>
+                <li key={g.label} className="rise lg:flex lg:items-baseline lg:gap-4">
+                  <p className="display tnum text-head lg:w-8 lg:shrink-0">{g.value}</p>
+                  <p className="mt-1 lg:mt-0">{g.label}</p>
                 </li>
               ))}
             </ul>

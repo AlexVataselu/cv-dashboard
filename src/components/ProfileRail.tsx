@@ -11,7 +11,7 @@ const secondary =
 export function ProfileRail() {
   return (
     <aside className="relative flex flex-col overflow-hidden bg-ground-2 lg:sticky lg:top-(--margin) lg:h-[calc(100svh-2*var(--margin))] lg:justify-end">
-      <picture className="block h-44 w-full overflow-hidden md:h-60 lg:absolute lg:inset-0 lg:h-full">
+      <picture className="block h-36 w-full overflow-hidden md:h-60 lg:absolute lg:inset-0 lg:h-full">
         {/* Art-directed: a tall crop for the desktop column, a wide band around the letters below it. */}
         <source
           media="(min-width: 1024px)"
@@ -41,7 +41,7 @@ export function ProfileRail() {
           className="drift h-full w-full object-cover object-[60%_45%] lg:object-[78%_14%]"
         />
       </picture>
-      <div className="relative -mt-16 mx-3 bg-band p-5 md:mx-6 md:-mt-20 md:p-6 lg:m-(--margin) lg:p-7">
+      <div className="relative -mt-12 mx-3 bg-band p-5 md:mx-6 md:-mt-20 md:p-6 lg:m-(--margin) lg:p-7">
         <div className="flex items-end gap-4 lg:block">
           <picture className="enter block shrink-0" style={{ "--i": 0 } as React.CSSProperties}>
             <source srcSet="/photo.avif" type="image/avif" />
