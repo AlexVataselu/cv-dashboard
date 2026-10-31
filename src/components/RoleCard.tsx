@@ -72,7 +72,7 @@ export function RoleCard({ role }: { role: Role }) {
             ))}
           </ul>
           {sites.length > 0 ? (
-            <div className="defer mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {sites.map((s) => (
                 <SitePlate key={s.id} site={s} caption="name" sizes="(min-width: 1024px) 26vw, (min-width: 640px) 45vw, 90vw" />
               ))}

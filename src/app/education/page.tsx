@@ -81,7 +81,7 @@ export default function EducationPage() {
         <p className="rise mt-4 max-w-[52ch]">
           My city in Romania, where I work remotely across the EU.
         </p>
-        <div className="defer mt-10 grid items-start gap-6 md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <div className="mt-10 grid items-start gap-6 md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
           <Photo
             base="/place/old-town"
             alt="The roofs of Brașov's old town seen from Tâmpa, between the cables of the cable car"

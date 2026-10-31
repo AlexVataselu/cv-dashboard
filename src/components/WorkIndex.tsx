@@ -64,7 +64,7 @@ export function WorkIndex() {
     })),
   ];
   return (
-    <section aria-labelledby="work" className="work-index defer mt-28 md:mt-44">
+    <section aria-labelledby="work" className="work-index mt-28 md:mt-44">
       <h2 id="work" className="rise display text-display leading-[0.88]">
             Shipped work
           </h2>
