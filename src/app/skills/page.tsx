@@ -1,6 +1,7 @@
 import { SectionShell } from "@/components/SectionShell";
-import { pageMetadata } from "@/lib/site";
+import { SkillAdoption } from "@/components/SkillAdoption";
 import { SkillGroups } from "@/components/SkillGroups";
+import { pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Skills",
@@ -15,7 +16,8 @@ export default function SkillsPage() {
       title="Skills"
       lead="Each level counts from the first dated role or project on the CV that uses the skill. Pick one to mark it across Experience and Projects."
     >
-      <div className="mt-14 md:mt-20">
+      <SkillAdoption />
+      <div className="mt-(--gap)">
         <SkillGroups showUsage />
       </div>
     </SectionShell>
