@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { Anton, Work_Sans } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import Script from "next/script";
 import { ProfileRail } from "@/components/ProfileRail";
-import { StatusBar } from "@/components/StatusBar";
 import { SkillParamSync } from "@/components/SkillParamSync";
-import { Credits } from "@/components/Credits";
 import { HOME_DESCRIPTION, SITE_URL, pageMetadata, personJsonLd } from "@/lib/site";
 import "./globals.css";
 
@@ -12,14 +10,16 @@ import "./globals.css";
 // declared (with unicode-range) and load on demand for the few glyphs that need
 // them (the "ș" in the location line), so they stay off the critical path; keep "ș"
 // out of text a phone shows, or it pulls a latin-ext file into the first load.
-const work = Work_Sans({
-  variable: "--font-work",
+// IBM Plex Sans is variable (one file for every weight); Plex Mono has one job:
+// machine names (domains, repository paths) and the status bar's measurements.
+const plex = IBM_Plex_Sans({
+  variable: "--font-plex",
   subsets: ["latin"],
   display: "swap",
 });
 
-const anton = Anton({
-  variable: "--font-anton",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   weight: "400",
   subsets: ["latin"],
   display: "swap",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${work.variable} ${anton.variable} antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${plex.variable} ${plexMono.variable} antialiased`} suppressHydrationWarning>
       <head>
         {/* Inline, so it needs a nonce if a Content-Security-Policy is added. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-svh bg-ground text-ink">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:bg-paper focus:px-4 focus:py-3 focus:font-semibold focus:text-ink"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-surface focus:px-4 focus:py-3 focus:font-semibold focus:text-ink"
         >
           Skip to content
         </a>
@@ -69,13 +69,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {"void 0"}
         </Script>
         <SkillParamSync />
-        <div className="grid min-h-svh gap-(--margin) p-(--margin) lg:grid-cols-[minmax(340px,30vw)_minmax(0,1fr)] lg:gap-6">
+        {/* The frame: the profile rail and the section tabs on one tint; the sheet beside them. */}
+        <div className="min-h-svh lg:grid lg:grid-cols-[296px_minmax(0,1fr)]">
           <ProfileRail />
-          <div className="flex min-w-0 flex-col">
-            {children}
-            <StatusBar />
-            <Credits />
-          </div>
+          <div className="flex min-w-0 flex-col lg:pr-3 lg:pb-3">{children}</div>
         </div>
       </body>
     </html>

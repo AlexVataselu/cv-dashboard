@@ -6,11 +6,11 @@ test("the theme follows the system setting before any choice", async ({ page }) 
   await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  expect(await page.evaluate(ground)).toBe("rgb(11, 11, 11)");
+  expect(await page.evaluate(ground)).toBe("rgb(14, 15, 17)");
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/skills");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  expect(await page.evaluate(ground)).toBe("rgb(225, 172, 16)");
+  expect(await page.evaluate(ground)).toBe("rgb(237, 241, 247)");
 });
 
 test("the toggle switches the theme, says so, and remembers it across pages and reloads", async ({
@@ -53,6 +53,6 @@ test.describe("without JavaScript", () => {
 
   test("the dark theme still comes from the system setting", async ({ page }) => {
     await page.goto("/");
-    expect(await page.evaluate(ground)).toBe("rgb(11, 11, 11)");
+    expect(await page.evaluate(ground)).toBe("rgb(14, 15, 17)");
   });
 });

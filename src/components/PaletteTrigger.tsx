@@ -45,7 +45,7 @@ export function PaletteTrigger() {
         aria-label="⌘K Open command palette"
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
-        className="press hidden min-h-11 min-w-11 items-center justify-center bg-ground-2 px-3 text-small font-semibold text-on-ground hover:bg-paper hover:text-ink md:inline-flex"
+        className="btn hidden min-h-10 min-w-11 px-3 text-muted lg:inline-flex"
       >
         <span aria-hidden="true">⌘K</span>
       </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { MoonIcon, SunIcon } from "@/components/icons";
 
 const root = () => document.documentElement;
 
@@ -17,7 +18,7 @@ const isDark = () => root().dataset.theme === "dark";
  * layout.tsx applies the saved or system theme before the first paint; this button only flips it.
  * Its pressed look comes from CSS on data-theme, so nothing changes size or colour at hydration.
  */
-export function ThemeToggle({ className = "" }: { className?: string }) {
+export function ThemeToggle() {
   const dark = useSyncExternalStore(subscribe, isDark, () => false);
   const toggle = () => {
     const next = isDark() ? "light" : "dark";
@@ -29,8 +30,16 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     }
   };
   return (
-    <button type="button" aria-pressed={dark} onClick={toggle} className={`theme-toggle ${className}`}>
-      Dark theme
+    <button
+      type="button"
+      aria-pressed={dark}
+      onClick={toggle}
+      className="btn min-h-11 min-w-11 px-3 lg:min-h-10 lg:flex-1"
+    >
+      <SunIcon className="icon theme-icon-sun" />
+      <MoonIcon className="icon theme-icon-moon" />
+      {/* The name stays "Dark theme" at every width; below desktop width only the icon shows. */}
+      <span className="max-lg:sr-only">Dark theme</span>
     </button>
   );
 }

@@ -127,7 +127,7 @@ function PaletteDialog() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-ground/70 p-3 pt-[12vh]"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-3 pt-[12vh]"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) close();
       }}
@@ -145,9 +145,9 @@ function PaletteDialog() {
             inputRef.current?.focus();
           }
         }}
-        className="palette-in w-full max-w-lg bg-paper shadow-2xl"
+        className="palette-in w-full max-w-lg overflow-hidden rounded-xl border border-border bg-surface shadow-2xl"
       >
-        <div className="flex items-center gap-2 bg-band p-3">
+        <div className="flex items-center gap-2 border-b border-border p-3">
           <h2 id={titleId} className="sr-only">
             Command palette
           </h2>
@@ -166,12 +166,12 @@ function PaletteDialog() {
               setQuery(e.target.value);
               setActive(0);
             }}
-            className="min-h-10 min-w-0 flex-1 bg-transparent px-2 text-body text-ink placeholder:text-slate focus:outline-none"
+            className="min-h-10 min-w-0 flex-1 bg-transparent px-2 text-[15px] text-ink placeholder:text-muted focus:outline-none"
           />
           <button
             type="button"
             onClick={close}
-            className="min-h-10 bg-band-2 px-3 text-small font-semibold text-ink hover:bg-paper"
+            className="btn min-h-9 px-3 text-[13px]"
           >
             Esc
           </button>
@@ -185,17 +185,17 @@ function PaletteDialog() {
               aria-selected={i === activeIndex}
               onMouseMove={() => setActive(i)}
               onClick={item.run}
-              className="flex cursor-pointer items-center justify-between px-3 py-2.5 text-body text-ink aria-selected:bg-ink aria-selected:text-paper"
+              className="flex cursor-pointer items-center justify-between rounded-md px-3 py-2.5 text-[15px] text-ink aria-selected:bg-active"
             >
               <span>{item.label}</span>
-              <span className="min-w-16 text-right text-small">
+              <span className="min-w-16 text-right text-[13px] text-muted">
                 {item.id === "copy-email" && copied ? "Copied" : item.hint}
               </span>
             </li>
           ))}
         </ul>
         {results.length === 0 ? (
-          <p role="status" className="px-4 py-3 text-body text-slate">
+          <p role="status" className="px-4 py-3 text-[15px] text-muted">
             No matches
           </p>
         ) : null}

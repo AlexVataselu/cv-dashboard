@@ -57,8 +57,9 @@ export function StatusBar({
   return (
     <footer
       aria-label="Site performance"
-      className="tnum flex flex-wrap items-center gap-x-6 gap-y-1 bg-band px-5 py-4 text-small text-slate md:px-10 xl:px-13"
+      className="tnum flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-border px-(--pad) py-3 font-mono text-[12px] text-muted"
     >
+      <span className="font-sans font-medium text-ink">This site, measured</span>
       <span>{auditText}</span>
       <span>{`JS ~${Math.round(jsKb)} KB`}</span>
       <Vital name="LCP" value={lcp === null ? null : `${(lcp / 1000).toFixed(1)}s`} width="4ch" />
