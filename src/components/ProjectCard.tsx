@@ -22,13 +22,13 @@ export function ProjectCard({ project }: { project: Project }) {
       data-highlight={highlighted ? "true" : undefined}
       className="rise flex scroll-mt-6 flex-col gap-8 p-5 transition-colors duration-200 data-[highlight=true]:bg-band md:p-7"
     >
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-10">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-10">
         <div>
           <div className="flex min-h-6 items-center justify-between gap-3">
-            <p className="display tnum text-head text-graphite">{project.label}</p>
+            <p className="display tnum text-head leading-[1.1] text-graphite">{project.label}</p>
             <SkillBadge skillIds={project.skillIds} />
           </div>
-          <h2 className="display mt-4 text-poster leading-[0.88]">{name}</h2>
+          <h2 className="display mt-5 text-poster leading-[0.92]">{name}</h2>
           {rest.length > 0 ? (
             <p className="mt-3 text-lead font-semibold leading-snug">{rest.join(", ")}</p>
           ) : null}

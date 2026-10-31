@@ -14,7 +14,7 @@ const bleed = "-mx-5 px-5 md:-mx-10 md:px-10 xl:-mx-13 xl:px-13";
 /** The split sentence's frame: the five live sites pass through it, one every four seconds. */
 function Reel() {
   return (
-    <span className="relative hidden aspect-video w-[30%] shrink-0 overflow-hidden bg-band lg:block" aria-hidden="true">
+    <span className="relative hidden aspect-video w-[30%] shrink-0 overflow-hidden bg-band md:block" aria-hidden="true">
       <span className="reel absolute inset-x-0 top-0 block h-[500%]">
         {sites.map((s) => (
           // eslint-disable-next-line @next/next/no-img-element -- static export; the file is already sized
