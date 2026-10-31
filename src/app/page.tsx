@@ -1,176 +1,107 @@
-import { BandHeading } from "@/components/BandHeading";
-import { HOME_DESCRIPTION, pageMetadata } from "@/lib/site";
+import Link from "next/link";
+import { BrowserFrame } from "@/components/BrowserFrame";
+import { CareerTimeline } from "@/components/CareerTimeline";
+import { ImpactList } from "@/components/ImpactList";
+import { KpiStrip } from "@/components/KpiStrip";
 import { SectionShell } from "@/components/SectionShell";
 import { SkillGroups } from "@/components/SkillGroups";
-import { WorkIndex } from "@/components/WorkIndex";
-import { YearsReceipt } from "@/components/YearsReceipt";
+import { ArrowRightIcon } from "@/components/icons";
 import { cv } from "@/content/cv";
+import { period } from "@/content/career";
 import { sites } from "@/content/sites";
+import { HOME_DESCRIPTION, pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({ description: HOME_DESCRIPTION, path: "/" });
 
-const bleed = "-mx-5 px-5 md:-mx-10 md:px-10 xl:-mx-13 xl:px-13";
-
-/** The split sentence's frame: the five live sites pass through it, one every four seconds. */
-function Reel() {
-  return (
-    <span className="relative hidden aspect-video w-[30%] shrink-0 overflow-hidden bg-band md:block" aria-hidden="true">
-      <span className="reel absolute inset-x-0 top-0 block h-[500%]">
-        {sites.map((s) => (
-          // eslint-disable-next-line @next/next/no-img-element -- static export; the file is already sized
-          <img
-            key={s.id}
-            src={`${s.image}-640.webp`}
-            alt=""
-            width={640}
-            height={360}
-            loading="lazy"
-            decoding="async"
-            className="block h-1/5 w-full object-cover object-top"
-          />
-        ))}
-      </span>
-    </span>
-  );
-}
-
+/*
+  Grid: 12 columns, one 20px gap across and down.
+  Row 1, the KPI strip, full width. Row 2, the career timeline (8) beside the results (4).
+  Row 3, skill levels, full width. Row 4, About (5) beside shipped work (7).
+*/
 export default function Home() {
-  const [total, ...rest] = cv.glance;
-  const [user, domain] = cv.email.split("@");
+  const facts: [string, string][] = [
+    ["Availability", `${cv.availability}, remote (EU)`],
+    ["Industries", "Healthcare, fintech, cultural heritage"],
+    ["Languages", cv.languages.map((l) => `${l.name} (${l.level.toLowerCase()})`).join(", ")],
+    ["Education", cv.education[0].degree],
+  ];
   return (
     <SectionShell
       current="overview"
       title="Overview"
-      lead="A senior frontend engineer with nine years on the web, the last five on React, Next.js, TypeScript and React Native."
+      lead="Senior frontend engineer: nine years on the web, the last five on React, Next.js, TypeScript and React Native."
     >
-      <p className="display mt-14 flex items-center justify-between gap-6 text-poster md:mt-20">
-        <span>Design</span>
-        <Reel />
-        <span className="text-right">to launch</span>
-      </p>
+      <KpiStrip />
 
-      {/* One figure owns the field, with the receipt that adds up to it */}
-      <section aria-labelledby="glance" className={`mt-16 bg-mustard py-14 text-mustard-ink md:mt-24 md:py-20 ${bleed}`}>
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:gap-10">
-          <div className="flex flex-col">
-            <h2 id="glance" className="rise display text-head">
-              Nine years on the web
-            </h2>
-            <p className="rise mt-4 max-w-[40ch] font-semibold">
-              From Magento shops in 2017 to product teams at Pentalog and TryAngle Labs, with my own
-              clients in between.
-            </p>
-            <div className="rise mt-12 lg:mt-auto lg:pt-16">
-              <p className="display tnum text-giant leading-[0.78]">{total.value}</p>
-              <p className="mt-3 text-lead font-semibold">{total.label}</p>
-            </div>
-            <ul className="mt-10 grid gap-6 sm:grid-cols-3 lg:grid-cols-1 lg:gap-4">
-              {rest.map((g) => (
-                <li key={g.label} className="rise lg:flex lg:items-baseline lg:gap-4">
-                  <p className="display tnum text-head lg:w-8 lg:shrink-0">{g.value}</p>
-                  <p className="mt-1 font-semibold lg:mt-0">{g.label}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <YearsReceipt />
+      <div className="mt-(--gap) grid gap-(--gap) xl:grid-cols-12">
+        <div className="xl:col-span-8">
+          <CareerTimeline />
         </div>
-      </section>
+        <div className="xl:col-span-4">
+          <ImpactList />
+        </div>
+      </div>
 
-      {/* Results, each with where it happened */}
-      <section aria-labelledby="impact" className="mt-24 md:mt-36">
-        <BandHeading id="impact">Results with a source</BandHeading>
-        <ul className="mt-10 grid gap-20 md:gap-12">
-          {cv.impact.map((i) => (
-            <li
-              key={i.label}
-              className="rise grid grid-cols-[minmax(0,1fr)] gap-2 xl:grid-cols-[minmax(0,1fr)_minmax(15rem,20rem)] xl:items-end xl:gap-8"
-            >
-              <p className="display tnum text-poster leading-[0.85] text-graphite">
-                {i.value}
-              </p>
-              <div className="xl:pb-1">
-                <p className="text-lead font-semibold leading-snug">{i.label}</p>
-                <p className="mt-1 text-slate">{i.source}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <WorkIndex />
-
-      {/* About, on a field of royal blue */}
-      <section aria-labelledby="about" className={`mt-24 bg-blue py-14 text-blue-ink md:mt-36 md:py-20 ${bleed}`}>
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-12">
-          <h2 id="about" className="rise display text-display leading-[0.85]">
-            About
+      <section aria-labelledby="levels" className="card mt-(--gap)">
+        <div className="card-head">
+          <h2 id="levels" className="card-title">
+            Skill levels
           </h2>
-          <div className="rise">
-            <p className="text-lead leading-[1.5]">{cv.about}</p>
-            <div className="mt-8 flex items-center gap-4">
-              {/* eslint-disable-next-line @next/next/no-img-element -- static export; the file is already sized */}
-              <img
-                src="/photo.webp"
-                alt=""
-                width={256}
-                height={256}
-                loading="lazy"
-                decoding="async"
-                className="size-12 rounded-full object-cover grayscale"
-              />
-              <div>
-                <p className="font-semibold">{cv.name}</p>
-                <p className="text-small text-blue-soft">{cv.title}</p>
+          <p className="meta">Years count from the first dated role or project on the CV that uses the skill.</p>
+        </div>
+        <SkillGroups headingLevel="h3" />
+      </section>
+
+      <div className="mt-(--gap) grid gap-(--gap) lg:grid-cols-12">
+        <section aria-labelledby="about" className="card lg:col-span-5">
+          <div className="card-head">
+            <h2 id="about" className="card-title">
+              About
+            </h2>
+          </div>
+          <p className="text-[15px] leading-relaxed">{cv.about}</p>
+          <dl className="mt-5 grid gap-px overflow-hidden rounded-lg bg-rule">
+            {facts.map(([k, v]) => (
+              <div key={k} className="grid gap-1 bg-raised px-3 py-2.5 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-3">
+                <dt className="text-[13px] text-muted">{k}</dt>
+                <dd className="text-[14px]">{v}</dd>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            ))}
+          </dl>
+        </section>
 
-      {/* Skill levels beside the city they were learned in */}
-      <section aria-labelledby="levels" className="mt-24 md:mt-36">
-        <div>
-          <div>
-            <BandHeading id="levels">Skill levels</BandHeading>
-            <p className="rise mt-4 max-w-[52ch]">
-              Each level counts from the first dated role or project on the CV that uses the skill.
-              Pick one to mark it across Experience and Projects.
-            </p>
-            <div className="mt-10">
-              <SkillGroups headingLevel="h3" />
-            </div>
+        <section aria-labelledby="shipped" className="card lg:col-span-7">
+          <div className="card-head">
+            <h2 id="shipped" className="card-title">
+              Client sites, live
+            </h2>
+            <Link href="/projects" prefetch={false} className="card-link">
+              All projects
+              <ArrowRightIcon />
+            </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Contact: the address as the poster's last line */}
-      <section aria-labelledby="contact" className={`mt-24 bg-night py-14 text-night-ink md:mt-36 md:py-20 ${bleed}`}>
-        <h2 id="contact" className="rise text-lead font-semibold">
-          Hiring a senior frontend engineer? Write to me.
-        </h2>
-        <a
-          href={`mailto:${cv.email}`}
-          className="rise display mt-16 block break-words text-poster leading-[0.92] decoration-4 underline-offset-8 hover:underline md:mt-28"
-        >
-          {user}@<wbr />
-          {domain}
-        </a>
-        <div className="mt-12 flex flex-wrap items-end justify-between gap-4 md:mt-20">
-          <p className="font-semibold">Romania · Remote (EU)</p>
-          <p className="flex flex-wrap gap-x-6 gap-y-2 font-semibold">
-            <a href={cv.links.linkedin} className="underline underline-offset-4 hover:decoration-2">
-              LinkedIn
-            </a>
-            <a href={cv.links.github} className="underline underline-offset-4 hover:decoration-2">
-              GitHub
-            </a>
-            <a href={cv.links.pdf} className="underline underline-offset-4 hover:decoration-2">
-              CV PDF
-            </a>
-          </p>
-        </div>
-      </section>
+          <ul className="grid">
+            {sites.map((s, i) => {
+              const role = cv.roles.find((r) => r.id === s.roleId);
+              return (
+                <li key={s.id} className={i > 0 ? "border-t border-rule" : undefined}>
+                  <a href={s.url} className="group grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-3 py-2.5 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:gap-4">
+                    <BrowserFrame image={s.image} address={s.domain} alt={`Front page of ${s.domain}`} sizes="120px" bar={false} />
+                    <span className="min-w-0">
+                      <span className="block truncate text-[14px] font-medium group-hover:underline">{s.name}</span>
+                      <span className="block truncate text-[13px] text-muted">{s.note}</span>
+                      <span className="mt-0.5 flex flex-wrap gap-x-2 text-[12px] text-muted">
+                        <span className="font-mono">{s.domain}</span>
+                        {role ? <span className="tnum">· {period(role)}</span> : null}
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      </div>
     </SectionShell>
   );
 }
