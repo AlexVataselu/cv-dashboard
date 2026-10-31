@@ -57,8 +57,8 @@ export default function ProjectsPage() {
                     alt={`Front page of ${s.domain}`}
                     sizes={
                       i < 2
-                        ? "(min-width: 1024px) 40vw, (min-width: 640px) 45vw, 92vw"
-                        : "(min-width: 1024px) 26vw, (min-width: 640px) 45vw, 92vw"
+                        ? "(min-width: 1024px) 40vw, (min-width: 640px) 45vw, 80vw"
+                        : "(min-width: 1024px) 26vw, (min-width: 640px) 45vw, 80vw"
                     }
                   />
                   <span className="mt-3 flex items-baseline justify-between gap-3 px-1">

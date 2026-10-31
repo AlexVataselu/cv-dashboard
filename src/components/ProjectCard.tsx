@@ -100,7 +100,7 @@ export function ProjectCard({ project }: { project: Project }) {
                 image={media.shot.image}
                 address={media.shot.address}
                 alt={media.shot.alt}
-                sizes="(min-width: 1280px) 560px, (min-width: 1024px) 50vw, 92vw"
+                sizes="(min-width: 1280px) 560px, (min-width: 1024px) 50vw, (min-width: 640px) 92vw, 80vw"
               />
             </a>
             <figcaption className="mt-2 text-[13px] text-muted">{media.shot.caption}</figcaption>

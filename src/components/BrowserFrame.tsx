@@ -2,6 +2,8 @@
  * A real screenshot (AVIF/WebP, 640 and 1120 wide, 16:9) inside a plain browser frame whose
  * address bar names where it was captured. The frame is information, not ornament: it says the
  * picture is a live page and which one.
+ * Callers claim 80vw on phones, so a 1.75x phone picks the 640px file: images that finish before
+ * the first paint count in Lighthouse's simulated mobile LCP, and the 1120px files cost ~0.4 s there.
  */
 export function BrowserFrame({
   image,

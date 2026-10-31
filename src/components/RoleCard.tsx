@@ -74,7 +74,7 @@ export function RoleCard({ role, years }: { role: Role; years: number }) {
           <div className="mt-5 grid max-w-3xl gap-4 sm:grid-cols-2">
             {sites.map((s) => (
               <a key={s.id} href={s.url} className="group block">
-                <BrowserFrame image={s.image} address={s.domain} alt={`Front page of ${s.domain}`} sizes="(min-width: 640px) 360px, 90vw" />
+                <BrowserFrame image={s.image} address={s.domain} alt={`Front page of ${s.domain}`} sizes="(min-width: 640px) 360px, 80vw" />
                 <span className="mt-2 block text-[14px] font-medium group-hover:underline">{s.name}</span>
               </a>
             ))}
