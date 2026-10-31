@@ -1,8 +1,10 @@
+import { CareerTimeline } from "@/components/CareerTimeline";
 import { FilterNotice } from "@/components/FilterNotice";
-import { pageMetadata } from "@/lib/site";
 import { RoleCard } from "@/components/RoleCard";
 import { SectionShell } from "@/components/SectionShell";
 import { cv } from "@/content/cv";
+import { roleYears } from "@/content/career";
+import { pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Experience",
@@ -11,24 +13,35 @@ export const metadata = pageMetadata({
 });
 
 export default function ExperiencePage() {
+  const now = new Date().getFullYear();
   return (
     <SectionShell
       current="experience"
       title="Experience"
-      lead="Product teams at Pentalog and TryAngle Labs, and my own clients in healthcare, fintech and cultural heritage. Newest first."
+      lead="Product teams at Pentalog and TryAngle Labs, and my own clients in healthcare, fintech and cultural heritage."
     >
-      <FilterNotice />
-      <ol className="mt-6 grid gap-16 md:gap-14">
-        {cv.roles.map((r) => (
-          <li key={r.id}>
-            <RoleCard role={r} />
+      <div className="mt-6">
+        <CareerTimeline />
+      </div>
+      <section aria-labelledby="roles" className="mt-(--gap)">
+        <div className="flex flex-wrap items-center justify-between gap-x-6">
+          <h2 id="roles" className="card-title">
+            Roles, newest first
+          </h2>
+          <FilterNotice />
+        </div>
+        <ol className="mt-3 overflow-hidden rounded-[10px] border border-border [&>li+li]:border-t [&>li+li]:border-rule">
+          {cv.roles.map((r) => (
+            <li key={r.id}>
+              <RoleCard role={r} years={roleYears(r, now)} />
+            </li>
+          ))}
+          <li className="grid gap-x-6 gap-y-1 px-4 py-4 md:grid-cols-[9rem_minmax(0,1fr)_10rem] md:px-5">
+            <span className="text-[14px] font-medium">Before 2017</span>
+            <span className="text-[14px] text-muted">{cv.before2017}</span>
           </li>
-        ))}
-      </ol>
-      <p className="rise mt-14 grid gap-3 md:grid-cols-[9rem_minmax(0,1fr)] md:gap-8 lg:grid-cols-[11rem_minmax(0,1fr)]">
-        <span className="display text-lead text-graphite">Before 2017</span>
-        <span>{cv.before2017}</span>
-      </p>
+        </ol>
+      </section>
     </SectionShell>
   );
 }
