@@ -566,6 +566,12 @@ summary:focus-visible,
   .lvl-track {
     flex-basis: 100%;
   }
+  /* five narrow columns: the level always takes its own line, so every row has the same rhythm */
+  @media (min-width: 1280px) {
+    .skills-compact .skill-level {
+      flex-basis: 100%;
+    }
+  }
   .lvl-track {
     position: relative;
     display: block;

@@ -38,7 +38,7 @@ export function SkillGroups({
       className={
         showUsage
           ? "gap-(--gap) md:columns-2 xl:columns-3 [&>section]:mb-(--gap) [&>section]:break-inside-avoid"
-          : "grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+          : "skills-compact grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
       }
     >
       {GROUPS.map((g) => {
