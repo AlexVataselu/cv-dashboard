@@ -45,39 +45,26 @@
   --grid: #e6e9ef;
 }
 
-:root[data-theme="dark"] {
-  --ground: #0e0f11;
-  --surface: #16171a;
-  --raised: #1d1f23;
-  --active: #26282d;
-  --border: #2a2c31;
-  --rule: #222429;
-  --control: #44474f;
-  --ink: #f2f3f5;
-  --muted: #a9adb5; /* 8.0:1 on the sheet */
-  --primary: #7ea6ff; /* 7.5:1 on the sheet */
-  --primary-ink: #0b0c0f; /* 8.2:1 on the primary */
-  --primary-hover: #a3c0ff;
-  --focus: #7ea6ff;
-  --hue-product: #7ea6ff;
-  --hue-product-on: #0b0c0f;
-  --hue-indie: #3cc2ab;
-  --hue-indie-on: #0b0c0f;
-  --hue-shop: #e7a93a;
-  --hue-shop-on: #0b0c0f;
-  --hue-product-tint: #1d2638;
-  --hue-indie-tint: #15302b;
-  --hue-shop-tint: #33281a;
-  --positive: #4cc985;
-  --pill-positive-bg: #14291d;
-  --pill-positive-ink: #6ee0a0;
-  --pill-neutral-bg: #26282d;
-  --pill-neutral-ink: #e4e6ea;
-  --grid: #26282d;
+/*
+  The dark tokens, written once. They apply in two cases, through one variant:
+  - the saved or toggled choice: data-theme="dark" (set by the head script or the toggle);
+  - no JS: the system is dark and the page has not been set to light.
+  `@variant dark` copies this one block under both selectors, so the two cannot drift apart.
+*/
+@custom-variant dark {
+  &:where([data-theme="dark"]) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme="light"])) {
+      @slot;
+    }
+  }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+:root {
+  @variant dark {
+    color-scheme: dark;
     --ground: #0e0f11;
     --surface: #16171a;
     --raised: #1d1f23;
@@ -86,9 +73,9 @@
     --rule: #222429;
     --control: #44474f;
     --ink: #f2f3f5;
-    --muted: #a9adb5;
-    --primary: #7ea6ff;
-    --primary-ink: #0b0c0f;
+    --muted: #a9adb5; /* 8.0:1 on the sheet */
+    --primary: #7ea6ff; /* 7.5:1 on the sheet */
+    --primary-ink: #0b0c0f; /* 8.2:1 on the primary */
     --primary-hover: #a3c0ff;
     --focus: #7ea6ff;
     --hue-product: #7ea6ff;
@@ -141,16 +128,9 @@
   --font-mono: var(--font-plex-mono);
 }
 
+/* light by default; the dark variant above sets color-scheme: dark with the dark tokens */
 html {
   color-scheme: light;
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-  }
 }
 
 body {
