@@ -76,7 +76,7 @@ export function CareerTimeline({ headingLevel = "h2" }: { headingLevel?: "h2" | 
                 <span className="tnum">{period(r)}</span>
               </div>
               <div className="tl-track">
-                <span className="tl-bar tnum" data-kind={k} data-short={n < 2 ? "" : undefined} style={style} title={`${KIND_LABEL[k]}, ${period(r)}`}>
+                <span className="tl-bar tnum" data-kind={k} style={style} title={`${KIND_LABEL[k]}, ${period(r)}`}>
                   <span className="sr-only">{KIND_LABEL[k]}, </span>
                   <span className="tl-bar-text">{yrs(n)}</span>
                 </span>

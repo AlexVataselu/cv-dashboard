@@ -355,3 +355,24 @@ test("skill-adoption tick labels sit centred on their gridlines", async ({ page 
   expect(centres.labels.length).toBe(centres.lines.length);
   centres.labels.forEach((y, i) => expect(Math.abs(y - centres.lines[i]), `tick ${i}`).toBeLessThanOrEqual(1));
 });
+
+for (const width of [320, 412, 768, 1280]) {
+  test(`career timeline at ${width}px: no bar shows clipped words`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto("/");
+    const clipped = await page.$$eval(".tl-bar", (bars) =>
+      bars
+        .map((b) => {
+          const t = b.querySelector<HTMLElement>(".tl-bar-text")!;
+          if (getComputedStyle(t).display === "none") return null;
+          const cs = getComputedStyle(b);
+          const inside = b.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+          const r = document.createRange();
+          r.selectNodeContents(t);
+          return r.getBoundingClientRect().width > inside + 0.5 ? t.textContent : null;
+        })
+        .filter((x) => x !== null),
+    );
+    expect(clipped).toEqual([]);
+  });
+}

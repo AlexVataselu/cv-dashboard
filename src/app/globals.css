@@ -476,6 +476,15 @@ summary:focus-visible,
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
+    /* the bar is its own size container: its words show only when they fit (below) */
+    container: tl-bar / inline-size;
+  }
+  /* "4 yrs" is 27px wide at 12px; a bar whose inside is narrower drops its words (its row label
+     carries the dates), so no bar ever shows clipped text such as "2 y", at any width */
+  @container tl-bar (width < 28px) {
+    .tl-bar-text {
+      display: none;
+    }
   }
   .tl-span {
     position: absolute;
@@ -507,10 +516,6 @@ summary:focus-visible,
       display: none;
     }
     .tl-axis > span:nth-last-child(2) {
-      display: none;
-    }
-    /* a one-year bar is too short for its words here; its row label carries the dates */
-    .tl-bar[data-short] .tl-bar-text {
       display: none;
     }
     .tl-label > :first-child {
