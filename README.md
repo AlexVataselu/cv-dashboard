@@ -58,6 +58,28 @@ and the median is asserted.
 Set `CHROME_PATH` if Chrome is not found. `LH_BASE_URL` points the audit at a deployed URL, and
 `LH_TARGET=preview` audits it as a preview (see below).
 
+## Image sources
+
+Every picture on the site is Alex's own: his headshot, or a capture of his own shipped work or his own public
+repository. No stock or third-party photographs are used, so no licence credit is needed. Each screenshot ships
+in `public/work/` as AVIF and WebP at 640 and 1120 px wide (the five client sites also at 240 px, for the
+Overview thumbnails).
+
+| File(s) | What it shows | Source URL | Captured |
+| --- | --- | --- | --- |
+| `public/photo.avif`, `photo.webp` | Alex's headshot | Alex's own photo (the CV's source files) | n/a |
+| `public/work/azuga365-*` | Front page of Azuga365, Alex's client site | https://azuga365.ro | 2026-10-31 |
+| `public/work/litoralinlucru-*` | Front page of Dincolo de Vacantele Socialiste, Alex's client site | https://litoralinlucru.ro | 2026-10-31 |
+| `public/work/recuperareacasa-*` | Front page of RecuperareAcasa, Alex's client site (cropped below the header, so the clinic's phone number is not shown) | https://recuperareacasa.ro | 2026-10-31 |
+| `public/work/eyeexcellence-*` | Front page of EyeExcellence, Alex's client site (cropped below the header, so the clinic's phone number is not shown) | https://eyeexcellence.ro | 2026-10-31 |
+| `public/work/orlrasnov-*` | Front page of OrlRasnov, Alex's client site | https://orlrasnov.ro | 2026-10-31 |
+| `public/work/stremio-fork-*` | Alex's public stremio-web fork on GitHub, branch `feature/skip-recap` (GitHub's page around it) | https://github.com/AlexVataselu/stremio-web/tree/feature/skip-recap | 2026-10-31 |
+| `public/work/reamp-*` | ReAMP's start screen, Alex's own live app | https://re-amp.vercel.app | 2026-10-31 |
+
+The client sites were captured with headless Chrome at 1440x1000 and the two project pages with Playwright
+(Chromium, 1280x800 and 1440x900, 2x), then cropped to 16:9. The 240 px files are downscaled from the 1120 px
+ones with sharp.
+
 ## Deploy
 
 Hosting is Vercel through its Git integration: import the GitHub repo (framework Next.js, static
