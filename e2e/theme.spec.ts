@@ -45,7 +45,7 @@ test("the theme is applied in <head> before the first paint (no flash)", async (
   const script = head.indexOf("localStorage.getItem(\"theme\")");
   // A parser-blocking inline script in <head> runs before the body is parsed, so before any paint.
   expect(script, "theme script in <head>").toBeGreaterThan(-1);
-  expect(head.slice(0, script)).not.toMatch(/<script[^>]*(?:async|defer)[^>]*>[^<]*$/);
+  expect(head.slice(0, script)).not.toMatch(/<script[^>]*\b(?:async|defer)\b[^>]*>[^<]*$/);
 });
 
 test.describe("without JavaScript", () => {
@@ -54,5 +54,13 @@ test.describe("without JavaScript", () => {
   test("the dark theme still comes from the system setting", async ({ page }) => {
     await page.goto("/");
     expect(await page.evaluate(ground)).toBe("rgb(14, 15, 17)");
+  });
+
+  test("the theme toggle, which needs JS, is hidden and keeps its space", async ({ page }) => {
+    await page.goto("/");
+    const toggle = page.getByRole("button", { name: "Dark theme", includeHidden: true });
+    await expect(toggle).toBeHidden();
+    const box = await toggle.evaluate((el) => el.getBoundingClientRect().width);
+    expect(box).toBeGreaterThan(0);
   });
 });

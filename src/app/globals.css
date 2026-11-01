@@ -619,6 +619,11 @@ summary:focus-visible,
 }
 
 /* The theme button shows its state from data-theme, so it is right from the first paint. */
+/* Without JS nothing sets data-theme and the button could not work: it is hidden, keeping its
+   space. With JS the head script sets data-theme before the first paint, so it never shifts. */
+:root:not([data-theme]) .theme-toggle {
+  visibility: hidden;
+}
 .theme-icon-moon {
   display: none;
 }

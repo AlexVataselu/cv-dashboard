@@ -34,7 +34,7 @@ export function ThemeToggle() {
       type="button"
       aria-pressed={dark}
       onClick={toggle}
-      className="btn min-h-11 min-w-11 px-3 lg:min-h-10 lg:flex-1"
+      className="theme-toggle btn min-h-11 min-w-11 px-3 lg:min-h-10 lg:flex-1"
     >
       <SunIcon className="icon theme-icon-sun" />
       <MoonIcon className="icon theme-icon-moon" />
