@@ -39,8 +39,11 @@ export const companyShort = (r: Role) => r.company.split(/,| · /)[0].trim();
 
 export const FIRST_YEAR = Math.min(...cv.roles.map((r) => r.start));
 
+/** The CV's year: every count runs to it, not to the build date (see Cv.asOf). */
+export const AS_OF = cv.asOf;
+
 /** Totals the KPI strip and the timeline show, computed from the dated roles. */
-export function careerTotals(now: number) {
+export function careerTotals(now: number = AS_OF) {
   const years = cv.roles.reduce((sum, r) => sum + roleYears(r, now), 0);
   const productTeams = cv.roles.filter((r) => kindOf(r.id) === "product").length;
   return { years, productTeams };

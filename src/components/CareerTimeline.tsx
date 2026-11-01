@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { cv } from "@/content/cv";
 import {
+  AS_OF,
   FIRST_YEAR,
   KIND_LABEL,
   companyShort,
@@ -20,7 +21,7 @@ const yrs = (n: number) => `${n} ${n === 1 ? "yr" : "yrs"}`;
  * as plain HTML at build time: it costs no client JS, and every bar's text is real text.
  */
 export function CareerTimeline({ headingLevel = "h2" }: { headingLevel?: "h2" | "h3" }) {
-  const now = new Date().getFullYear();
+  const now = AS_OF;
   const span = now - FIRST_YEAR;
   const pct = (year: number) => `${((year - FIRST_YEAR) / span) * 100}%`;
   const roles = [...cv.roles].sort((a, b) => a.start - b.start);

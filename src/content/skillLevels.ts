@@ -14,10 +14,11 @@ const IMPLIED_SINCE: Record<string, number> = {
   javascript: 2017,
 };
 
+/** `currentYear` defaults to the CV's own year (`data.asOf`), never the clock. */
 export function deriveSkillLevel(
   skillId: string,
   data: Cv,
-  currentYear: number,
+  currentYear: number = data.asOf,
 ): SkillLevel {
   const evidence = [...data.roles, ...data.projects]
     .filter((e) => e.skillIds.includes(skillId))
@@ -38,7 +39,7 @@ export function deriveSkillLevel(
 
 export function deriveAllSkillLevels(
   data: Cv,
-  currentYear: number,
+  currentYear: number = data.asOf,
 ): Record<string, SkillLevel> {
   return Object.fromEntries(
     data.skills.map((s) => [s.id, deriveSkillLevel(s.id, data, currentYear)]),

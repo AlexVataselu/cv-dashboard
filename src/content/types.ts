@@ -45,6 +45,12 @@ export interface GlanceStat {
 }
 
 export interface Cv {
+  /**
+   * The year the CV was written. Every year count on the site (roles, career totals, skill years)
+   * runs to this year, not to the build date, so the computed figures always agree with the CV's
+   * own fixed figures ("9 years", "5 years"). Change it only together with a new CV.
+   */
+  asOf: number;
   name: string;
   title: string;
   location: string;

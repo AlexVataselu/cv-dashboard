@@ -1,6 +1,6 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cv } from "@/content/cv";
 import { useUiStore } from "@/state/uiStore";
 import Home from "./page";
@@ -25,9 +25,8 @@ describe("Overview", () => {
       expect(screen.getAllByText(i.source).length).toBeGreaterThan(0);
     }
     expect(screen.getByText(cv.about)).toBeTruthy();
-    const year = new Date().getFullYear();
     const react = screen.getByRole("button", { name: /^React ·/ });
-    expect(react.textContent).toBe(`React · since 2021 · ${year - 2021} yrs`);
+    expect(react.textContent).toBe("React · since 2021 · 5 yrs");
     expect(screen.getByRole("button", { name: "Jest" }).textContent).toBe("Jest");
   });
 });
@@ -123,5 +122,41 @@ describe("skill highlighting", () => {
       Array.from(root.querySelectorAll(sel)).map((e) => e.getAttribute("data-highlight"));
     expect(flag(projects.container, "article")).toEqual([null, "true", null]);
     expect(flag(experience.container, "details")).toEqual([null, null, "true", null, null]);
+  });
+});
+
+describe("year counts run to the CV's year, not the clock", () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2031-06-15T12:00:00Z"));
+  });
+  afterEach(() => vi.useRealTimers());
+
+  it("a build in 2031 shows the same counts as the CV's 2026", () => {
+    expect(new Date().getFullYear()).toBe(2031);
+    expect(cv.asOf).toBe(2026);
+
+    const home = render(<Home />);
+    const total = `${cv.glance[0].value} yrs in dated roles`;
+    expect(within(home.container).getByText(total)).toBeTruthy();
+    expect(within(home.container).getByRole("button", { name: /^React ·/ }).textContent).toBe(
+      `React · since 2021 · ${cv.glance[1].value} yrs`,
+    );
+    // Only 2026 evidence: no year count, as the spec says.
+    for (const name of ["Jest", "Node.js", "TanStack Query"]) {
+      expect(within(home.container).getByRole("button", { name }).textContent).toBe(name);
+    }
+    home.unmount();
+
+    const exp = render(<ExperiencePage />);
+    const first = exp.container.querySelector("summary")!.textContent ?? "";
+    expect(first).toContain("2025–now");
+    expect(first).toContain("1 yr");
+    expect(first).not.toMatch(/[2-9] yrs/);
+    exp.unmount();
+
+    const skills = render(<SkillsPage />);
+    expect(within(skills.container).getByText("22 of 33 skills have a dated first use")).toBeTruthy();
+    expect(skills.container.textContent).not.toContain("2026:");
   });
 });

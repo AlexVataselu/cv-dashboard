@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cv } from "@/content/cv";
-import { FIRST_YEAR } from "@/content/career";
+import { AS_OF, FIRST_YEAR } from "@/content/career";
 import { deriveAllSkillLevels, formatLevel, usageIndex, type Usage } from "@/content/skillLevels";
 import type { SkillGroup } from "@/content/types";
 import { SkillChip } from "@/components/SkillChip";
@@ -28,7 +28,7 @@ export function SkillGroups({
   headingLevel?: "h2" | "h3";
   showUsage?: boolean;
 }) {
-  const now = new Date().getFullYear();
+  const now = AS_OF;
   const levels = deriveAllSkillLevels(cv, now);
   const usage = usageIndex(cv);
   const scale = now - FIRST_YEAR;

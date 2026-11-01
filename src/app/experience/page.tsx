@@ -3,7 +3,7 @@ import { FilterNotice } from "@/components/FilterNotice";
 import { RoleCard } from "@/components/RoleCard";
 import { SectionShell } from "@/components/SectionShell";
 import { cv } from "@/content/cv";
-import { roleYears } from "@/content/career";
+import { AS_OF, roleYears } from "@/content/career";
 import { pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({
@@ -13,7 +13,7 @@ export const metadata = pageMetadata({
 });
 
 export default function ExperiencePage() {
-  const now = new Date().getFullYear();
+  const now = AS_OF;
   return (
     <SectionShell
       current="experience"

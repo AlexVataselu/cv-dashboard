@@ -1,5 +1,5 @@
 import { cv } from "@/content/cv";
-import { FIRST_YEAR } from "@/content/career";
+import { AS_OF, FIRST_YEAR } from "@/content/career";
 import { deriveAllSkillLevels } from "@/content/skillLevels";
 
 /** Round ticks whose top sits above the largest value. */
@@ -15,7 +15,7 @@ function ticks(max: number) {
  * Beside it, the same data as a list, so every column can be checked name by name.
  */
 export function SkillAdoption() {
-  const now = new Date().getFullYear();
+  const now = AS_OF;
   const levels = deriveAllSkillLevels(cv, now);
   const years = Array.from({ length: now - FIRST_YEAR }, (_, i) => FIRST_YEAR + i);
   const named = (y: number) => cv.skills.filter((s) => levels[s.id]?.since === y).map((s) => s.name);

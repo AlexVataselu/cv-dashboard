@@ -50,6 +50,8 @@ const skills: Skill[] = [
 ];
 
 export const cv: Cv = {
+  // The CV's year: the counts run to this year, never to the build date (see Cv.asOf).
+  asOf: 2026,
   name: "Alex Vataselu",
   title: "Senior Frontend Engineer",
   location: "Brașov, Romania · Remote (EU)",

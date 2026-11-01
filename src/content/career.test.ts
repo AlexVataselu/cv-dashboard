@@ -3,10 +3,15 @@ import { cv } from "./cv";
 import { IMPACT_ROLE, careerTotals, kindOf, roleYears } from "./career";
 import { deriveSkillLevel } from "./skillLevels";
 
-// The CV was written in 2026; its headline figures must be what the dashboard computes from the roles.
-const CV_YEAR = 2026;
+// The CV's year (cv.asOf); its headline figures must be what the dashboard computes from the roles.
+const CV_YEAR = cv.asOf;
 
 describe("career figures add up to the CV", () => {
+  it("the CV's year is 2026 and is the default for every count", () => {
+    expect(cv.asOf).toBe(2026);
+    expect(careerTotals()).toEqual(careerTotals(2026));
+  });
+
   it("the dated roles sum to the CV's years on the web", () => {
     expect(careerTotals(CV_YEAR).years).toBe(Number(cv.glance[0].value));
   });
