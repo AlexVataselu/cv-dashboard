@@ -96,6 +96,40 @@ test("320x640 has no horizontal overflow on any route", async ({ page }) => {
   }
 });
 
+test("320px: the 'Uses X' badge has its own line and never covers a role's dates, with no shift", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.goto("/experience");
+  const summaries = page.locator("details > summary");
+  const plain = await Promise.all((await summaries.all()).map((s) => s.boundingBox()));
+
+  await page.goto("/experience?skill=nextjs");
+  const badges = page.locator("summary").getByText(/^Uses Next\.js/);
+  await expect(badges.first()).toBeVisible();
+  expect(await badges.count()).toBeGreaterThanOrEqual(1);
+
+  const count = await summaries.count();
+  for (let i = 0; i < count; i++) {
+    const summary = summaries.nth(i);
+    const period = summary.locator("[data-period]");
+    const p = (await period.boundingBox())!;
+    // The dates are fully visible: inside the screen and not cut off by their box.
+    expect(p.x, `role ${i} period left`).toBeGreaterThanOrEqual(0);
+    expect(p.x + p.width, `role ${i} period right`).toBeLessThanOrEqual(320);
+    expect(await period.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+    const badge = summary.getByText(/^Uses /);
+    if ((await badge.count()) > 0) {
+      const b = (await badge.boundingBox())!;
+      const overlaps = b.x < p.x + p.width && p.x < b.x + b.width && b.y < p.y + p.height && p.y < b.y + b.height;
+      expect(overlaps, `role ${i}: badge covers the dates`).toBe(false);
+      expect(b.y, `role ${i}: badge sits below the dates`).toBeGreaterThanOrEqual(p.y + p.height);
+    }
+    // The badge line is reserved, so selecting a skill moves nothing.
+    expect(await summary.boundingBox(), `role ${i} summary box`).toEqual(plain[i]);
+  }
+});
+
 test("/projects?skill=expo highlights Powderino with a text badge and no layout shift", async ({
   page,
 }) => {

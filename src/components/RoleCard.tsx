@@ -21,12 +21,12 @@ export function RoleCard({ role, years }: { role: Role; years: number }) {
       roleId={role.id}
       skillIds={role.skillIds}
       kind={kind}
-      summaryClassName="role-summary relative grid gap-x-6 gap-y-1 px-4 py-4 md:grid-cols-[9rem_minmax(0,1fr)_10rem] md:px-5"
+      summaryClassName="role-summary grid gap-x-6 gap-y-1 px-4 py-4 md:grid-cols-[9rem_minmax(0,1fr)_10rem] md:px-5"
       summary={
         <>
           <span className="flex items-center gap-2 md:flex-col md:items-start md:gap-1.5">
             <span className="key md:hidden" aria-hidden="true" />
-            <span className="tnum text-[14px] font-medium">{period(role)}</span>
+            <span data-period="" className="tnum text-[14px] font-medium">{period(role)}</span>
             <span className="tnum text-[13px] text-muted">
               <span className="md:hidden">· </span>
               {years} {years === 1 ? "yr" : "yrs"}
@@ -43,9 +43,11 @@ export function RoleCard({ role, years }: { role: Role; years: number }) {
               <span className="mt-1.5 block text-[13px] text-muted">{role.stack.join(" · ")}</span>
             ) : null}
           </span>
-          <span className="absolute right-3 top-3.5 flex h-7 max-w-[11rem] items-center justify-end gap-2 md:static md:max-w-none md:self-start">
+          {/* Below md the badge has its own line under the title, always reserved (h-6), so it never
+              covers the dates and showing it shifts nothing; from md it is the row's third column. */}
+          <span data-badge-slot="" className="flex h-6 min-w-0 items-center gap-2 md:h-7 md:justify-end md:self-start">
             <SkillBadge skillIds={role.skillIds} />
-            <ChevronDownIcon className="icon chev shrink-0 text-muted" />
+            <ChevronDownIcon className="icon chev ml-auto shrink-0 text-muted md:ml-0" />
           </span>
         </>
       }
