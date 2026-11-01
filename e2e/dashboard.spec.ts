@@ -306,3 +306,19 @@ test("no console errors, page errors or HTTP >= 400 across all routes and nav cl
   await page.waitForLoadState("networkidle");
   expect(problems).toEqual([]);
 });
+
+test("Overview thumbnails load the 240px files, not the 640px ones", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  const work: string[] = [];
+  page.on("request", (r) => {
+    if (r.url().includes("/work/")) work.push(new URL(r.url()).pathname);
+  });
+  await page.goto("/");
+  const thumbs = page.locator('main img[alt^="Front page of"]');
+  await expect(thumbs).toHaveCount(5);
+  for (const img of await thumbs.all()) {
+    await img.scrollIntoViewIfNeeded();
+    await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.currentSrc)).toMatch(/-240\.(avif|webp)$/);
+  }
+  expect(work.filter((p) => /-(640|1120)\./.test(p))).toEqual([]);
+});

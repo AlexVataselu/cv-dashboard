@@ -85,7 +85,7 @@ export default function Home() {
               return (
                 <li key={s.id} className={i > 0 ? "border-t border-rule" : undefined}>
                   <a href={s.url} className="group grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-3 py-2.5 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:gap-4">
-                    <BrowserFrame image={s.image} address={s.domain} alt={`Front page of ${s.domain}`} sizes="120px" bar={false} />
+                    <BrowserFrame image={s.image} address={s.domain} alt={`Front page of ${s.domain}`} sizes="(min-width: 640px) 120px, 88px" thumb />
                     <span className="min-w-0">
                       <span className="block truncate text-[14px] font-medium group-hover:underline">{s.name}</span>
                       <span className="block truncate text-[13px] text-muted">{s.note}</span>
