@@ -324,14 +324,22 @@ summary:focus-visible,
     white-space: nowrap;
     transition:
       background-color 150ms ease,
-      border-color 150ms ease,
-      transform 120ms var(--ease-out);
+      border-color 150ms ease;
   }
   .btn:hover {
     background: var(--raised);
   }
-  .btn:active {
-    transform: translateY(1px);
+  /* the press nudge is motion: none under prefers-reduced-motion */
+  @media (prefers-reduced-motion: no-preference) {
+    .btn {
+      transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        transform 120ms var(--ease-out);
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
   }
   .btn-primary {
     background: var(--primary);
@@ -603,8 +611,11 @@ summary:focus-visible,
   .role-summary:hover {
     background: var(--raised);
   }
-  .chev {
-    transition: transform 200ms var(--ease-out);
+  /* the chevron turns at once under prefers-reduced-motion; it only animates without it */
+  @media (prefers-reduced-motion: no-preference) {
+    .chev {
+      transition: transform 200ms var(--ease-out);
+    }
   }
   details[open] .chev {
     transform: rotate(180deg);

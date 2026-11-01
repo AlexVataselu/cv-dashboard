@@ -328,3 +328,14 @@ test("Overview thumbnails load the 240px files, not the 640px ones", async ({ pa
   }
   expect(work.filter((p) => /-(640|1120)\./.test(p))).toEqual([]);
 });
+
+test("prefers-reduced-motion: the chevron and the button press do not animate", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/experience");
+  const chev = page.locator("summary .chev").first();
+  expect(await chev.evaluate((el) => getComputedStyle(el).transitionDuration)).toBe("0s");
+  const btn = page.locator(".btn").first();
+  expect(await btn.evaluate((el) => getComputedStyle(el).transitionProperty)).not.toContain("transform");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  expect(await chev.evaluate((el) => getComputedStyle(el).transitionDuration)).not.toBe("0s");
+});
