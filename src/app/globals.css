@@ -556,10 +556,15 @@ summary:focus-visible,
     color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
-  /* five narrow columns: the level always takes its own line, so every row has the same rhythm */
+  /* five narrow columns: the year always takes its own line, and a skill without a year keeps that
+     line's height empty, so every row across the five columns has the same rhythm */
   @media (min-width: 1280px) {
     .skills-compact .skill-level {
       flex-basis: 100%;
+    }
+    .skills-compact .skill-chip {
+      align-content: flex-start;
+      min-height: calc(16px + 14px * 1.375 + 6px + 12px * 1.375);
     }
   }
 
