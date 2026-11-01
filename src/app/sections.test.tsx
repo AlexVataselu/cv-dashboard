@@ -163,7 +163,7 @@ describe("year counts run to the CV's year, not the clock", () => {
     const first = exp.container.querySelector("summary")!.textContent ?? "";
     expect(first).toContain("2025–now");
     expect(first).toContain("1 yr");
-    expect(first).not.toMatch(/[2-9] yrs/);
+    expect(first).not.toMatch(/\b[2-9] yrs\b/);
     exp.unmount();
 
     const skills = render(<SkillsPage />);
