@@ -27,7 +27,6 @@ export default function Home() {
   ];
   return (
     <SectionShell
-      current="overview"
       title="Overview"
       lead="Senior frontend engineer: nine years on the web, the last five on React, Next.js, TypeScript and React Native."
     >

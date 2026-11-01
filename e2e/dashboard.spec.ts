@@ -35,6 +35,23 @@ test("nav links load their section and Back returns to the previous one", async 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Overview");
 });
 
+test("the status bar persists across tab switches: one bar, not remounted, vitals kept", async ({ page }) => {
+  await page.goto("/");
+  const bar = page.locator('footer[aria-label="Site performance"]');
+  await expect(bar).toHaveCount(1);
+  // LCP settles after the first paint; wait until the bar shows it.
+  await expect(bar.getByRole("group", { name: "LCP" })).not.toHaveText(/–/);
+  await bar.evaluate((el) => ((el as HTMLElement & { __kept?: boolean }).__kept = true));
+  const nav = page.getByRole("navigation", { name: "Sections" });
+  await nav.getByRole("link", { name: "Skills" }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Skills");
+  await expect(bar).toHaveCount(1);
+  // The same element: the layout kept it mounted, so its observers were registered once.
+  expect(await bar.evaluate((el) => (el as HTMLElement & { __kept?: boolean }).__kept === true)).toBe(true);
+  await expect(bar.getByRole("group", { name: "LCP" })).not.toHaveText(/–/);
+  await expect(nav.getByRole("link", { name: "Skills" })).toHaveAttribute("aria-current", "page");
+});
+
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 

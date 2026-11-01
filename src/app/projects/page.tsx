@@ -17,7 +17,6 @@ export const metadata = pageMetadata({
 export default function ProjectsPage() {
   return (
     <SectionShell
-      current="projects"
       title="Projects"
       lead="Three things I build for myself, and five client sites I designed and built end to end."
     >

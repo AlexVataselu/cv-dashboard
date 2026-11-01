@@ -12,7 +12,6 @@ export const metadata = pageMetadata({
 export default function EducationPage() {
   return (
     <SectionShell
-      current="education"
       title="Education"
       lead="Two degrees from the Romanian American University in Bucharest, and the two languages I work in."
     >

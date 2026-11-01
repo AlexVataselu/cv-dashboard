@@ -12,7 +12,6 @@ export const metadata = pageMetadata({
 export default function SkillsPage() {
   return (
     <SectionShell
-      current="skills"
       title="Skills"
       lead="Each year count starts at the first dated role or project on the CV that uses the skill. Pick one to mark it across Experience and Projects."
     >

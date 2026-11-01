@@ -2,7 +2,7 @@ import { render, screen, act } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { SECTIONS } from "@/lib/sections";
 import { useUiStore } from "@/state/uiStore";
-import { SectionNav } from "./SectionNav";
+import { SectionNav, sectionForPath } from "./SectionNav";
 
 const initial = useUiStore.getState();
 beforeEach(() => useUiStore.setState(initial, true));
@@ -24,5 +24,15 @@ describe("SectionNav", () => {
     act(() => useUiStore.getState().selectSkill("react"));
     const hrefs = screen.getAllByRole("link").map((a) => a.getAttribute("href"));
     expect(hrefs).toEqual(SECTIONS.map((s) => `${s.href}?skill=react`));
+  });
+});
+
+describe("sectionForPath", () => {
+  it("maps each path, with or without a trailing slash, to its section", () => {
+    expect(sectionForPath("/")).toBe("overview");
+    expect(sectionForPath("/experience")).toBe("experience");
+    expect(sectionForPath("/skills/")).toBe("skills");
+    expect(sectionForPath("/nope")).toBeUndefined();
+    expect(sectionForPath(null)).toBeUndefined();
   });
 });

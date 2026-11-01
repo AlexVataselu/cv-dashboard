@@ -16,7 +16,6 @@ export default function ExperiencePage() {
   const now = AS_OF;
   return (
     <SectionShell
-      current="experience"
       title="Experience"
       lead="Product teams at Pentalog and TryAngle Labs, and my own clients in healthcare, fintech and cultural heritage."
     >

@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import Script from "next/script";
 import { ProfileRail } from "@/components/ProfileRail";
+import { SectionNav } from "@/components/SectionNav";
 import { SkillParamSync } from "@/components/SkillParamSync";
+import { StatusBar } from "@/components/StatusBar";
 import { HOME_DESCRIPTION, SITE_URL, pageMetadata, personJsonLd } from "@/lib/site";
 import "./globals.css";
 
@@ -69,10 +71,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {"void 0"}
         </Script>
         <SkillParamSync />
-        {/* The frame: the profile rail and the section tabs on one tint; the sheet beside them. */}
+        {/* The frame: the profile rail and the section tabs on one tint; the sheet beside them.
+            The tabs, the sheet and the status bar stay mounted across tab switches; only <main> changes. */}
         <div className="min-h-svh lg:grid lg:grid-cols-[296px_minmax(0,1fr)]">
           <ProfileRail />
-          <div className="flex min-w-0 flex-col lg:pr-3 lg:pb-3">{children}</div>
+          <div className="flex min-w-0 flex-col lg:pr-3 lg:pb-3">
+            <SectionNav />
+            <div className="sheet flex flex-1 flex-col">
+              {children}
+              <StatusBar />
+            </div>
+          </div>
         </div>
       </body>
     </html>
