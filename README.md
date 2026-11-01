@@ -17,9 +17,11 @@ pnpm dev        # dev server on http://localhost:3000
 ## Scripts
 
 - `pnpm dev` - dev server
-- `pnpm build` - static export to `out/`; the post-build step measures first-load JS into `data/build-stats.json`
-  and fails above the 150 KB gzipped budget. The home route is at about 147 KB, so there is little headroom.
-  Because the step runs on every build, a change over budget also fails the Vercel build.
+- `pnpm build` - static export to `out/`; the post-build step (`scripts/measure-bundle.mjs`) measures the
+  first-load JS of all five routes into `data/build-stats.json` (`firstLoadJsKbByRoute`, and the heaviest as
+  `firstLoadJsKb`, which the status bar shows) and fails if any route is above the 150 KB gzipped budget.
+  Every route is at about 148 KB, so there is little headroom. Because the step runs on every build, a route
+  over budget also fails the Vercel build.
 - `pnpm start` - serves `out/`
 - `pnpm test` - Vitest unit tests
 - `pnpm e2e` - builds, then runs Playwright against `out/` (served on port 4317). The build refreshes

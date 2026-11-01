@@ -1,69 +1,55 @@
-"use client";
-
-import type { MouseEvent } from "react";
 import type { Role } from "@/content/types";
 import { KIND_LABEL, kindOf, period } from "@/content/career";
 import { sitesForRole } from "@/content/sites";
 import { BrowserFrame } from "@/components/BrowserFrame";
+import { RoleDetails } from "@/components/RoleDetails";
 import { SkillBadge } from "@/components/SkillBadge";
 import { ChevronDownIcon } from "@/components/icons";
-import { useUiStore } from "@/state/uiStore";
 
 /**
  * One role as a row of the experience table: when, what kind of work, the title and company, the
  * stack. It opens to the CV's bullets (and the live sites it shipped); one row is open at a time.
+ * A server component: RoleDetails (open state, highlight) and SkillBadge are the client islands,
+ * so the site list and the browser frames stay out of the client bundle.
  */
 export function RoleCard({ role, years }: { role: Role; years: number }) {
-  const open = useUiStore((s) => s.expandedRoleId === role.id);
-  const toggleRole = useUiStore((s) => s.toggleRole);
-  const highlighted = useUiStore(
-    (s) => s.selectedSkill !== null && role.skillIds.includes(s.selectedSkill),
-  );
   const sites = sitesForRole(role.id);
   const kind = kindOf(role.id);
 
-  // With JS, the store owns open/closed; without JS the native toggle still works.
-  const onSummaryClick = (e: MouseEvent) => {
-    e.preventDefault();
-    toggleRole(role.id);
-  };
-
   return (
-    <details
-      id={`role-${role.id}`}
-      open={open}
-      data-highlight={highlighted ? "true" : undefined}
-      data-kind={kind}
-      className="scroll-mt-6"
+    <RoleDetails
+      roleId={role.id}
+      skillIds={role.skillIds}
+      kind={kind}
+      summaryClassName="role-summary relative grid gap-x-6 gap-y-1 px-4 py-4 md:grid-cols-[9rem_minmax(0,1fr)_10rem] md:px-5"
+      summary={
+        <>
+          <span className="flex items-center gap-2 md:flex-col md:items-start md:gap-1.5">
+            <span className="key md:hidden" aria-hidden="true" />
+            <span className="tnum text-[14px] font-medium">{period(role)}</span>
+            <span className="tnum text-[13px] text-muted">
+              <span className="md:hidden">· </span>
+              {years} {years === 1 ? "yr" : "yrs"}
+            </span>
+            <span className="pill kind-pill hidden md:inline-flex">{KIND_LABEL[kind]}</span>
+          </span>
+          <span className="block min-w-0">
+            <span className="block text-[16px] font-semibold leading-snug">{role.title}</span>
+            <span className="mt-0.5 block text-[14px]">
+              {role.company}
+              {role.location ? <span className="text-muted"> · {role.location}</span> : null}
+            </span>
+            {role.stack.length > 0 ? (
+              <span className="mt-1.5 block text-[13px] text-muted">{role.stack.join(" · ")}</span>
+            ) : null}
+          </span>
+          <span className="absolute right-3 top-3.5 flex h-7 max-w-[11rem] items-center justify-end gap-2 md:static md:max-w-none md:self-start">
+            <SkillBadge skillIds={role.skillIds} />
+            <ChevronDownIcon className="icon chev shrink-0 text-muted" />
+          </span>
+        </>
+      }
     >
-      <summary
-        onClick={onSummaryClick}
-        className="role-summary relative grid gap-x-6 gap-y-1 px-4 py-4 md:grid-cols-[9rem_minmax(0,1fr)_10rem] md:px-5"
-      >
-        <span className="flex items-center gap-2 md:flex-col md:items-start md:gap-1.5">
-          <span className="key md:hidden" aria-hidden="true" />
-          <span className="tnum text-[14px] font-medium">{period(role)}</span>
-          <span className="tnum text-[13px] text-muted">
-            <span className="md:hidden">· </span>
-            {years} {years === 1 ? "yr" : "yrs"}
-          </span>
-          <span className="pill kind-pill hidden md:inline-flex">{KIND_LABEL[kind]}</span>
-        </span>
-        <span className="block min-w-0">
-          <span className="block text-[16px] font-semibold leading-snug">{role.title}</span>
-          <span className="mt-0.5 block text-[14px]">
-            {role.company}
-            {role.location ? <span className="text-muted"> · {role.location}</span> : null}
-          </span>
-          {role.stack.length > 0 ? (
-            <span className="mt-1.5 block text-[13px] text-muted">{role.stack.join(" · ")}</span>
-          ) : null}
-        </span>
-        <span className="absolute right-3 top-3.5 flex h-7 max-w-[11rem] items-center justify-end gap-2 md:static md:max-w-none md:self-start">
-          <SkillBadge skillIds={role.skillIds} />
-          <ChevronDownIcon className="icon chev shrink-0 text-muted" />
-        </span>
-      </summary>
       <div className="border-t border-rule px-4 pb-6 pt-4 md:px-5 md:pl-[calc(9rem+1.5rem+1.25rem)]">
         <ul className="grid max-w-[78ch] list-disc gap-2.5 pl-5 text-[15px] marker:text-muted">
           {role.bullets.map((b) => (
@@ -81,6 +67,6 @@ export function RoleCard({ role, years }: { role: Role; years: number }) {
           </div>
         ) : null}
       </div>
-    </details>
+    </RoleDetails>
   );
 }

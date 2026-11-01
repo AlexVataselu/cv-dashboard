@@ -1,12 +1,10 @@
-"use client";
-
 import type { Project } from "@/content/types";
 import { mediaFor } from "@/content/projectMedia";
 import { BrowserFrame } from "@/components/BrowserFrame";
+import { HighlightCard } from "@/components/Highlight";
 import { SkillBadge } from "@/components/SkillBadge";
 import { SkipIntroDiagram } from "@/components/SkipIntroDiagram";
 import { ExternalIcon } from "@/components/icons";
-import { useUiStore } from "@/state/uiStore";
 
 /** Powderino has no public page yet; its card shows the CV's facts about it as a spec sheet. */
 function PowderinoFacts() {
@@ -41,18 +39,17 @@ function PowderinoFacts() {
  * A personal project as a card: its year and name, what it does in the CV's words, its stack, and
  * the most honest picture there is (a live screen, a public repository, a diagram of the parts or
  * its facts).
+ * A server component: only the highlight (HighlightCard) and the badge (SkillBadge) are client
+ * islands, so the frames, the diagram and the media data stay out of the client bundle.
  */
-export function ProjectCard({ project }: { project: Project }) {
-  const highlighted = useUiStore(
-    (s) => s.selectedSkill !== null && project.skillIds.includes(s.selectedSkill),
-  );
+export function ProjectCard({ project, eager = false }: { project: Project; eager?: boolean }) {
   const [name, ...rest] = project.title.split(", ");
   const media = mediaFor(project.id);
   const inProgress = /in progress/.test(project.title);
   return (
-    <article
+    <HighlightCard
       id={`project-${project.id}`}
-      data-highlight={highlighted ? "true" : undefined}
+      skillIds={project.skillIds}
       className="card grid scroll-mt-6 grid-cols-[minmax(0,1fr)] gap-6 transition-colors duration-200 lg:grid-cols-12 lg:gap-8"
     >
       <div className="min-w-0 lg:col-span-5">
@@ -100,6 +97,7 @@ export function ProjectCard({ project }: { project: Project }) {
                 image={media.shot.image}
                 address={media.shot.address}
                 alt={media.shot.alt}
+                eager={eager}
                 sizes="(min-width: 1280px) 560px, (min-width: 1024px) 50vw, (min-width: 640px) 92vw, 80vw"
               />
             </a>
@@ -112,6 +110,6 @@ export function ProjectCard({ project }: { project: Project }) {
           <SkipIntroDiagram />
         </div>
       ) : null}
-    </article>
+    </HighlightCard>
   );
 }
