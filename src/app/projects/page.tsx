@@ -28,8 +28,9 @@ export default function ProjectsPage() {
           <FilterNotice />
         </div>
         <div className="mt-3 grid gap-(--gap)">
-          {cv.projects.map((p) => (
-            <ProjectCard key={p.id} project={p} />
+          {/* The first card's screenshot is above the fold on desktop: it loads eagerly, the rest lazily. */}
+          {cv.projects.map((p, i) => (
+            <ProjectCard key={p.id} project={p} eager={i === 0} />
           ))}
         </div>
       </section>

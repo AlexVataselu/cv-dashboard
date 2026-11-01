@@ -240,6 +240,12 @@ test("critical path: only latin fonts preloaded, yield script present, content n
     const main = html.slice(start, html.indexOf("</main>", start));
     expect(main, r.path).not.toContain("<template");
     expect(main, r.path).not.toMatch(/<[a-z][a-z0-9]*(?:\s+[\w:-]+(?:="[^"]*")?)*\s+hidden(?:=""|\s|\/?>)/);
+    // Images in <main> are lazy, except the one above the fold on /projects (the first project's
+    // screenshot). None is preloaded or high priority, so none competes with the fonts and the photo.
+    const eager = [...main.matchAll(/<img\b[^>]*>/g)].map((m) => m[0]).filter((t) => !t.includes('loading="lazy"'));
+    expect(eager.length, `${r.path} non-lazy images in main`).toBe(r.path === "/projects" ? 1 : 0);
+    expect(main, `${r.path} no high-priority image in main`).not.toMatch(/fetchpriority="high"/i);
+    expect(links.filter((l) => l.rel === "preload" && l.as === "image"), `${r.path} image preloads`).toEqual([]);
   }
 });
 
