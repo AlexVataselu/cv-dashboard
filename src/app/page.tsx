@@ -16,7 +16,7 @@ export const metadata = pageMetadata({ description: HOME_DESCRIPTION, path: "/" 
 /*
   Grid: 12 columns, one 20px gap across and down.
   Row 1, the KPI strip, full width. Row 2, the career timeline (7) beside the results (5).
-  Row 3, skill levels, full width. Row 4, About (5) beside shipped work (7).
+  Row 3, skills by first dated use, full width. Row 4, About (5) beside shipped work (7).
 */
 export default function Home() {
   const facts: [string, string][] = [
@@ -45,7 +45,7 @@ export default function Home() {
       <section aria-labelledby="levels" className="card mt-(--gap)">
         <div className="card-head">
           <h2 id="levels" className="card-title">
-            Skill levels
+            Skills, by first dated use
           </h2>
           <p className="meta">Years count from the first dated role or project on the CV that uses the skill.</p>
         </div>

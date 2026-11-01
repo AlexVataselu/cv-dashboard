@@ -563,28 +563,11 @@ summary:focus-visible,
     color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
-  .lvl-track {
-    flex-basis: 100%;
-  }
   /* five narrow columns: the level always takes its own line, so every row has the same rhythm */
   @media (min-width: 1280px) {
     .skills-compact .skill-level {
       flex-basis: 100%;
     }
-  }
-  .lvl-track {
-    position: relative;
-    display: block;
-    height: 4px;
-    border-radius: 999px;
-    background: var(--active);
-    overflow: hidden;
-  }
-  .lvl-fill {
-    position: absolute;
-    inset: 0 auto 0 0;
-    border-radius: 999px;
-    background: var(--primary);
   }
 
   /* ---------- a browser frame around a real screenshot ---------- */

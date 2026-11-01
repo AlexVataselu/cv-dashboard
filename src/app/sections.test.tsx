@@ -13,7 +13,7 @@ const initial = useUiStore.getState();
 beforeEach(() => useUiStore.setState(initial, true));
 
 describe("Overview", () => {
-  it("has exactly one h1 and renders glance, impact, about and skill levels", () => {
+  it("has exactly one h1 and renders glance, impact, about and skills by first dated use", () => {
     render(<Home />);
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     for (const g of cv.glance) {
@@ -28,6 +28,15 @@ describe("Overview", () => {
     const react = screen.getByRole("button", { name: /^React ·/ });
     expect(react.textContent).toBe("React · since 2021 · 5 yrs");
     expect(screen.getByRole("button", { name: "Jest" }).textContent).toBe("Jest");
+  });
+
+  it("shows skills as text only: no bar, gauge or width, so nothing reads as a rating", () => {
+    render(<Home />);
+    const card = screen.getByRole("region", { name: "Skills, by first dated use" });
+    for (const chip of within(card).getAllByRole("button")) {
+      expect(chip.querySelectorAll("[style]")).toHaveLength(0);
+      expect(chip.children.length).toBeLessThanOrEqual(2);
+    }
   });
 });
 
@@ -67,6 +76,8 @@ describe("Skills", () => {
     render(<SkillsPage />);
     const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
     expect(headings).toEqual([
+      "Skills by the year they first appear on the CV",
+      "Which skills, when",
       "Frontend",
       "State & data",
       "Backend",

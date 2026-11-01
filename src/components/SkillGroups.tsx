@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { cv } from "@/content/cv";
-import { AS_OF, FIRST_YEAR } from "@/content/career";
 import { deriveAllSkillLevels, formatLevel, usageIndex, type Usage } from "@/content/skillLevels";
 import type { SkillGroup } from "@/content/types";
 import { SkillChip } from "@/components/SkillChip";
@@ -28,10 +27,9 @@ export function SkillGroups({
   headingLevel?: "h2" | "h3";
   showUsage?: boolean;
 }) {
-  const now = AS_OF;
-  const levels = deriveAllSkillLevels(cv, now);
+  // Counts run to the CV's year (cv.asOf), the default.
+  const levels = deriveAllSkillLevels(cv);
   const usage = usageIndex(cv);
-  const scale = now - FIRST_YEAR;
   const Heading = headingLevel;
   return (
     <SkillPicker
@@ -58,12 +56,7 @@ export function SkillGroups({
                 const usedIn = showUsage ? (lvl?.usedIn ?? []).map((id) => usage[id]) : [];
                 return (
                   <li key={s.id}>
-                    <SkillChip
-                      skillId={s.id}
-                      name={s.name}
-                      levelText={formatLevel(lvl)}
-                      share={lvl?.years ? lvl.years / scale : 0}
-                    />
+                    <SkillChip skillId={s.id} name={s.name} levelText={formatLevel(lvl)} />
                     {usedIn.length > 0 ? (
                       <p className="px-2 pb-2 text-[13px] text-muted">
                         Used in{" "}

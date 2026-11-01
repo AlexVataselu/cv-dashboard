@@ -11,7 +11,7 @@ function ticks(max: number) {
 
 /**
  * When each skill on the CV first appears in a dated role or project: one column per year, drawn
- * at build time from the same derivation as the skill levels. Years with none stay at zero.
+ * at build time from the same derivation as the skill years. Years with none stay at zero.
  * Beside it, the same data as a list, so every column can be checked name by name.
  */
 export function SkillAdoption() {
@@ -28,9 +28,9 @@ export function SkillAdoption() {
     <div className="mt-6 grid gap-(--gap) xl:grid-cols-12">
       <figure className="card xl:col-span-7" aria-labelledby="adoption-title">
         <div className="card-head">
-          <p id="adoption-title" className="card-title">
-            Skills first used, by year
-          </p>
+          <h2 id="adoption-title" className="card-title">
+            Skills by the year they first appear on the CV
+          </h2>
           <p className="meta tnum">
             {dated} of {cv.skills.length} skills have a dated first use
           </p>
@@ -83,9 +83,9 @@ export function SkillAdoption() {
 
       <section className="card xl:col-span-5" aria-labelledby="adoption-list">
         <div className="card-head">
-          <p id="adoption-list" className="card-title">
+          <h2 id="adoption-list" className="card-title">
             Which skills, when
-          </p>
+          </h2>
           <p className="meta tnum">{cv.skills.length - dated} listed without a date</p>
         </div>
         <ul className="grid">
