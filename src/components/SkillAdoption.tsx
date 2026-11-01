@@ -37,8 +37,9 @@ export function SkillAdoption() {
         </div>
         <div className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-2">
           <div className="relative h-48 text-[12px] text-muted" aria-hidden="true">
+            {/* bottom puts the label's lower edge on its gridline; translateY(50%) centres it there */}
             {t.map((v) => (
-              <span key={v} className="tnum absolute right-0 -translate-y-1/2" style={{ bottom: `${(v / top) * 100}%`, transform: `translateY(50%)` }}>
+              <span key={v} className="tnum absolute right-0" style={{ bottom: `${(v / top) * 100}%`, transform: "translateY(50%)" }}>
                 {v}
               </span>
             ))}

@@ -339,3 +339,19 @@ test("prefers-reduced-motion: the chevron and the button press do not animate", 
   await page.emulateMedia({ reducedMotion: "no-preference" });
   expect(await chev.evaluate((el) => getComputedStyle(el).transitionDuration)).not.toBe("0s");
 });
+
+test("skill-adoption tick labels sit centred on their gridlines", async ({ page }) => {
+  await page.goto("/skills");
+  const chart = page.locator("figure", { has: page.getByRole("heading", { name: /first appear on the CV/ }) });
+  const centres = await chart.evaluate((fig) => {
+    const [labels, plot] = Array.from(fig.querySelectorAll<HTMLElement>(".relative.h-48"));
+    const ys = (els: HTMLElement[]) => els.map((e) => { const r = e.getBoundingClientRect(); return r.top + r.height / 2; });
+    return {
+      labels: ys(Array.from(labels.children) as HTMLElement[]),
+      lines: ys(Array.from(plot.querySelectorAll<HTMLElement>(":scope > span"))),
+    };
+  });
+  expect(centres.labels.length).toBeGreaterThan(2);
+  expect(centres.labels.length).toBe(centres.lines.length);
+  centres.labels.forEach((y, i) => expect(Math.abs(y - centres.lines[i]), `tick ${i}`).toBeLessThanOrEqual(1));
+});
