@@ -249,6 +249,14 @@ test("L.H.EL (Superland): hovering its row lights Magento, PrestaShop, JavaScrip
   await expect(panel).toBeVisible();
   await expect(panel.locator(".skill-name")).toHaveText(["Magento", "PrestaShop", "JavaScript", "TypeScript", "HTML", "CSS"]);
   for (const b of cv.roles.find((r) => r.id === "lhel")!.bullets) await expect(page.locator("#role-lhel")).toContainText(b);
+
+  // A link straight to the role opens it, marks its row and shows its skills.
+  await page.goto("/");
+  await page.goto("/experience#role-zega");
+  await hydrated(page);
+  await expect(page.locator("#role-zega")).toHaveJSProperty("open", true);
+  await expect(page.locator('a[data-open-role="zega"]')).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator('.rs-panel[data-role="zega"]')).toBeVisible();
 });
 
 test("prefers-reduced-motion: no motion layer, no bar growth, instant section switches", async ({ page }) => {

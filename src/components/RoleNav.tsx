@@ -35,11 +35,13 @@ export function RoleNav({ children, className }: { children: ReactNode; classNam
       }
     };
     paint(useUiStore.getState().expandedRoleId);
-    const hash = /^#role-(.+)$/.exec(location.hash)?.[1];
-    if (hash && document.getElementById(`role-${hash}`)) open(hash, true);
-    return useUiStore.subscribe((s, prev) => {
+    // Subscribed before a #role-x link opens its role, so the row and the skills card follow it too.
+    const unsub = useUiStore.subscribe((s, prev) => {
       if (s.expandedRoleId !== prev.expandedRoleId) paint(s.expandedRoleId);
     });
+    const hash = /^#role-(.+)$/.exec(location.hash)?.[1];
+    if (hash && document.getElementById(`role-${hash}`)) open(hash, true);
+    return unsub;
   }, []);
 
   const onClick = (e: MouseEvent) => {
