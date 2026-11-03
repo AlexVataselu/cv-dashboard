@@ -9,7 +9,7 @@ export const SITE_URL = (
 export const SITE_NAME = cv.name;
 
 export const HOME_DESCRIPTION =
-  "Senior Frontend Engineer in Brașov, Romania, working remotely across the EU. 9 years building for the web with React, Next.js, TypeScript and React Native.";
+  "Senior Frontend Engineer in Brașov, Romania, working remotely across the EU. 14 years building software, the last five on React, Next.js, TypeScript and React Native.";
 
 // Pages that set their own openGraph/twitter do not inherit the file-convention image, so name it.
 const OG_IMAGE = {

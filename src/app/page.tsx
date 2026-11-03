@@ -28,7 +28,7 @@ export default function Home() {
   return (
     <SectionShell
       title="Overview"
-      lead="Senior frontend engineer: nine years on the web, the last five on React, Next.js, TypeScript and React Native."
+      lead="Senior frontend engineer: 14 years building software, backend first, then the web, the last five on React, Next.js, TypeScript and React Native."
     >
       <KpiStrip />
 
