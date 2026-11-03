@@ -96,11 +96,11 @@ describe("deriveSkillLevel", () => {
   });
 
   it.each(["magento", "prestashop"])(
-    "%s is dated by L.H.EL (Superland) alone, 2017 to 2021; ending in 2021 (not before it) reads since",
+    "%s is dated by L.H.EL (Superland) alone, 2017 to 2021; use that stopped in 2021 reads as its span",
     (id) => {
       const l = deriveSkillLevel(id, cv, YEAR);
-      expect(l).toMatchObject({ since: 2017, usedIn: ["lhel"], spans: [{ start: 2017, end: 2021 }] });
-      expect(formatLevel(l)).toBe("since 2017 · 9 yrs");
+      expect(l).toMatchObject({ since: 2017, until: 2021, usedIn: ["lhel"], spans: [{ start: 2017, end: 2021 }] });
+      expect(formatLevel(l)).toBe("2017–2021 · 4 yrs");
     },
   );
 
