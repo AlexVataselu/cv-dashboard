@@ -170,7 +170,7 @@ describe("Education", () => {
     const { container } = render(<EducationPage />);
     const steps = [...container.querySelectorAll(".ed-step:not([data-work])")].map((s) => s.textContent);
     expect(steps).toEqual([
-      "High schoolMathematics & Computer ScienceToma N. Socolescu Technical High School, Ploiesti",
+      "High schoolMathematics & Computer ScienceToma N. Socolescu Technical High School, Ploiești",
       "Bachelor'sComputer Science ManagementRomanian American University, Bucharest",
       "Master'sIT EconomicsRomanian American University, Bucharest",
     ]);

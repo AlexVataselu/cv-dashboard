@@ -77,6 +77,6 @@ describe("cv content", () => {
       "Bachelor's, Computer Science Management",
       "High school, Mathematics & Computer Science",
     ]);
-    expect(cv.education[2].school).toBe("Toma N. Socolescu Technical High School, Ploiesti");
+    expect(cv.education[2].school).toBe("Toma N. Socolescu Technical High School, Ploiești");
   });
 });

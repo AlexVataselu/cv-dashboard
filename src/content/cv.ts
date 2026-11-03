@@ -306,7 +306,7 @@ export const cv: Cv = {
     },
     {
       degree: "High school, Mathematics & Computer Science",
-      school: "Toma N. Socolescu Technical High School, Ploiesti",
+      school: "Toma N. Socolescu Technical High School, Ploiești",
     },
   ],
   languages: [
