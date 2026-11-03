@@ -4,13 +4,13 @@ export interface SkillLevel {
   skillId: string;
   since: number | null;
   /**
-   * The year the last dated evidence ends, when every piece of it ends before the CV's year (the
-   * skill is not in current use on the CV); null while the skill is still in use, or undated.
+   * The year the last dated evidence ends, for a skill shown as past spans (see `deriveSkillLevel`);
+   * null for a skill shown as "since", or undated.
    */
   until: number | null;
   /** The dated spans of use, oldest first, merged where they touch; empty when undated. */
   spans: { start: number; end: number }[];
-  /** In use: years since `since`. Past: the years actually covered by `spans`. */
+  /** "since": years since `since`. Past spans: the years actually covered by `spans`. */
   years: number | null;
   /** role/project ids, newest first */
   usedIn: string[];
@@ -30,6 +30,11 @@ const IMPLIED_SINCE: Record<string, number> = {
 /**
  * `currentYear` defaults to the CV's own year (`data.asOf`), never the clock. A role ends at its
  * end year ("now" is the CV's year); a project has no end on the CV, so it counts as still in use.
+ *
+ * Most skills read "since X · N yrs". A skill reads as its real spans ("2013–2017 · 4 yrs") only
+ * when it was first dated before the CV's last five years (before 2021, the React era) and either
+ * its dated use ended before 2021 or broke off for more than a year between dated uses. The newest role lists only a few tools, so a recent
+ * skill missing from it is not read as dropped.
  */
 export function deriveSkillLevel(
   skillId: string,
@@ -61,7 +66,11 @@ export function deriveSkillLevel(
     else spans.push({ ...i });
   }
   const latest = Math.max(...spans.map((x) => x.end));
-  if (latest >= currentYear) {
+  const recentFrom = data.asOf - 5;
+  const gapped = spans.some((x, i) => i > 0 && x.start - spans[i - 1].end > 1);
+  // A skill first dated in the last five years always reads "since": a break there (TryAngle Labs
+  // to a 2026 project) says nothing about having dropped it.
+  if (earliest >= recentFrom || (latest >= recentFrom && !gapped)) {
     return { skillId, since: earliest, until: null, spans, years: currentYear - earliest, usedIn };
   }
   const covered = spans.reduce((sum, x) => sum + (x.end - x.start), 0);
@@ -80,8 +89,8 @@ export function deriveAllSkillLevels(
 const yrs = (n: number) => `${n} ${n === 1 ? "yr" : "yrs"}`;
 
 /**
- * "since 2021 · 5 yrs" while in use; "2013–2017 · 4 yrs" once every dated use has ended (each
- * span listed, "2013–2017, 2021–2023 · 6 yrs", when there was a break); undefined when undated.
+ * "since 2021 · 5 yrs" for most skills; "2013–2017 · 4 yrs" for one whose use ended before 2021,
+ * and every span ("2013–2017, 2021–2023 · 6 yrs") for one with a break; undefined when undated.
  */
 export function formatLevel(level: SkillLevel | undefined): string | undefined {
   if (level?.since == null || level.years == null) return undefined;

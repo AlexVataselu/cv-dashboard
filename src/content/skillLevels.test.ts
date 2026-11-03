@@ -53,12 +53,28 @@ describe("deriveSkillLevel", () => {
     }
   });
 
+  it.each(["tailwind", "github-actions", "sentry", "sonarqube", "graphql", "postgresql", "firebase", "wcag"])(
+    "%s, dated from 2021 on with no break over a year, reads since",
+    (id) => {
+      const l = deriveSkillLevel(id, cv, YEAR);
+      expect(l.until).toBeNull();
+      expect(formatLevel(l)).toMatch(/^since 20(2[1-5]) · \d+ yrs?$/);
+    },
+  );
+
+  it("every skill first dated from 2021 on reads since", () => {
+    for (const s of cv.skills) {
+      const l = deriveSkillLevel(s.id, cv, YEAR);
+      if (l.since != null && l.since >= 2021) expect(formatLevel(l), s.id).toMatch(/^since /);
+    }
+  });
+
   it("past skills stay past in a later build year, with the same span", () => {
     expect(formatLevel(deriveSkillLevel("csharp", cv, 2031))).toBe("2013–2017 · 4 yrs");
   });
 
-  it.each(["sonarqube", "sentry"])("%s 2024–2025 (Pentalog only)", (id) => {
-    expect(formatLevel(deriveSkillLevel(id, cv, YEAR))).toBe("2024–2025 · 1 yr");
+  it.each(["sonarqube", "sentry"])("%s since 2024 (Pentalog)", (id) => {
+    expect(formatLevel(deriveSkillLevel(id, cv, YEAR))).toBe("since 2024 · 2 yrs");
   });
 
   it("sentry since 2024", () => {

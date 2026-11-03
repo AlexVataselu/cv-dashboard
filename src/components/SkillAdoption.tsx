@@ -19,7 +19,7 @@ export function SkillAdoption() {
   const levels = deriveAllSkillLevels(cv, now);
   const years = Array.from({ length: now - FIRST_YEAR }, (_, i) => FIRST_YEAR + i);
   const firstIn = (y: number) => cv.skills.filter((s) => levels[s.id]?.since === y);
-  // A skill whose every dated use ended before the CV's year is "past": drawn as an outline, and
+  // A skill shown as past spans (used only before 2021, or with a break; see deriveSkillLevel) is drawn as an outline, and
   // named with the year it ends, so the chart never implies it is still in use.
   const isPast = (id: string) => levels[id]?.until != null;
   const label = (id: string, name: string) => (isPast(id) ? `${name} (until ${levels[id]!.until})` : name);
