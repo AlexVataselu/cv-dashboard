@@ -73,11 +73,19 @@ export function SkillAdoption() {
           </div>
           <span aria-hidden="true" />
           <div className="flex gap-[6%] px-[2%] pt-2 text-[12px] text-muted" aria-hidden="true">
-            {years.map((y, i) => (
-              <span key={y} className={`tnum min-w-0 flex-1 whitespace-nowrap text-center ${i % 4 !== 0 ? "max-sm:invisible" : ""} ${i === 0 ? "max-sm:text-left" : ""} ${i === years.length - 1 ? "max-sm:flex max-sm:justify-end" : ""}`}>
-                {y}
-              </span>
-            ))}
+            {years.map((y, i) => {
+              // Narrow screens label every fourth year counted back from the last, plus the first
+              // (2012, 2017, 2021, 2025), each centred on its own column so no label sits under a
+              // neighbour's bar.
+              const last = years.length - 1;
+              const shown = i === 0 || ((last - i) % 4 === 0 && i > 1);
+              const align = i === 0 ? "max-sm:justify-start" : i === last ? "max-sm:justify-end" : "";
+              return (
+                <span key={y} className={`tnum flex min-w-0 flex-1 justify-center whitespace-nowrap ${shown ? "" : "max-sm:invisible"} ${align}`}>
+                  {y}
+                </span>
+              );
+            })}
           </div>
         </div>
       </figure>

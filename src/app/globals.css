@@ -529,11 +529,12 @@ summary:focus-visible,
     }
   }
   @container (max-width: 480px) {
-    /* only the first year, every fourth from it, and the last: 2012, 2016, 2020, 2024, 2026 */
+    /* only the first year, every fourth from it, and the last: 2012, 2016, 2020, 2026 */
     .tl-axis > span:not(:first-child, :last-child, :nth-child(4n + 1)) {
       display: none;
     }
-    .tl-axis > span:nth-last-child(2) {
+    /* the two years before the last would crowd it: 2024 sits against 2026 */
+    .tl-axis > span:nth-last-child(-n + 3):not(:last-child) {
       display: none;
     }
     .tl-label > :first-child {
