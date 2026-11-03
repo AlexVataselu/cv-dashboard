@@ -40,7 +40,8 @@ export function RoleDetails({
       open={open}
       data-highlight={highlighted ? "true" : undefined}
       data-kind={kind}
-      className="scroll-mt-6"
+      data-roles={roleId}
+      className="scroll-mt-2"
     >
       <summary onClick={onSummaryClick} className={summaryClassName}>
         {summary}

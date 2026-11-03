@@ -1,6 +1,8 @@
 import { CareerTimeline } from "@/components/CareerTimeline";
 import { FilterNotice } from "@/components/FilterNotice";
+import { LinkedStyles } from "@/components/LinkedStyles";
 import { RoleCard } from "@/components/RoleCard";
+import { RoleNav } from "@/components/RoleNav";
 import { SectionShell } from "@/components/SectionShell";
 import { cv } from "@/content/cv";
 import { AS_OF, roleYears } from "@/content/career";
@@ -12,6 +14,11 @@ export const metadata = pageMetadata({
   path: "/experience",
 });
 
+/*
+  The timeline is the navigator (7 columns): a role's row opens it in the side card (5 columns), the
+  list of roles as <details>, newest first, one open at a time. On one screen the side card scrolls
+  inside itself and the opened role is brought into view there.
+*/
 export default function ExperiencePage() {
   const now = AS_OF;
   return (
@@ -19,28 +26,29 @@ export default function ExperiencePage() {
       title="Experience"
       lead="Backend work first, then product teams at Pentalog and TryAngle Labs and my own clients in healthcare, fintech and cultural heritage."
     >
-      <div className="mt-6">
-        <CareerTimeline />
-      </div>
-      <section aria-labelledby="roles" className="mt-(--gap)">
-        <div className="flex flex-wrap items-center justify-between gap-x-6">
-          <h2 id="roles" className="card-title">
-            Roles, newest first
-          </h2>
-          <FilterNotice />
-        </div>
-        <ol className="mt-3 overflow-hidden rounded-[10px] border border-border [&>li+li]:border-t [&>li+li]:border-rule">
-          {cv.roles.map((r) => (
-            <li key={r.id}>
-              <RoleCard role={r} years={roleYears(r, now)} />
+      <LinkedStyles />
+      <RoleNav className="panel-grid ex linked">
+        <CareerTimeline className="span-7" />
+        <section aria-labelledby="roles" className="card card-col span-5 p-0!">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 px-4 pt-4 pb-2">
+            <h2 id="roles" className="card-title">
+              Roles, newest first
+            </h2>
+            <FilterNotice />
+          </div>
+          <ol className="roles-list scroll-y @container border-t border-rule" data-roles-scroll="">
+            {cv.roles.map((r) => (
+              <li key={r.id}>
+                <RoleCard role={r} years={roleYears(r, now)} />
+              </li>
+            ))}
+            <li className="grid gap-x-6 gap-y-1 px-4 py-4 @xl:grid-cols-[9rem_minmax(0,1fr)] @xl:px-5">
+              <span className="text-[14px] font-medium">Earlier</span>
+              <span className="text-[14px] text-muted">{cv.earlier}</span>
             </li>
-          ))}
-          <li className="grid gap-x-6 gap-y-1 px-4 py-4 md:grid-cols-[9rem_minmax(0,1fr)_10rem] md:px-5">
-            <span className="text-[14px] font-medium">Earlier</span>
-            <span className="text-[14px] text-muted">{cv.earlier}</span>
-          </li>
-        </ol>
-      </section>
+          </ol>
+        </section>
+      </RoleNav>
     </SectionShell>
   );
 }
