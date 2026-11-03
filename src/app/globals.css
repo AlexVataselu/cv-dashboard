@@ -890,6 +890,14 @@ summary:focus-visible,
     [data-js] .ov > .ov-about {
       grid-row: 3;
     }
+    /* Experience: the navigator's rows share the card's height, so it ends level with the side card */
+    [data-js] .ex .tl :is(.tl-label, .tl-track) {
+      min-height: 34px;
+    }
+    [data-js] .ex .tl {
+      flex: 1;
+      grid-template-rows: repeat(9, minmax(34px, 1fr)) auto;
+    }
     [data-js] .ed {
       grid-template-rows: auto;
       align-content: start;
@@ -1020,22 +1028,31 @@ summary:focus-visible,
     text-decoration: underline;
     text-underline-offset: 3px;
   }
-  .tl-compact {
-    --label: 212px;
-    column-gap: 12px;
-  }
   .tl-compact .tl-label,
   .tl-compact .tl-track {
     min-height: 28px;
   }
-  .tl-compact .tl-label > :last-child {
-    white-space: nowrap;
+  /* one line per role (name, then dates) where the card is wide enough; stacked on a phone */
+  @media (min-width: 640px) {
+    .tl-compact {
+      --label: 212px;
+      column-gap: 12px;
+    }
+    .tl-compact .tl-label {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .tl-compact .tl-label > :last-child {
+      white-space: nowrap;
+    }
   }
-  .tl-compact .tl-label {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+  @media (max-width: 639.98px) {
+    .tl-compact .tl-label,
+    .tl-compact .tl-track {
+      min-height: 40px;
+    }
   }
   .tl-compact .tl-bar {
     height: 20px;
@@ -1327,6 +1344,10 @@ summary:focus-visible,
   }
 
   /* ---------- the experience side card ---------- */
+  [data-js] .roles-list.scroll-y {
+    margin-right: 0;
+    padding-right: 0;
+  }
   .roles-list > li + li {
     border-top: 1px solid var(--rule);
   }
