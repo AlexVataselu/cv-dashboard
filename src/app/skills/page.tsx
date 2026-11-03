@@ -1,28 +1,24 @@
 import { SectionShell } from "@/components/SectionShell";
-import { SkillAdoption } from "@/components/SkillAdoption";
-import { SkillGroups } from "@/components/SkillGroups";
+import { SkillMatrix } from "@/components/SkillMatrix";
 import { pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Skills",
-  description: "Skills grouped by area, each with the year it first appears on the CV: frontend, state and data, backend, testing and quality, and tooling. Pick a skill to see where it was used.",
+  description: "Every skill on the CV against the career's years: frontend, state and data, backend, testing and quality, and tooling, each with the roles and projects that used it. Pick a skill to see where it was used.",
   path: "/skills",
 });
 
 /*
-  On one screen: the adoption chart and its list on the left (5 columns), the skills by group on the
-  right (7), behind a group filter. Each side scrolls inside itself when the screen is short.
+  On one screen: the skills on the career's year axis (8 columns, its rows scrolling inside the card
+  when the screen is short) beside the card of the skill in focus (4).
 */
 export default function SkillsPage() {
   return (
     <SectionShell
       title="Skills"
-      lead="Each year count starts at the first dated role or project on the CV that uses the skill. Pick one to mark it across Experience and Projects."
+      lead="Each bar is the years a role or project on the CV used the skill. Hover one to see where; press it to mark it everywhere."
     >
-      <div className="panel-grid sk">
-        <SkillAdoption className="span-5" />
-        <SkillGroups className="span-7" />
-      </div>
+      <SkillMatrix />
     </SectionShell>
   );
 }

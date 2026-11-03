@@ -91,27 +91,38 @@ describe("Experience, skills of the open role", () => {
 });
 
 describe("Skills", () => {
-  it("groups skills under five headings with pressable chips", async () => {
-    render(<SkillsPage />);
-    const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
-    expect(headings).toEqual([
-      "Skills by the year they first appear on the CV",
-      "Which skills, when",
-      "Frontend",
-      "State & data",
-      "Backend",
-      "Testing & quality",
-      "Tooling",
-    ]);
-    const chip = screen.getByRole("button", { name: /^React ·/ });
-    expect(chip.getAttribute("aria-pressed")).toBe("false");
-    await userEvent.click(chip);
+  it("draws every skill on the career's axis, by group, as pressable rows that drive the selection", async () => {
+    const { container } = render(<SkillsPage />);
+    const groups = screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
+    expect(groups).toEqual(["Frontend", "State & data", "Backend", "Testing & quality", "Tooling", "First dated use, by year"]);
+    expect(container.querySelectorAll(".sm-row")).toHaveLength(cv.skills.length);
+    const row = screen.getByRole("button", { name: /^React ·/ });
+    expect(row.textContent).toBe("React · since 2021 · 5 yrs");
+    expect(row.getAttribute("aria-pressed")).toBe("false");
+    await userEvent.click(row);
     expect(useUiStore.getState().selectedSkill).toBe("react");
-    expect(chip.getAttribute("aria-pressed")).toBe("true");
-    expect(chip.getAttribute("data-highlight")).toBe("true");
-    await userEvent.click(chip);
+    expect(row.getAttribute("aria-pressed")).toBe("true");
+    expect(container.querySelector(".sm")!.getAttribute("data-active")).toBe("react");
+    await userEvent.click(row);
     expect(useUiStore.getState().selectedSkill).toBeNull();
-    expect(chip.getAttribute("aria-pressed")).toBe("false");
+    expect(row.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("a bar is only ever a dated span: jQuery is one outlined 2013 to 2017 span; Redux has none", () => {
+    const { container } = render(<SkillsPage />);
+    const spans = (id: string) => [...container.querySelectorAll(`.sm-row[data-skill="${id}"] .sm-span`)];
+    expect(spans("jquery")).toHaveLength(1);
+    expect(spans("jquery")[0].classList.contains("sm-past")).toBe(true);
+    expect(spans("redux")).toHaveLength(0);
+    expect(spans("nextjs").length).toBe(2); // the 2021 to 2023 freelance work, then ReAMP from 2024
+  });
+
+  it("each skill's card lists every role and project that used it, linking with ?skill= kept", () => {
+    const { container } = render(<SkillsPage />);
+    const card = container.querySelector('[data-detail="magento"]')!;
+    expect(card.textContent).toContain("Used in 1 role and 0 projects.");
+    const link = within(card as HTMLElement).getByRole("link", { name: /L\.H\.EL \(Superland\)/ });
+    expect(link.getAttribute("href")).toBe("/experience?skill=magento#role-lhel");
   });
 });
 

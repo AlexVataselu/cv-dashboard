@@ -83,7 +83,7 @@ export default function Home() {
           </label>
         </fieldset>
         <ImpactList className="ov-res span-5" />
-        <SkillGroups cloud className="ov-skills span-7" />
+        <SkillGroups className="ov-skills span-7" />
         <section aria-labelledby="about" className="card card-col ov-about span-5">
           <div className="card-head">
             <h2 id="about" className="card-title">

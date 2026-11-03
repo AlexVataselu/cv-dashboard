@@ -1315,6 +1315,243 @@ summary:focus-visible,
     padding-bottom: 14px;
   }
 
+  /* ---------- the Skills matrix: every skill on the career's year axis ---------- */
+  .sm-card {
+    --smn: 18.5rem;
+    container: sm / inline-size;
+  }
+  .cs-lane,
+  .sm-row,
+  .sm-axis {
+    display: grid;
+    grid-template-columns: var(--smn) minmax(0, 1fr);
+    column-gap: 12px;
+    align-items: center;
+  }
+  @container sm (max-width: 560px) {
+    .sm-card {
+      --smn: 11rem;
+    }
+    .sm-level {
+      display: none !important;
+    }
+  }
+  /* every other year (2012, 2014 ... 2026) unless the card is wide enough for all fifteen */
+  @container sm (max-width: 1099px) {
+    .sm-years > span:nth-child(2n) {
+      display: none;
+    }
+  }
+  .sm-track {
+    position: relative;
+    align-self: stretch;
+    /* a faint line at every year, the same scale as the axis */
+    background: repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px 100%) 0 0 / calc(100% / var(--span, 14)) 100%;
+    box-shadow: inset -1px 0 0 var(--grid);
+  }
+  .cs {
+    display: grid;
+    gap: 1px;
+  }
+  .cs-lane {
+    min-height: 15px;
+    font-size: 12px;
+    line-height: 1.2;
+    color: var(--muted);
+  }
+  .cs-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: 8px;
+  }
+  .cs-bar,
+  .cs-proj {
+    position: absolute;
+    top: 50%;
+    height: 8px;
+    margin-top: -4px;
+    border-radius: 2px;
+    background: var(--hue, var(--primary));
+  }
+  .cs-proj {
+    height: 4px;
+    margin-top: -2px;
+  }
+  .cs-proj + .cs-proj {
+    margin-top: 2px;
+  }
+  .cs-proj:first-child {
+    margin-top: -6px;
+  }
+  /* a skill in focus: its roles and projects stay lit, the rest step back */
+  .sm:not([data-active="none"]) .cs-lane {
+    opacity: 0.22;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cs-lane {
+      transition: opacity 160ms ease;
+    }
+  }
+  .sm-axis {
+    height: 22px;
+    font-size: 12px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--rule);
+  }
+  .sm-years {
+    position: relative;
+    align-self: stretch;
+  }
+  .sm-years > span {
+    position: absolute;
+    top: 4px;
+    transform: translateX(-50%);
+  }
+  .sm-years > span:first-child {
+    transform: none;
+  }
+  .sm-years > span:last-child {
+    transform: translateX(-100%);
+  }
+  .sm-body {
+    padding-top: 4px;
+  }
+  .sm-group-name {
+    padding: 8px 8px 2px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .sm-row {
+    width: 100%;
+    min-height: 30px;
+    border-radius: 6px;
+    text-align: left;
+    font-size: 0;
+    transition: background-color 150ms ease;
+  }
+  .sm-row:hover,
+  .sm[data-active] .sm-row:focus-visible {
+    background: var(--raised);
+  }
+  .sm-row[aria-pressed="true"] {
+    background: var(--hue-product-tint);
+    box-shadow: inset 0 0 0 1px var(--primary);
+  }
+  .sm-row > .sm-name,
+  .sm-row > .sm-level {
+    grid-row: 1;
+    grid-column: 1;
+    padding-left: 8px;
+  }
+  .sm-name {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.3;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 7.5rem;
+  }
+  .sm-row > .sm-level {
+    justify-self: end;
+    padding: 0 4px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .sm-row > .sm-track {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .sm-span,
+  .sm-dot {
+    position: absolute;
+    top: 50%;
+    height: 10px;
+    margin-top: -5px;
+    border-radius: 3px;
+    background: var(--primary);
+  }
+  .sm-past {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--primary);
+  }
+  .sm-dot {
+    right: 0;
+    width: 10px;
+    border-radius: 999px;
+  }
+  .sm-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .sm-key li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sm-key .sm-span,
+  .sm-key .sm-dot {
+    position: relative;
+    top: auto;
+    margin: 0;
+    height: 8px;
+  }
+  .sm-key .sm-dot {
+    width: 8px;
+  }
+  .sm-group[data-group] ~ .sm-group {
+    margin-top: 4px;
+  }
+  /* the card of the skill in focus: one panel at a time (one rule per skill, beside the page) */
+  .sd {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .sd-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .sd-link:hover {
+    background: var(--raised);
+  }
+  .sd-link:hover > span:nth-child(2) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .sd-proj {
+    width: 10px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--primary);
+  }
+  /* a phone: the card of the skill in focus rides at the foot of the screen while one is chosen */
+  @media (max-width: 1023.98px) {
+    .sm:not([data-active="none"]) .sd-card {
+      position: sticky;
+      bottom: 8px;
+      z-index: 5;
+      max-height: 46vh;
+      box-shadow: 0 8px 28px rgb(0 0 0 / 0.16);
+    }
+  }
+
   /* the client-site strip by the Overview's title: thumbnails with a tip on hover or focus */
   .site-thumb {
     position: relative;
