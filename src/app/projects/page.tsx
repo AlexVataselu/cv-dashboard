@@ -98,12 +98,13 @@ export default function ProjectsPage() {
       <PreviewStyles />
       <div className="panel-grid pr">
         <section aria-labelledby="pick-title" className="pick-wrap card card-col span-4">
-          <div className="card-head mb-1!">
+          <div className="card-head mb-0!">
             <h2 id="pick-title" className="card-title">
               Choose a project
             </h2>
-            <FilterNotice />
           </div>
+          {/* its line is always reserved, so a marked skill shifts nothing */}
+          <FilterNotice />
           <div role="radiogroup" aria-labelledby="pick-title" className="scroll-y mt-1">
             <p className="px-2.5 pb-1 pt-2 text-[13px] font-medium text-muted">Personal projects</p>
             <div className="pick-list">

@@ -1249,6 +1249,11 @@ summary:focus-visible,
       width: 58px;
     }
   }
+  @media (max-width: 639.98px) {
+    .site-thumb {
+      width: 48px;
+    }
+  }
   .site-tip {
     display: none;
     position: absolute;
