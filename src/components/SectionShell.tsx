@@ -1,9 +1,12 @@
 import type { ReactNode } from "react";
 
 /**
- * One section on the sheet: a noun title, one line about the data, then the blocks.
- * The section tabs, the sheet and the status bar are in the root layout, so they persist across
- * tab switches (one status bar, one set of web-vitals observers for the whole visit).
+ * One section on the sheet: a noun title and one line about the data on a single row, then the
+ * section's grid of cards. The section tabs, the sheet and the status bar are in the root layout, so
+ * they persist across tab switches (one status bar, one set of web-vitals observers for the visit).
+ *
+ * On a laptop or desktop screen (1024x640 and up, with JS) <main> is exactly the height left between
+ * the tabs and the status bar: the title row takes its own height and the grid (`.panel-grid`) the rest.
  */
 export function SectionShell({
   title,
@@ -18,11 +21,11 @@ export function SectionShell({
 }) {
   return (
     // tabIndex -1: the skip link moves focus here, not just the scroll position.
-    <main id="main" tabIndex={-1} className="flex-1 px-(--pad) pb-10 pt-6 outline-none md:pt-7">
-      <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-        <div className="min-w-0">
-          <h1 className="text-[22px] font-semibold leading-tight tracking-[-0.01em] md:text-[24px]">{title}</h1>
-          <p className="mt-1.5 max-w-[72ch] text-[15px] text-muted">{lead}</p>
+    <main id="main" tabIndex={-1} className="panel outline-none">
+      <div className="panel-head">
+        <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-4 gap-y-1">
+          <h1 className="text-[22px] font-semibold leading-tight tracking-[-0.01em]">{title}</h1>
+          <p className="max-w-[80ch] text-[15px] text-muted">{lead}</p>
         </div>
         {actions}
       </div>

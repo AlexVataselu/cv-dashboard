@@ -57,7 +57,7 @@ export function StatusBar({
   return (
     <footer
       aria-label="Site performance"
-      className="tnum flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-border px-(--pad) py-3 font-mono text-[12px] text-muted"
+      className="tnum flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-border px-(--pad) py-2.5 font-mono text-[12px] text-muted"
     >
       <span className="font-sans font-medium text-ink">This site, measured</span>
       <span>{auditText}</span>

@@ -21,18 +21,24 @@ export function SectionNav({ current }: { current?: SectionId }) {
   const active = current ?? sectionForPath(pathname);
   const skill = useUiStore((s) => s.selectedSkill);
   const query = skill ? `?skill=${encodeURIComponent(skill)}` : "";
+  const at = SECTIONS.findIndex((s) => s.id === active);
   return (
-    <nav aria-label="Sections" className="px-4 md:px-3 lg:px-1 lg:pt-2">
+    <nav aria-label="Sections" className="section-nav">
       <ul className="tabs">
-        {SECTIONS.map((s) => (
+        {SECTIONS.map((s, i) => (
           <li key={s.id}>
             <Link
               href={`${s.href}${query}`}
               prefetch={false}
               aria-current={s.id === active ? "page" : undefined}
+              // The panel slides the way the tabs run: forward to a tab on the right, back to one on the left.
+              transitionTypes={[i < at ? "nav-back" : "nav-forward"]}
               className="tab"
             >
               {s.label}
+              {/* The active tab's underline is one element with one view-transition name, so a
+                  section switch glides it from the old tab to the new one. */}
+              {s.id === active ? <span className="tab-ink" aria-hidden="true" /> : null}
             </Link>
           </li>
         ))}
