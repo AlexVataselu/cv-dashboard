@@ -8,8 +8,8 @@ import { ArrowRightIcon } from "@/components/icons";
  */
 export function SkipIntroDiagram() {
   const arrow = (
-    <span className="flex items-center justify-center py-1 text-muted lg:py-0" aria-hidden="true">
-      <ArrowRightIcon className="icon rotate-90 lg:rotate-0" />
+    <span className="flex items-center justify-center py-1 text-muted @xl:py-0" aria-hidden="true">
+      <ArrowRightIcon className="icon rotate-90 @xl:rotate-0" />
     </span>
   );
   return (
@@ -18,7 +18,7 @@ export function SkipIntroDiagram() {
         <span className="text-[14px] font-semibold">How it works</span>
         <span className="pill pill-positive">Runs locally, no third-party database</span>
       </figcaption>
-      <ol className="grid items-stretch lg:grid-cols-[minmax(0,1fr)_1.5rem_minmax(0,1.6fr)_1.5rem_minmax(0,1fr)]">
+      <ol className="grid items-stretch @xl:grid-cols-[minmax(0,1fr)_1.5rem_minmax(0,1.6fr)_1.5rem_minmax(0,1fr)]">
         <li className="flow-node">
           <span className="block text-[14px] font-semibold">Stremio player</span>
           <span className="mt-1 block text-[13px] text-muted">A fork of the Stremio desktop client (React) asks for the episode playing.</span>

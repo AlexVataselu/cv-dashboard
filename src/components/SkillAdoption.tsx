@@ -14,7 +14,7 @@ function ticks(max: number) {
  * at build time from the same derivation as the skill years. Years with none stay at zero.
  * Beside it, the same data as a list, so every column can be checked name by name.
  */
-export function SkillAdoption() {
+export function SkillAdoption({ className }: { className?: string }) {
   const now = AS_OF;
   const levels = deriveAllSkillLevels(cv, now);
   const years = Array.from({ length: now - FIRST_YEAR }, (_, i) => FIRST_YEAR + i);
@@ -31,8 +31,9 @@ export function SkillAdoption() {
   const top = t[t.length - 1];
 
   return (
-    <div className="mt-6 grid gap-(--gap) xl:grid-cols-12">
-      <figure className="card xl:col-span-7" aria-labelledby="adoption-title">
+    // One column: the chart at its own height, the list under it taking the rest (and scrolling).
+    <div className={`card-col gap-(--gap) ${className ?? ""}`}>
+      <figure className="card @container" aria-labelledby="adoption-title">
         <div className="card-head">
           <h2 id="adoption-title" className="card-title">
             Skills by the year they first appear on the CV
@@ -109,9 +110,9 @@ export function SkillAdoption() {
               // neighbour's bar.
               const last = years.length - 1;
               const shown = i === 0 || ((last - i) % 4 === 0 && i > 1);
-              const align = i === 0 ? "max-sm:justify-start" : i === last ? "max-sm:justify-end" : "";
+              const align = i === 0 ? "@max-xl:justify-start" : i === last ? "@max-xl:justify-end" : "";
               return (
-                <span key={y} className={`tnum flex min-w-0 flex-1 justify-center whitespace-nowrap ${shown ? "" : "max-sm:invisible"} ${align}`}>
+                <span key={y} className={`tnum flex min-w-0 flex-1 justify-center whitespace-nowrap ${shown ? "" : "@max-xl:invisible"} ${align}`}>
                   {y}
                 </span>
               );
@@ -120,14 +121,14 @@ export function SkillAdoption() {
         </div>
       </figure>
 
-      <section className="card xl:col-span-5" aria-labelledby="adoption-list">
+      <section className="card card-col flex-1" aria-labelledby="adoption-list">
         <div className="card-head">
           <h2 id="adoption-list" className="card-title">
             Which skills, when
           </h2>
           <p className="meta tnum">{cv.skills.length - dated} listed without a date</p>
         </div>
-        <ul className="grid">
+        <ul className="scroll-y grid content-start" tabIndex={0} aria-labelledby="adoption-list">
           {years
             .filter((y) => named(y).length > 0)
             .reverse()

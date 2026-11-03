@@ -15,8 +15,8 @@ export default function EducationPage() {
       title="Education"
       lead="Two degrees from the Romanian American University in Bucharest, and the two languages I work in."
     >
-      <div className="mt-6 grid gap-(--gap) xl:grid-cols-3">
-        <section aria-labelledby="degrees" className="card xl:col-span-2">
+      <div className="panel-grid ed">
+        <section aria-labelledby="degrees" className="card span-8">
           <div className="card-head">
             <h2 id="degrees" className="card-title">
               Degrees
@@ -32,7 +32,7 @@ export default function EducationPage() {
           </ul>
         </section>
 
-        <section aria-labelledby="languages" className="card">
+        <section aria-labelledby="languages" className="card span-4">
           <div className="card-head">
             <h2 id="languages" className="card-title">
               Languages

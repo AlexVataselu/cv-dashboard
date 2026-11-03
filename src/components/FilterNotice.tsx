@@ -16,6 +16,7 @@ export function FilterNotice() {
     <p
       className="flex min-h-7 min-w-0 basis-full items-center whitespace-nowrap text-[14px] leading-7 md:basis-auto"
       aria-live="polite"
+      data-filter-notice=""
     >
       {name ? (
         <>

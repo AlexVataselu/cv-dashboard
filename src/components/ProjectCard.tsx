@@ -50,9 +50,12 @@ export function ProjectCard({ project, eager = false }: { project: Project; eage
     <HighlightCard
       id={`project-${project.id}`}
       skillIds={project.skillIds}
-      className="card grid scroll-mt-6 grid-cols-[minmax(0,1fr)] gap-6 transition-colors duration-200 lg:grid-cols-12 lg:gap-8"
+      className="card card-col scroll-mt-6 transition-colors duration-200"
     >
-      <div className="min-w-0 lg:col-span-5">
+      {/* Laid out by the preview's own width (container queries): text beside the picture when wide. */}
+      <div className="scroll-y @container">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 @2xl:grid-cols-12 @2xl:gap-8">
+      <div className="min-w-0 @2xl:col-span-5">
         <div className="flex h-6 items-center justify-between gap-3">
           <p className="tnum text-[14px] font-medium text-muted">{project.label}</p>
           <SkillBadge skillIds={project.skillIds} />
@@ -88,7 +91,7 @@ export function ProjectCard({ project, eager = false }: { project: Project; eage
           </ul>
         ) : null}
       </div>
-      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-4 lg:col-span-7">
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-4 @2xl:col-span-7">
         {project.id === "powderino" ? <PowderinoFacts /> : null}
         {media?.shot ? (
           <figure>
@@ -98,7 +101,7 @@ export function ProjectCard({ project, eager = false }: { project: Project; eage
                 address={media.shot.address}
                 alt={media.shot.alt}
                 eager={eager}
-                sizes="(min-width: 1280px) 560px, (min-width: 1024px) 50vw, (min-width: 640px) 92vw, 80vw"
+                sizes="(min-width: 1440px) 440px, (min-width: 1024px) 50vw, (min-width: 640px) 92vw, 80vw"
               />
             </a>
             <figcaption className="mt-2 text-[13px] text-muted">{media.shot.caption}</figcaption>
@@ -106,10 +109,12 @@ export function ProjectCard({ project, eager = false }: { project: Project; eage
         ) : null}
       </div>
       {project.id === "stremio" ? (
-        <div className="min-w-0 lg:col-span-12">
+        <div className="min-w-0 @2xl:col-span-12">
           <SkipIntroDiagram />
         </div>
       ) : null}
+      </div>
+      </div>
     </HighlightCard>
   );
 }
