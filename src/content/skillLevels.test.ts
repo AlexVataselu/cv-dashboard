@@ -22,9 +22,24 @@ describe("deriveSkillLevel", () => {
   );
 
   it.each(["react-native", "expo", "tailwind", "github-actions", "vercel"])(
-    "%s since 2023",
-    (id) => expect(deriveSkillLevel(id, cv, YEAR).since).toBe(2023),
+    "%s since 2021 (TryAngle Labs)",
+    (id) => expect(deriveSkillLevel(id, cv, YEAR).since).toBe(2021),
   );
+
+  it("react native's years match the CV's five years", () => {
+    expect(deriveSkillLevel("react-native", cv, YEAR).years).toBe(5);
+  });
+
+  it.each(["aspnet-mvc", "csharp", "jquery", "php", "mysql"])("%s since 2013 (Zega Software)", (id) => {
+    const l = deriveSkillLevel(id, cv, YEAR);
+    expect(l.since).toBe(2013);
+    expect(l.years).toBe(13);
+    expect(l.usedIn.at(-1)).toBe("zega");
+  });
+
+  it("sonarqube since 2024", () => {
+    expect(deriveSkillLevel("sonarqube", cv, YEAR).since).toBe(2024);
+  });
 
   it("sentry since 2024", () => {
     expect(deriveSkillLevel("sentry", cv, YEAR).since).toBe(2024);
@@ -34,8 +49,8 @@ describe("deriveSkillLevel", () => {
     expect(deriveSkillLevel(id, cv, YEAR).since).toBe(2025),
   );
 
-  it.each(["html", "css", "javascript"])("%s implied since 2017", (id) =>
-    expect(deriveSkillLevel(id, cv, YEAR).since).toBe(2017),
+  it.each(["html", "css", "javascript"])("%s implied since 2012 (Kemblimed, web developer)", (id) =>
+    expect(deriveSkillLevel(id, cv, YEAR).since).toBe(2012),
   );
 
   it.each(["jest", "nodejs", "tanstack-query"])(
@@ -59,9 +74,9 @@ describe("deriveSkillLevel", () => {
     expect(deriveSkillLevel(id, cv, YEAR).since).toBeNull(),
   );
 
-  // Brief said figma => null, but cv.ts lists figma on tryangle (2023).
-  it("figma since 2023 (tryangle evidence)", () => {
-    expect(deriveSkillLevel("figma", cv, YEAR).since).toBe(2023);
+  // Brief said figma => null, but cv.ts lists figma on tryangle (2021).
+  it("figma since 2021 (tryangle evidence)", () => {
+    expect(deriveSkillLevel("figma", cv, YEAR).since).toBe(2021);
   });
 
   it("react usedIn contains pentalog and tryangle", () => {

@@ -8,10 +8,14 @@ export interface SkillLevel {
   usedIn: string[];
 }
 
+/**
+ * Skills no dated role lists by name but the earliest dated role clearly implies: Kemblimed
+ * (2012 to 2013) was a web developer role, so HTML, CSS and JavaScript date from 2012.
+ */
 const IMPLIED_SINCE: Record<string, number> = {
-  html: 2017,
-  css: 2017,
-  javascript: 2017,
+  html: 2012,
+  css: 2012,
+  javascript: 2012,
 };
 
 /** `currentYear` defaults to the CV's own year (`data.asOf`), never the clock. */
