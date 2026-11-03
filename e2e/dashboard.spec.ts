@@ -130,11 +130,11 @@ test("320px: the 'Uses X' badge has its own line and never covers a role's dates
   }
 });
 
-test("/projects?skill=expo highlights Powderino with a text badge and no layout shift", async ({
+test("/projects?skill=expo highlights Powderino in the project list with a text badge and no layout shift", async ({
   page,
 }) => {
   await page.goto("/projects");
-  const card = page.locator("article", { hasText: "Powderino" });
+  const card = page.locator("label.pick", { hasText: "Powderino" });
   const plain = await card.boundingBox();
   await page.goto("/projects?skill=expo");
   await expect(card).toHaveAttribute("data-highlight", "true");

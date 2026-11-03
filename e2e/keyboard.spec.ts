@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 /** Presses Tab until `match` holds for the focused element; returns the labels passed on the way. */
-async function tabUntil(page: Page, match: (el: Element) => boolean, max = 25) {
+async function tabUntil(page: Page, match: (el: Element) => boolean, max = 45) {
   const seen: string[] = [];
   for (let i = 0; i < max; i++) {
     await page.keyboard.press("Tab");
