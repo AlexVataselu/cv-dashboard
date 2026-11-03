@@ -985,6 +985,23 @@ summary:focus-visible,
     [data-js] .ov .tl-compact :is(.tl-label, .tl-track) {
       min-height: 30px;
     }
+    /* Experience on a short screen: one line per role (name, then dates), as on the Overview */
+    [data-js] .ex .tl {
+      --label: 212px;
+      column-gap: 12px;
+    }
+    [data-js] .ex .tl-label {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    [data-js] .ex .tl-label > :last-child {
+      white-space: nowrap;
+    }
+    [data-js] .ex .tl-extra {
+      display: none;
+    }
     /* Experience on a short screen: the timeline alone on the left, at its own height; the open
        role's skills are still in its stack line and its bullets */
     [data-js] .ex > .ex-skills {
@@ -1365,8 +1382,8 @@ summary:focus-visible,
   .sm-track {
     position: relative;
     align-self: stretch;
-    /* a faint line at every year, the same scale as the axis */
-    background: repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px 100%) 0 0 / calc(100% / var(--span, 14)) 100%;
+    /* a faint line at every year, the same scale as the axis: chart gridlines, not a fill */
+    background: repeating-linear-gradient( /* taste-skill-ignore: 1px year gridlines drawn as a repeat */90deg, var(--grid) 0 1px, transparent 1px 100%) 0 0 / calc(100% / var(--span, 14)) 100%;
     box-shadow: inset -1px 0 0 var(--grid);
   }
   .cs {

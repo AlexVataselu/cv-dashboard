@@ -81,12 +81,12 @@ export function ProjectCard({ project, eager = false }: { project: Project; eage
           <ul className="mt-5 grid gap-1.5">
             {media.links.map((l) => (
               <li key={l.href}>
-                <a href={l.href} className="card-link group/link grid! grid-cols-[auto_auto] justify-start gap-x-1">
-                  <span>{l.label}</span>
-                  <ExternalIcon />
-                  <span className="col-span-2 font-mono text-[12px] font-normal text-muted group-hover/link:underline">
-                    {l.address}
+                <a href={l.href} className="card-link block!">
+                  <span className="inline-flex items-center gap-1">
+                    {l.label}
+                    <ExternalIcon />
                   </span>
+                  <span className="block font-mono text-[12px] font-normal text-muted">{l.address}</span>
                 </a>
               </li>
             ))}

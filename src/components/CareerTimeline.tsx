@@ -171,7 +171,13 @@ export function CareerTimeline({
           <span className="tl-label">
             <span>React, Next.js, TS</span>
             <span className="tnum">
-              {compact ? `since ${reactSince}` : `${reactSince}–now · ${yrs(now - reactSince)}`}
+              {compact ? (
+                `since ${reactSince}`
+              ) : (
+                <>
+                  {reactSince}–now<span className="tl-extra"> · {yrs(now - reactSince)}</span>
+                </>
+              )}
             </span>
           </span>
           <span className="tl-track">
