@@ -3,13 +3,16 @@ import { cv } from "@/content/cv";
 import {
   AS_OF,
   FIRST_YEAR,
+  KINDS,
   KIND_LABEL,
+  careerTotals,
   companyShort,
   kindOf,
+  kindYears,
+  overlapSpan,
   period,
   roleEnd,
   roleYears,
-  type WorkKind,
 } from "@/content/career";
 import { deriveSkillLevel } from "@/content/skillLevels";
 
@@ -27,10 +30,9 @@ export function CareerTimeline({ headingLevel = "h2" }: { headingLevel?: "h2" | 
   const roles = [...cv.roles].sort((a, b) => a.start - b.start);
   const years = Array.from({ length: span + 1 }, (_, i) => FIRST_YEAR + i);
 
-  const byKind = (k: WorkKind) =>
-    roles.filter((r) => kindOf(r.id) === k).reduce((sum, r) => sum + roleYears(r, now), 0);
-  const kinds: WorkKind[] = ["product", "indie", "shop"];
-  const total = roles.reduce((sum, r) => sum + roleYears(r, now), 0);
+  // Each calendar year counts once: the kinds' years, less the years run side by side, are the total.
+  const { years: total, overlap } = careerTotals(now);
+  const shared = overlapSpan(now);
 
   const react = deriveSkillLevel("react", cv, now);
   const reactSince = react.since ?? now;
@@ -54,13 +56,21 @@ export function CareerTimeline({ headingLevel = "h2" }: { headingLevel?: "h2" | 
         <p className="meta tnum">{yrs(total)} in dated roles</p>
       </div>
       <ul className="mb-4 flex flex-wrap gap-x-4 gap-y-2 text-[13px]" aria-label="Kinds of work, with years">
-        {kinds.map((k) => (
+        {KINDS.map((k) => (
           <li key={k} className="flex items-center gap-2" data-kind={k}>
             <span className="key" aria-hidden="true" />
             <span>{KIND_LABEL[k]}</span>
-            <span className="tnum text-muted">{yrs(byKind(k))}</span>
+            <span className="tnum text-muted">{yrs(kindYears(k, now))}</span>
           </li>
         ))}
+        {shared ? (
+          <li className="flex items-center gap-2">
+            <span>
+              Side by side, <span className="tnum">{shared.start}–{shared.end}</span>
+            </span>
+            <span className="tnum text-muted">−{yrs(overlap)}</span>
+          </li>
+        ) : null}
       </ul>
 
       <div className="tl tl-years">

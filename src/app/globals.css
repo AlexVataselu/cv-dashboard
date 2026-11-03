@@ -5,8 +5,9 @@
   - The frame: one blue-grey tint (from the cobalt) holds the profile rail and the section tabs, with
     no rule between them. The work sits on a white sheet with a 1px edge, 16px corners and no shadow.
   - One confident primary, cobalt, for the one action (Email me), the current tab and the product-team
-    data. Two supporting data hues: teal for independent work, amber for the early e-commerce years.
-    The three hues mean the same thing on every screen (the career timeline, Experience, the results).
+    data. Three supporting data hues: teal for independent work, amber for the e-commerce years, rose
+    for the backend years before them. The four hues mean the same thing on every screen (the career
+    timeline, Experience, the results).
   - Dark is designed, not inverted: true neutral greys (no navy, no slate), the hues lifted so dark
     text sits on them, the primary button lifted to a pale cobalt with near-black text.
   Every text pair below is WCAG AA or better (checked with a contrast script; values in the report).
@@ -33,9 +34,12 @@
   --hue-indie-on: #ffffff; /* 5.1:1 */
   --hue-shop: #c47f12;
   --hue-shop-on: #10131a; /* 5.7:1; the bar is 3.3:1 on white */
+  --hue-backend: #b8336a;
+  --hue-backend-on: #ffffff; /* 5.7:1 */
   --hue-product-tint: #e6eefc;
   --hue-indie-tint: #def3ee;
   --hue-shop-tint: #fbefdb;
+  --hue-backend-tint: #fbe8ef; /* ink on it 15.8:1 */
 
   --positive: #1e7b4f;
   --pill-positive-bg: #dcfae5;
@@ -84,9 +88,12 @@
     --hue-indie-on: #0b0c0f;
     --hue-shop: #e7a93a;
     --hue-shop-on: #0b0c0f;
+    --hue-backend: #f07aa5; /* 6.9:1 on the sheet */
+    --hue-backend-on: #0b0c0f; /* 7.5:1 */
     --hue-product-tint: #1d2638;
     --hue-indie-tint: #15302b;
     --hue-shop-tint: #33281a;
+    --hue-backend-tint: #351c26; /* ink on it 14.1:1 */
     --positive: #4cc985;
     --pill-positive-bg: #14291d;
     --pill-positive-ink: #6ee0a0;
@@ -290,6 +297,11 @@ summary:focus-visible,
     --hue: var(--hue-shop);
     --hue-on: var(--hue-shop-on);
     --hue-tint: var(--hue-shop-tint);
+  }
+  [data-kind="backend"] {
+    --hue: var(--hue-backend);
+    --hue-on: var(--hue-backend-on);
+    --hue-tint: var(--hue-backend-tint);
   }
   .key,
   .hue-fill {
@@ -510,8 +522,14 @@ summary:focus-visible,
   .tl-years {
     container-type: inline-size;
   }
+  @container (max-width: 640px) {
+    /* every other year from the first: 2012, 2014 ... 2026 on the CV's span */
+    .tl-axis > span:nth-child(2n) {
+      display: none;
+    }
+  }
   @container (max-width: 480px) {
-    /* only the first year, every fourth from it, and the last: 2017, 2021, 2025 on the CV's span */
+    /* only the first year, every fourth from it, and the last: 2012, 2016, 2020, 2024, 2026 */
     .tl-axis > span:not(:first-child, :last-child, :nth-child(4n + 1)) {
       display: none;
     }
