@@ -96,10 +96,15 @@ function installExpand() {
   );
 }
 
-/** Projects: the chosen preview slides in. */
+/** Projects: the chosen preview slides in; a gallery's chosen screenshot fades in. */
 function installPreview() {
   document.addEventListener("change", (e) => {
     const t = e.target as HTMLInputElement;
+    if (t.name?.startsWith("shot-")) {
+      const shot = document.getElementById(`${t.name}-${t.value}`);
+      if (shot) animate(shot, { opacity: [0, 1] }, { duration: 0.22, ease });
+      return;
+    }
     if (t.name !== "project") return;
     const el = document.getElementById(`preview-${t.value}`);
     if (el) animate(el, { opacity: [0, 1], transform: ["translateX(14px)", "translateX(0)"] }, { duration: 0.34, ease });

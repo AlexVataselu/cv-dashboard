@@ -1,8 +1,8 @@
 import type { Project } from "@/content/types";
 import { mediaFor } from "@/content/projectMedia";
-import { BrowserFrame } from "@/components/BrowserFrame";
 import { HighlightCard } from "@/components/Highlight";
 import { SkillBadge } from "@/components/SkillBadge";
+import { ShotGallery } from "@/components/ShotGallery";
 import { SkipIntroDiagram } from "@/components/SkipIntroDiagram";
 import { ExternalIcon } from "@/components/icons";
 
@@ -92,21 +92,9 @@ export function ProjectCard({ project, eager = false }: { project: Project; eage
         ) : null}
       </div>
       <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-4 @2xl:col-span-7">
+        {/* Powderino shows its facts until Alex's own iOS screenshots are in (then they follow them). */}
         {project.id === "powderino" ? <PowderinoFacts /> : null}
-        {media?.shot ? (
-          <figure>
-            <a href={media.shot.href} className="block">
-              <BrowserFrame
-                image={media.shot.image}
-                address={media.shot.address}
-                alt={media.shot.alt}
-                eager={eager}
-                sizes="(min-width: 1440px) 440px, (min-width: 1024px) 50vw, (min-width: 640px) 92vw, 80vw"
-              />
-            </a>
-            <figcaption className="mt-2 text-[13px] text-muted">{media.shot.caption}</figcaption>
-          </figure>
-        ) : null}
+        {media ? <ShotGallery id={project.id} title={name} shots={media.shots} eager={eager} /> : null}
       </div>
       {project.id === "stremio" ? (
         <div className="min-w-0 @2xl:col-span-12">

@@ -1,0 +1,38 @@
+{
+  "stremio": [
+    {
+      "image": "/work/stremio-filters",
+      "widths": [
+        640
+      ],
+      "width": 640,
+      "height": 360,
+      "label": "Filters",
+      "alt": "Stremio's stream list with the fork's filters above it: an All sites dropdown and resolution chips with counts (All, 4K 5, 1080p 23, 720p 7)",
+      "caption": "Resolution chips with stream counts, and a torrent site dropdown, above the stream list"
+    },
+    {
+      "image": "/work/stremio-sites",
+      "widths": [
+        640
+      ],
+      "width": 640,
+      "height": 360,
+      "label": "Site dropdown",
+      "alt": "The torrent site dropdown open over the stream list, listing sites with their stream counts: ThePirateBay 17, Rutracker 7, 1337x 5 and more",
+      "caption": "The torrent site dropdown, each site with its number of streams"
+    },
+    {
+      "image": "/work/stremio-1080p",
+      "widths": [
+        640
+      ],
+      "width": 640,
+      "height": 360,
+      "label": "1080p",
+      "alt": "The 1080p chip selected, with the stream list narrowed to 1080p streams",
+      "caption": "The 1080p chip selected: the list keeps only 1080p streams"
+    }
+  ],
+  "powderino": []
+}

@@ -108,9 +108,32 @@ describe("Projects", () => {
       "2026",
       "Since 2024",
     ]);
-    expect(within(cards[0]).getByText(/Stremio Skip Intro/)).toBeTruthy();
-    expect(within(cards[1]).getByText(/Powderino/)).toBeTruthy();
-    expect(within(cards[2]).getByText(/ReAMP/)).toBeTruthy();
+    expect(within(cards[0]).getByRole("heading", { name: /Stremio Skip Intro/ })).toBeTruthy();
+    expect(within(cards[1]).getByRole("heading", { name: /Powderino/ })).toBeTruthy();
+    expect(within(cards[2]).getByRole("heading", { name: /ReAMP/ })).toBeTruthy();
+  });
+
+  it("Stremio has a gallery of the fork's stream filters and the GitHub fork, each captioned", async () => {
+    render(<ProjectsPage />);
+    const [stremio, powderino, reamp] = screen.getAllByRole("article");
+    const group = within(stremio).getByRole("group", { name: /Screenshots of Stremio/ });
+    const tabs = within(group).getAllByRole("radio");
+    expect(tabs.map((t) => t.parentElement!.textContent)).toEqual(["Filters", "Site dropdown", "1080p", "On GitHub"]);
+    expect((tabs[0] as HTMLInputElement).checked).toBe(true);
+    const figures = stremio.querySelectorAll("figure.shot");
+    expect(figures).toHaveLength(4);
+    for (const f of figures) expect(f.querySelector("figcaption")!.textContent).toMatch(/\d\/4\S/);
+    expect(figures[0].textContent).toMatch(/Resolution chips/);
+    // the first shot is the page's one eager image; the rest wait until chosen
+    const imgs = [...stremio.querySelectorAll("img")];
+    expect(imgs.map((i) => i.getAttribute("loading"))).toEqual(["eager", "lazy", "lazy", "lazy"]);
+    for (const i of imgs) expect(i.getAttribute("width") && i.getAttribute("height")).toBeTruthy();
+    await userEvent.click(tabs[3]);
+    expect((tabs[3] as HTMLInputElement).checked).toBe(true);
+    // Powderino keeps its facts until Alex's screenshots are in; ReAMP has one shot and no switcher
+    expect(within(powderino).getByText("3,000+")).toBeTruthy();
+    expect(within(reamp).queryByRole("radio")).toBeNull();
+    expect(within(reamp).getByRole("img", { name: /ReAMP's start screen/ })).toBeTruthy();
   });
 });
 

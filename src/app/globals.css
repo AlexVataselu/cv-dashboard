@@ -621,6 +621,48 @@ summary:focus-visible,
     white-space: nowrap;
   }
 
+  /* the bar of an app capture names the build, not an address: plain text, no address pill */
+  .browser-app {
+    background: none;
+    padding: 0 2px;
+  }
+
+  /* ---------- a project's screenshots, one at a time (radios: no JS) ---------- */
+  .gallery-tabs {
+    margin-bottom: 10px;
+  }
+  .gallery .shot + .shot {
+    display: none;
+  }
+  .gallery:has(.gallery-tabs :checked) .shot {
+    display: none;
+  }
+  .gallery:has(.gallery-tabs input[value="0"]:checked) .shot[data-shot="0"],
+  .gallery:has(.gallery-tabs input[value="1"]:checked) .shot[data-shot="1"],
+  .gallery:has(.gallery-tabs input[value="2"]:checked) .shot[data-shot="2"],
+  .gallery:has(.gallery-tabs input[value="3"]:checked) .shot[data-shot="3"],
+  .gallery:has(.gallery-tabs input[value="4"]:checked) .shot[data-shot="4"],
+  .gallery:has(.gallery-tabs input[value="5"]:checked) .shot[data-shot="5"] {
+    display: block;
+  }
+  /* a portrait phone screen: a rounded device edge, never wider than a phone */
+  .phone {
+    display: block;
+    width: min(100%, 260px);
+    margin-inline: auto;
+    padding: 6px;
+    border: 1px solid var(--control);
+    border-radius: 30px;
+    background: var(--raised);
+  }
+  .phone img {
+    border-radius: 24px;
+  }
+  .gallery-phone figcaption {
+    justify-content: center;
+    text-align: center;
+  }
+
   /* ---------- the architecture diagram ---------- */
   .flow-node {
     border: 1px solid var(--border);

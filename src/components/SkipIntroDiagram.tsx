@@ -4,7 +4,7 @@ import { ArrowRightIcon } from "@/components/icons";
  * How Stremio Skip Intro & Recap works, from the CV's description and the project's own README:
  * the player asks a detection engine on the same machine; the engine finds the intro by matching
  * audio fingerprints across a season and the recap by matching subtitle lines against earlier
- * episodes; the player shows a button for each. A diagram of the parts, not a picture of the UI.
+ * episodes; the player shows a Stremio-style Skip pill for each. A diagram of the parts, not a picture of the UI.
  */
 export function SkipIntroDiagram() {
   const arrow = (
@@ -37,7 +37,7 @@ export function SkipIntroDiagram() {
         </li>
         <li aria-hidden="true">{arrow}</li>
         <li className="flow-node">
-          <span className="block text-[14px] font-semibold">A button for each</span>
+          <span className="block text-[14px] font-semibold">A Stremio-style Skip pill for each</span>
           <span className="mt-2 flex flex-wrap gap-2">
             <span className="pill">Skip Intro</span>
             <span className="pill">Skip Recap</span>
