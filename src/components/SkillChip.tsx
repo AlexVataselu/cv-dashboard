@@ -5,21 +5,35 @@
  * text node at font-size 0: it keeps "React · since 2021 · 5 yrs" as the accessible name and
  * text, while the row shows them apart.
  *
+ * `roles` (role ids) lets a hovered role light the chip (LinkedStyles); `used` is the readable
+ * "where" line the Overview's readout shows on hover and focus.
+ *
  * Server-rendered: the one SkillPicker around the groups handles every chip's press and keeps
- * aria-pressed in step with the store, so 33 chips cost no client components to hydrate.
+ * aria-pressed in step with the store, so the chips cost no client components to hydrate.
  */
 export function SkillChip({
   skillId,
   name,
   levelText,
+  roles,
+  used,
 }: {
   skillId: string;
   name: string;
   /** e.g. "since 2021 · 5 yrs"; empty when the CV gives no year */
   levelText?: string;
+  roles?: string[];
+  used?: string;
 }) {
   return (
-    <button type="button" aria-pressed="false" data-skill={skillId} className="skill-chip">
+    <button
+      type="button"
+      aria-pressed="false"
+      data-skill={skillId}
+      data-roles={roles && roles.length > 0 ? roles.join(" ") : undefined}
+      data-used={used || undefined}
+      className="skill-chip"
+    >
       <span className="skill-name">{name}</span>
       {levelText ? (
         <>

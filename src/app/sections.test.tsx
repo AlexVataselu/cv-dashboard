@@ -17,7 +17,7 @@ describe("Overview", () => {
     render(<Home />);
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     for (const g of cv.glance) {
-      expect(screen.getByText(g.value, { selector: "p" , exact: true })).toBeTruthy();
+      expect(screen.getByText(g.value, { selector: ".kpi-value", exact: true })).toBeTruthy();
       expect(screen.getByText(g.label)).toBeTruthy();
     }
     for (const i of cv.impact) {
@@ -150,7 +150,7 @@ describe("year counts run to the CV's year, not the clock", () => {
     expect(cv.asOf).toBe(2026);
 
     const home = render(<Home />);
-    const total = `${cv.glance[0].value} yrs in dated roles`;
+    const total = new RegExp(`^${cv.glance[0].value} yrs in dated roles`);
     expect(within(home.container).getByText(total)).toBeTruthy();
     expect(within(home.container).getByRole("button", { name: /^React ·/ }).textContent).toBe(
       `React · since 2021 · ${cv.glance[1].value} yrs`,
