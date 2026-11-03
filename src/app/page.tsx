@@ -57,7 +57,8 @@ export default function Home() {
     ["Availability", `${cv.availability}, remote (EU)`],
     ["Industries", "Healthcare, fintech, cultural heritage"],
     ["Languages", cv.languages.map((l) => `${l.name} (${l.level.toLowerCase()})`).join(", ")],
-    ["Education", cv.education.map((e) => e.degree).join("; ")],
+    // the two degrees; the Education screen has the whole path, high school first
+    ["Education", cv.education.filter((e) => !e.degree.startsWith("High school")).map((e) => e.degree).join("; ")],
   ];
   return (
     <SectionShell title="Overview" lead="Senior frontend engineer, 14 years building software." actions={<SitesStrip />}>

@@ -950,9 +950,7 @@ summary:focus-visible,
       min-height: clamp(36px, 4.4vh, 44px);
     }
     [data-js] .ed {
-      grid-template-rows: auto;
-      align-content: start;
-      align-items: start;
+      grid-template-rows: minmax(0, 1fr);
     }
   }
 
@@ -1329,11 +1327,27 @@ summary:focus-visible,
     align-items: center;
   }
   @container sm (max-width: 560px) {
-    .sm-card {
+    .sm-head,
+    .sm-body {
       --smn: 11rem;
     }
     .sm-level {
       display: none !important;
+    }
+    .sm-years > span:not(:nth-child(4n + 1), :last-child),
+    .sm-years > span:nth-last-child(3) {
+      display: none;
+    }
+  }
+  /* a narrower card: a narrower name column, and the years every four (2012, 2016, 2020, 2026) */
+  @container sm (min-width: 561px) and (max-width: 760px) {
+    .sm-head,
+    .sm-body {
+      --smn: 16rem;
+    }
+    .sm-years > span:not(:nth-child(4n + 1), :last-child),
+    .sm-years > span:nth-last-child(3) {
+      display: none;
     }
   }
   /* every other year (2012, 2014 ... 2026) unless the card is wide enough for all fifteen */
@@ -1455,6 +1469,11 @@ summary:focus-visible,
     text-overflow: ellipsis;
     white-space: nowrap;
     padding-right: 7.5rem;
+  }
+  @container sm (max-width: 560px) {
+    .sm-name {
+      padding-right: 0;
+    }
   }
   .sm-row > .sm-level {
     justify-self: end;
@@ -1637,6 +1656,52 @@ summary:focus-visible,
   }
   [data-js] .preview {
     display: none;
+  }
+
+  /* ---------- education: the path, oldest first, on one line of nodes ---------- */
+  .ed-path {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+  .ed-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 16px;
+    padding-bottom: 28px;
+  }
+  /* on one screen the stages share the card's height, each no taller than it needs to read as a step */
+  [data-js] .ed .ed-step:not(:last-child) {
+    flex: 1 1 0;
+    max-height: 184px;
+  }
+  /* one line through every node: from each node down to the next */
+  .ed-step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 13px;
+    top: 32px;
+    bottom: 2px;
+    width: 2px;
+    border-radius: 1px;
+    background: var(--border);
+  }
+  .ed-node {
+    width: 28px;
+    height: 28px;
+    margin-top: 2px;
+    border-radius: 999px;
+    border: 2px solid var(--primary);
+    background: var(--surface);
+  }
+  .ed-step:nth-last-child(2) .ed-node {
+    background: var(--primary);
+    box-shadow: inset 0 0 0 5px var(--surface);
+  }
+  .ed-step[data-work] .ed-node {
+    border-style: dashed;
+    border-color: var(--control);
   }
 
   /* ---------- the experience side card ---------- */

@@ -166,9 +166,16 @@ describe("Projects", () => {
 });
 
 describe("Education", () => {
-  it("shows both degrees and languages with no years", () => {
+  it("shows the path from high school to the master's, and languages, with no years", () => {
     const { container } = render(<EducationPage />);
-    for (const e of cv.education) expect(screen.getByText(e.degree)).toBeTruthy();
+    const steps = [...container.querySelectorAll(".ed-step:not([data-work])")].map((s) => s.textContent);
+    expect(steps).toEqual([
+      "High schoolMathematics & Computer ScienceToma N. Socolescu Technical High School, Ploiesti",
+      "Bachelor'sComputer Science ManagementRomanian American University, Bucharest",
+      "Master'sIT EconomicsRomanian American University, Bucharest",
+    ]);
+    expect(screen.getByText(cv.earlier)).toBeTruthy();
+    expect(container.querySelector(".ed-step[data-work]")!.textContent).toContain("14 years building software");
     for (const l of cv.languages) {
       expect(screen.getByText(l.name)).toBeTruthy();
       expect(screen.getByText(l.level)).toBeTruthy();

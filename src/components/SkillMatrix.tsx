@@ -133,7 +133,7 @@ export function SkillMatrix() {
                           data-skill={s.id}
                           aria-describedby={`sd-used-${s.id}`}
                         >
-                          <span className="sm-name">{s.name}</span>
+                          <span className="sm-name" title={s.name}>{s.name}</span>
                           {text ? (
                             <>
                               {" · "}

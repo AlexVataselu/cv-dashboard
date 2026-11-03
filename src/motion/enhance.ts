@@ -43,7 +43,7 @@ export function enter() {
 
 /** Filters: the chips and groups that stay glide to their new places; the ones that return fade in. */
 function installFlip() {
-  const targets = (box: Element) => [...box.querySelectorAll<HTMLElement>(".skill-chip, .cloud-group, .sk-group")];
+  const targets = (box: Element) => [...box.querySelectorAll<HTMLElement>(".skill-chip, .cloud-group, .sm-group")];
   let first: Map<HTMLElement, DOMRect> | null = null;
   const snap = (e: Event) => {
     const t = e.target as Element;
