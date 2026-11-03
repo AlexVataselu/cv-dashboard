@@ -4,16 +4,16 @@ import { cv } from "./cv";
 describe("cv content", () => {
   it("about is the CV profile paragraph", () => {
     expect(cv.about).toBe(
-      "9 years building for the web, the last five focused on React, Next.js, TypeScript, and React Native. I've shipped products in healthcare, fintech, and cultural heritage, on product teams at Pentalog and TryAngle Labs, and as an independent contractor covering design and development end to end. My daily workflow is AI-assisted (Claude Code with Figma and GitHub), but every branch still gets tests and review before it ships.",
+      "14 years building software: backend first (ASP.NET, C#, PHP), then the web, and for the last five, React, Next.js, TypeScript and React Native. I've shipped products in healthcare, fintech and cultural heritage, on product teams and as an independent contractor covering design and development end to end. My daily workflow is AI-assisted (Claude Code with Figma and GitHub), but every branch still gets tests and review before it ships.",
     );
-    expect(cv.about.startsWith("9 years building for the web")).toBe(true);
-    for (const bad of ["—", "Globant", "Builder.ai", "Supabase", "Vercel"]) {
+    // the profile names no employer; the roles do
+    for (const bad of ["—", "Pentalog", "TryAngle", "Globant", "Builder.ai", "Supabase", "Vercel"]) {
       expect(cv.about).not.toContain(bad);
     }
   });
 
   it("glance values", () => {
-    expect(cv.glance.map((g) => g.value)).toEqual(["9", "5", "2", "3"]);
+    expect(cv.glance.map((g) => g.value)).toEqual(["14", "5", "2", "3"]);
   });
 
   it("impact stats have sources", () => {
@@ -23,10 +23,19 @@ describe("cv content", () => {
   });
 
   it("roles are newest first", () => {
-    expect(cv.roles.map((r) => r.start)).toEqual([2025, 2024, 2023, 2021, 2017]);
-    const lhel = cv.roles.find((r) => r.id === "lhel")!;
-    expect(lhel.start).toBe(2017);
-    expect(lhel.end).toBe(2021);
+    expect(cv.roles.map((r) => [r.id, r.start, r.end])).toEqual([
+      ["freelance-2025", 2025, "now"],
+      ["pentalog", 2024, 2025],
+      ["tryangle", 2021, 2024],
+      ["freelance-2021", 2021, 2023],
+      ["lhel", 2017, 2021],
+      ["zega", 2013, 2017],
+      ["kemblimed", 2012, 2013],
+    ]);
+  });
+
+  it("only Teleplan IBM stays undated, on the Earlier line", () => {
+    expect(cv.earlier).toBe("Hardware Technician, Teleplan IBM, Prague");
   });
 
   it("has no phone number", () => {

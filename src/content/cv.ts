@@ -13,6 +13,7 @@ const skills: Skill[] = [
     ["html", "HTML"],
     ["css", "CSS"],
     ["tailwind", "Tailwind CSS"],
+    ["jquery", "jQuery"],
   ]),
   ...group("State & data", [
     ["tanstack-query", "TanStack Query"],
@@ -27,6 +28,10 @@ const skills: Skill[] = [
     ["prisma", "Prisma"],
     ["supabase", "Supabase"],
     ["firebase", "Firebase"],
+    ["aspnet-mvc", "ASP.NET MVC"],
+    ["csharp", "C#"],
+    ["php", "PHP"],
+    ["mysql", "MySQL"],
   ]),
   ...group("Testing & quality", [
     ["jest", "Jest"],
@@ -63,9 +68,9 @@ export const cv: Cv = {
     pdf: "/CV_AlexVataselu.pdf",
   },
   about:
-    "9 years building for the web, the last five focused on React, Next.js, TypeScript, and React Native. I've shipped products in healthcare, fintech, and cultural heritage, on product teams at Pentalog and TryAngle Labs, and as an independent contractor covering design and development end to end. My daily workflow is AI-assisted (Claude Code with Figma and GitHub), but every branch still gets tests and review before it ships.",
+    "14 years building software: backend first (ASP.NET, C#, PHP), then the web, and for the last five, React, Next.js, TypeScript and React Native. I've shipped products in healthcare, fintech and cultural heritage, on product teams and as an independent contractor covering design and development end to end. My daily workflow is AI-assisted (Claude Code with Figma and GitHub), but every branch still gets tests and review before it ships.",
   glance: [
-    { value: "9", label: "years building for the web" },
+    { value: "14", label: "years building software" },
     { value: "5", label: "years on React, Next.js, TypeScript and React Native" },
     { value: "2", label: "product teams plus independent work" },
     { value: "3", label: "industries: healthcare, fintech, cultural heritage" },
@@ -129,7 +134,7 @@ export const cv: Cv = {
     },
     {
       id: "tryangle",
-      start: 2023,
+      start: 2021,
       end: 2024,
       title: "Frontend Engineer, Web & Mobile",
       company: "TryAngle Labs",
@@ -189,6 +194,7 @@ export const cv: Cv = {
         "graphql",
         "prisma",
         "postgresql",
+        "php",
         "wcag",
       ],
       bullets: [
@@ -207,9 +213,30 @@ export const cv: Cv = {
       skillIds: [],
       bullets: ["E-commerce sites on Magento and PrestaShop."],
     },
+    {
+      id: "zega",
+      start: 2013,
+      end: 2017,
+      title: "Backend Developer",
+      company: "Zega Software",
+      stack: ["ASP.NET MVC 2", "C#", "jQuery", "PHP", "MySQL"],
+      skillIds: ["aspnet-mvc", "csharp", "jquery", "php", "mysql"],
+      bullets: ["Event booking platform in ASP.NET MVC 2, C# and jQuery, plus PHP and MySQL work."],
+    },
+    {
+      id: "kemblimed",
+      start: 2012,
+      end: 2013,
+      title: "Web Developer",
+      company: "Kemblimed",
+      stack: [],
+      skillIds: [],
+      bullets: [
+        "Web presence and network operations for a medical ophthalmology equipment provider.",
+      ],
+    },
   ],
-  before2017:
-    "Earlier roles in software, web and IT support: Zega Software, Kemblimed, Teleplan IBM.",
+  earlier: "Hardware Technician, Teleplan IBM, Prague",
   projects: [
     {
       id: "stremio",

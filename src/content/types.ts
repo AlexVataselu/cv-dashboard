@@ -48,7 +48,7 @@ export interface Cv {
   /**
    * The year the CV was written. Every year count on the site (roles, career totals, skill years)
    * runs to this year, not to the build date, so the computed figures always agree with the CV's
-   * own fixed figures ("9 years", "5 years"). Change it only together with a new CV.
+   * own fixed figures ("14 years", "5 years"). Change it only together with a new CV.
    */
   asOf: number;
   name: string;
@@ -62,7 +62,8 @@ export interface Cv {
   impact: ImpactStat[];
   skills: Skill[];
   roles: Role[];
-  before2017: string;
+  /** The CV's one undated line, shown after the dated roles. */
+  earlier: string;
   projects: Project[];
   education: { degree: string; school: string }[];
   languages: { name: string; level: string }[];
