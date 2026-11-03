@@ -104,7 +104,9 @@ export default function ProjectsPage() {
             </h2>
           </div>
           {/* its line is always reserved, so a marked skill shifts nothing */}
-          <FilterNotice />
+          <div>
+            <FilterNotice />
+          </div>
           <div role="radiogroup" aria-labelledby="pick-title" className="scroll-y mt-1">
             <p className="px-2.5 pb-1 pt-2 text-[13px] font-medium text-muted">Personal projects</p>
             <div className="pick-list">

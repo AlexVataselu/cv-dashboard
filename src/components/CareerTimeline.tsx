@@ -137,37 +137,35 @@ export function CareerTimeline({
           );
         })}
 
-        <div className="tl-row mt-1 border-t border-rule pt-1">
+        {/* The projects row links to Projects as a whole; its three marks are drawing, not targets
+            (three 6px lanes cannot each be a 24px target). Each mark still carries its skills. */}
+        <Link href="/projects" prefetch={false} className="tl-row mt-1 border-t border-rule pt-1">
           <span className="tl-label">
             <span>Personal projects</span>
             <span className="tnum">{projects.length} since {projects[0].start}</span>
           </span>
           <span className="tl-track">
-            <span className="tl-projects">
-              {projects.map((p, i) => {
-                const name = p.title.split(", ")[0];
-                return (
-                  <Link
-                    key={p.id}
-                    href={`/projects#project-${p.id}`}
-                    prefetch={false}
-                    className="tl-proj"
-                    title={`${name}, ${p.label}`}
-                    aria-label={`${name}, ${p.label}`}
-                    data-skills={p.skillIds.join(" ")}
-                    data-item="project"
-                    // A project begun in the CV's own year has no length on the axis: a 10px mark ends the row.
-                    style={{
-                      left: `min(${pct(p.start)}, calc(100% - 10px))`,
-                      width: `calc(100% - ${pct(p.start)})`,
-                      "--i": roles.length + i,
-                    } as CSSProperties}
-                  />
-                );
-              })}
+            <span className="sr-only">: {projects.map((p) => `${p.title.split(", ")[0]}, ${p.label}`).join("; ")}</span>
+            <span className="tl-projects" aria-hidden="true">
+              {projects.map((p, i) => (
+                <span
+                  key={p.id}
+                  className="tl-proj"
+                  title={`${p.title.split(", ")[0]}, ${p.label}`}
+                  data-name={p.title.split(", ")[0]}
+                  data-skills={p.skillIds.join(" ")}
+                  data-item="project"
+                  // A project begun in the CV's own year has no length on the axis: a 10px mark ends the row.
+                  style={{
+                    left: `min(${pct(p.start)}, calc(100% - 10px))`,
+                    width: `calc(100% - ${pct(p.start)})`,
+                    "--i": roles.length + i,
+                  } as CSSProperties}
+                />
+              ))}
             </span>
           </span>
-        </div>
+        </Link>
 
         <div className="tl-row">
           <span className="tl-label">

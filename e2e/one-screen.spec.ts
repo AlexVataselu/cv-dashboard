@@ -166,7 +166,7 @@ test("linked views: a hovered or focused role lights its results and skills; a c
   await expect(page).toHaveURL(/\?skill=expo$/);
   await expect(page.locator('.tl-row[data-link="tryangle"]')).toHaveAttribute("data-highlight", "true");
   await expect(page.locator('.tl-row[data-link="pentalog"]')).not.toHaveAttribute("data-highlight", "true");
-  await expect(page.locator('.tl-proj[aria-label^="Powderino"]')).toHaveAttribute("data-highlight", "true");
+  await expect(page.locator('.tl-proj[data-name="Powderino"]')).toHaveAttribute("data-highlight", "true");
   await expect(page.locator("#skill-live")).toHaveText(/Expo: marked on 1 role and 1 project/);
 });
 

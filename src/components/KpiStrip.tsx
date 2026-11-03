@@ -136,7 +136,12 @@ export function KpiStrip({ className }: { className?: string }) {
               className="kpi-btn"
               style={{ anchorName: `--kpi-${i}` } as CSSProperties}
             >
-              <span className="kpi-value" data-count={/^\d+$/.test(g.value) ? g.value : undefined}>
+              {/* As wide as the real value, so the count-up never moves the label beside it. */}
+              <span
+                className="kpi-value"
+                data-count={/^\d+$/.test(g.value) ? g.value : undefined}
+                style={{ minWidth: `${g.value.length}ch` }}
+              >
                 {g.value}
               </span>
               <span className="kpi-label">{g.label}</span>
