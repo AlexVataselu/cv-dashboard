@@ -932,13 +932,22 @@ summary:focus-visible,
     [data-js] .ov > .ov-about {
       grid-row: 3;
     }
-    /* Experience: the navigator's rows share the card's height, so it ends level with the side card */
-    [data-js] .ex .tl :is(.tl-label, .tl-track) {
-      min-height: 34px;
+    /* Experience: the navigator is as tall as its rows, not the screen (no stretched rows); the
+       open role's skills take what height is left under it */
+    [data-js] .ex {
+      grid-template-rows: auto minmax(0, 1fr);
     }
-    [data-js] .ex .tl {
-      flex: 1;
-      grid-template-rows: repeat(9, minmax(34px, 1fr)) auto;
+    [data-js] .ex > .ex-tl {
+      grid-row: 1;
+    }
+    [data-js] .ex > .ex-skills {
+      grid-row: 2;
+    }
+    [data-js] .ex > .ex-roles {
+      grid-row: 1 / span 2;
+    }
+    [data-js] .ex .tl :is(.tl-label, .tl-track) {
+      min-height: clamp(36px, 4.4vh, 44px);
     }
     [data-js] .ed {
       grid-template-rows: auto;
@@ -977,6 +986,15 @@ summary:focus-visible,
     }
     [data-js] .ov .tl-compact :is(.tl-label, .tl-track) {
       min-height: 30px;
+    }
+    /* Experience on a short screen: the timeline alone on the left, at its own height; the open
+       role's skills are still in its stack line and its bullets */
+    [data-js] .ex > .ex-skills {
+      display: none;
+    }
+    [data-js] .ex > .ex-tl {
+      grid-row: 1 / span 2;
+      align-self: start;
     }
     /* the timeline runs the full height here: its rows share it */
     [data-js] .ov .tl-compact {
@@ -1385,6 +1403,17 @@ summary:focus-visible,
   }
 
   /* ---------- the experience side card ---------- */
+  .rs-panel {
+    display: none;
+  }
+  /* the open role's skills keep their years on the chip: there is room, and it is the point */
+  .rs-chips .skill-level {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    margin-left: 8px;
+  }
   [data-js] .roles-list.scroll-y {
     margin-right: 0;
     padding-right: 0;

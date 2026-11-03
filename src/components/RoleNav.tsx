@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type MouseEvent, type ReactNode } from "react";
-import { useUiStore } from "@/state/uiStore";
+import { DEFAULT_ROLE, useUiStore } from "@/state/uiStore";
 
 /**
  * Makes the timeline the navigator on Experience: a role's row (a link to #role-id) opens that role
@@ -26,6 +26,8 @@ export function RoleNav({ children, className }: { children: ReactNode; classNam
 
   useEffect(() => {
     const paint = (id: string | null) => {
+      // The skills card under the timeline shows the open role's panel (CSS, see RoleSkills).
+      if (ref.current) ref.current.dataset.current = id ?? "";
       for (const a of ref.current?.querySelectorAll<HTMLElement>("[data-open-role]") ?? []) {
         const on = a.dataset.openRole === id;
         a.setAttribute("aria-expanded", String(on));
@@ -49,7 +51,7 @@ export function RoleNav({ children, className }: { children: ReactNode; classNam
 
   return (
     // The rows inside are links; this only listens for their clicks (keyboard included).
-    <div ref={ref} onClick={onClick} className={className}>
+    <div ref={ref} onClick={onClick} className={className} data-current={DEFAULT_ROLE}>
       {children}
     </div>
   );

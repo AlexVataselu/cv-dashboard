@@ -73,6 +73,23 @@ describe("Experience", () => {
   });
 });
 
+describe("Experience, skills of the open role", () => {
+  it("has a panel per role; L.H.EL (Superland) lists Magento, PrestaShop, JavaScript, TypeScript, HTML and CSS", () => {
+    const { container } = render(<ExperiencePage />);
+    expect(container.querySelector(".ex")!.getAttribute("data-current")).toBe("freelance-2025");
+    const lhel = container.querySelector('.rs-panel[data-role="lhel"]')!;
+    const names = [...lhel.querySelectorAll(".skill-name")].map((n) => n.textContent);
+    expect(names).toEqual(["Magento", "PrestaShop", "JavaScript", "TypeScript", "HTML", "CSS"]);
+    expect(container.querySelectorAll(".rs-panel")).toHaveLength(cv.roles.length + 1);
+  });
+
+  it("lists every role's two or three bullets and the earlier role's line", () => {
+    render(<ExperiencePage />);
+    for (const r of cv.roles) for (const b of r.bullets) expect(screen.getByText(b)).toBeTruthy();
+    expect(screen.getByText(cv.earlierDetail!)).toBeTruthy();
+  });
+});
+
 describe("Skills", () => {
   it("groups skills under five headings with pressable chips", async () => {
     render(<SkillsPage />);
