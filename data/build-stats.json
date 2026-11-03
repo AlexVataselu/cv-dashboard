@@ -1,10 +1,10 @@
 {
-  "firstLoadJsKb": 147.7,
+  "firstLoadJsKb": 147.9,
   "firstLoadJsKbByRoute": {
-    "/": 147.3,
-    "/experience": 147.7,
-    "/skills": 147.3,
-    "/projects": 147.6,
-    "/education": 146.8
+    "/": 147.5,
+    "/experience": 147.9,
+    "/skills": 147.5,
+    "/projects": 147.8,
+    "/education": 147
   }
 }
