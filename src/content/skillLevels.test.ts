@@ -30,15 +30,35 @@ describe("deriveSkillLevel", () => {
     expect(deriveSkillLevel("react-native", cv, YEAR).years).toBe(5);
   });
 
-  it.each(["aspnet-mvc", "csharp", "jquery", "php", "mysql"])("%s since 2013 (Zega Software)", (id) => {
-    const l = deriveSkillLevel(id, cv, YEAR);
-    expect(l.since).toBe(2013);
-    expect(l.years).toBe(13);
-    expect(l.usedIn.at(-1)).toBe("zega");
+  it.each(["aspnet-mvc", "csharp", "jquery", "mysql"])(
+    "%s shows its real span, 2013–2017 at Zega Software, not years to now",
+    (id) => {
+      const l = deriveSkillLevel(id, cv, YEAR);
+      expect(l).toMatchObject({ since: 2013, until: 2017, years: 4, usedIn: ["zega"] });
+      expect(formatLevel(l)).toBe("2013–2017 · 4 yrs");
+    },
+  );
+
+  it("php lists both spans the CV dates it in, with the years actually covered", () => {
+    const l = deriveSkillLevel("php", cv, YEAR);
+    expect(l).toMatchObject({ since: 2013, until: 2023, years: 6, usedIn: ["freelance-2021", "zega"] });
+    expect(formatLevel(l)).toBe("2013–2017, 2021–2023 · 6 yrs");
   });
 
-  it("sonarqube since 2024", () => {
-    expect(deriveSkillLevel("sonarqube", cv, YEAR).since).toBe(2024);
+  it("a skill still in use keeps since and years to the CV's year", () => {
+    for (const id of ["react", "react-native", "html", "wcag"]) {
+      const l = deriveSkillLevel(id, cv, YEAR);
+      expect(l.until, id).toBeNull();
+      expect(formatLevel(l), id).toMatch(/^since \d{4} · \d+ yrs?$/);
+    }
+  });
+
+  it("past skills stay past in a later build year, with the same span", () => {
+    expect(formatLevel(deriveSkillLevel("csharp", cv, 2031))).toBe("2013–2017 · 4 yrs");
+  });
+
+  it.each(["sonarqube", "sentry"])("%s 2024–2025 (Pentalog only)", (id) => {
+    expect(formatLevel(deriveSkillLevel(id, cv, YEAR))).toBe("2024–2025 · 1 yr");
   });
 
   it("sentry since 2024", () => {
