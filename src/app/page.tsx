@@ -46,7 +46,7 @@ export default function Home() {
           <h2 id="levels" className="card-title">
             Skills, by first dated use
           </h2>
-          <p className="meta">Years count from the first dated role or project on the CV that uses the skill.</p>
+          <p className="meta">Years count from the first dated role or project on the CV that uses the skill; a span once every dated use has ended.</p>
         </div>
         <SkillGroups headingLevel="h3" />
       </section>

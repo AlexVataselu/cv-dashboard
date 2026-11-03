@@ -18,8 +18,14 @@ export function SkillAdoption() {
   const now = AS_OF;
   const levels = deriveAllSkillLevels(cv, now);
   const years = Array.from({ length: now - FIRST_YEAR }, (_, i) => FIRST_YEAR + i);
-  const named = (y: number) => cv.skills.filter((s) => levels[s.id]?.since === y).map((s) => s.name);
-  const counts = years.map((y) => named(y).length);
+  const firstIn = (y: number) => cv.skills.filter((s) => levels[s.id]?.since === y);
+  // A skill whose every dated use ended before the CV's year is "past": drawn as an outline, and
+  // named with the year it ends, so the chart never implies it is still in use.
+  const isPast = (id: string) => levels[id]?.until != null;
+  const label = (id: string, name: string) => (isPast(id) ? `${name} (until ${levels[id]!.until})` : name);
+  const named = (y: number) => firstIn(y).map((s) => label(s.id, s.name));
+  const counts = years.map((y) => firstIn(y).length);
+  const pastCounts = years.map((y) => firstIn(y).filter((s) => isPast(s.id)).length);
   const dated = counts.reduce((a, b) => a + b, 0);
   const t = ticks(Math.max(...counts));
   const top = t[t.length - 1];
@@ -35,6 +41,16 @@ export function SkillAdoption() {
             {dated} of {cv.skills.length} skills have a dated first use
           </p>
         </div>
+        <ul className="mb-4 flex flex-wrap gap-x-4 gap-y-2 text-[13px]" aria-label="Bar key">
+          <li className="flex items-center gap-2">
+            <span className="key bg-primary" aria-hidden="true" />
+            Still in use
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="key border-2 border-primary" aria-hidden="true" />
+            No longer in use on the CV
+          </li>
+        </ul>
         <div className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-2">
           <div className="relative h-48 text-[12px] text-muted" aria-hidden="true">
             {/* bottom puts the label's lower edge on its gridline; translateY(50%) centres it there */}
@@ -58,13 +74,27 @@ export function SkillAdoption() {
                 <li key={y} className="relative flex h-full flex-1 flex-col justify-end" title={named(y).join(", ") || "None"}>
                   <span className="sr-only">
                     {y}: {counts[i]} {counts[i] === 1 ? "skill" : "skills"}
+                    {pastCounts[i] > 0 ? `, ${pastCounts[i]} no longer in use` : ""}
                   </span>
                   {counts[i] > 0 ? (
                     <>
                       <span aria-hidden="true" className="tnum mb-1 text-center text-[12px] font-semibold">
                         {counts[i]}
                       </span>
-                      <span aria-hidden="true" className="block rounded-t-[3px] bg-primary" style={{ height: `${(counts[i] / top) * 100}%` }} />
+                      {pastCounts[i] > 0 ? (
+                        <span
+                          aria-hidden="true"
+                          className={`block border-2 border-primary ${pastCounts[i] === counts[i] ? "rounded-t-[3px]" : "border-b-0"}`}
+                          style={{ height: `${(pastCounts[i] / top) * 100}%` }}
+                        />
+                      ) : null}
+                      {counts[i] > pastCounts[i] ? (
+                        <span
+                          aria-hidden="true"
+                          className={`block bg-primary ${pastCounts[i] === 0 ? "rounded-t-[3px]" : ""}`}
+                          style={{ height: `${((counts[i] - pastCounts[i]) / top) * 100}%` }}
+                        />
+                      ) : null}
                     </>
                   ) : null}
                 </li>
