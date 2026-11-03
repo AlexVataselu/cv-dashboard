@@ -36,10 +36,14 @@ describe("career figures add up to the CV", () => {
     }
   });
 
-  it("React, Next.js and TypeScript years match the CV's figure", () => {
-    for (const id of ["react", "nextjs", "typescript"]) {
+  it("React and Next.js years match the CV's figure", () => {
+    for (const id of ["react", "nextjs"]) {
       expect(deriveSkillLevel(id, cv, CV_YEAR).years).toBe(Number(cv.glance[1].value));
     }
+  });
+
+  it("TypeScript is dated from L.H.EL (Superland), 2017, by the same rule", () => {
+    expect(deriveSkillLevel("typescript", cv, CV_YEAR)).toMatchObject({ since: 2017, until: null, years: 9 });
   });
 
   it("the product-team roles are the CV's two product teams", () => {

@@ -169,7 +169,7 @@ describe("year counts run to the CV's year, not the clock", () => {
     exp.unmount();
 
     const skills = render(<SkillsPage />);
-    expect(within(skills.container).getByText("27 of 38 skills have a dated first use")).toBeTruthy();
+    expect(within(skills.container).getByText("29 of 40 skills have a dated first use")).toBeTruthy();
     expect(skills.container.textContent).not.toContain("2026:");
   });
 });

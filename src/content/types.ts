@@ -64,6 +64,8 @@ export interface Cv {
   roles: Role[];
   /** The CV's one undated line, shown after the dated roles. */
   earlier: string;
+  /** What the earlier role was, in one line. */
+  earlierDetail?: string;
   projects: Project[];
   education: { degree: string; school: string }[];
   languages: { name: string; level: string }[];

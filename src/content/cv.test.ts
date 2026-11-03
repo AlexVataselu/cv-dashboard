@@ -60,4 +60,23 @@ describe("cv content", () => {
       expect(`${e.degree} ${e.school}`).not.toMatch(/\d{4}/);
     }
   });
+
+  it("every role has at least two bullets, and no copy has an em dash", () => {
+    for (const r of cv.roles) expect(r.bullets.length, r.id).toBeGreaterThanOrEqual(2);
+    expect(JSON.stringify(cv)).not.toContain("—");
+  });
+
+  it("L.H.EL (Superland) lists the skills Alex named for it", () => {
+    const lhel = cv.roles.find((r) => r.id === "lhel")!;
+    expect(lhel.skillIds).toEqual(["magento", "prestashop", "javascript", "typescript", "html", "css"]);
+  });
+
+  it("education runs master's, bachelor's, then high school", () => {
+    expect(cv.education.map((e) => e.degree)).toEqual([
+      "Master's, IT Economics",
+      "Bachelor's, Computer Science Management",
+      "High school, Mathematics & Computer Science",
+    ]);
+    expect(cv.education[2].school).toBe("Toma N. Socolescu Technical High School, Ploiesti");
+  });
 });

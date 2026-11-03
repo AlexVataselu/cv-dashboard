@@ -10,7 +10,7 @@ import {
 const YEAR = 2026;
 
 describe("deriveSkillLevel", () => {
-  it.each(["react", "nextjs", "typescript"])("%s since 2021, 5 years", (id) => {
+  it.each(["react", "nextjs"])("%s since 2021, 5 years", (id) => {
     const l = deriveSkillLevel(id, cv, YEAR);
     expect(l.since).toBe(2021);
     expect(l.years).toBe(5);
@@ -87,6 +87,25 @@ describe("deriveSkillLevel", () => {
 
   it.each(["html", "css", "javascript"])("%s implied since 2012 (Kemblimed, web developer)", (id) =>
     expect(deriveSkillLevel(id, cv, YEAR).since).toBe(2012),
+  );
+
+  it("typescript since 2017: L.H.EL (Superland) runs into TryAngle Labs, so one unbroken span", () => {
+    const l = deriveSkillLevel("typescript", cv, YEAR);
+    expect(l).toMatchObject({ since: 2017, until: null, years: 9, spans: [{ start: 2017, end: 2026 }] });
+    expect(l.usedIn).toContain("lhel");
+  });
+
+  it.each(["magento", "prestashop"])(
+    "%s is dated by L.H.EL (Superland) alone, 2017 to 2021; ending in 2021 (not before it) reads since",
+    (id) => {
+      const l = deriveSkillLevel(id, cv, YEAR);
+      expect(l).toMatchObject({ since: 2017, usedIn: ["lhel"], spans: [{ start: 2017, end: 2021 }] });
+      expect(formatLevel(l)).toBe("since 2017 · 9 yrs");
+    },
+  );
+
+  it.each(["html", "css", "javascript"])("%s lists L.H.EL (Superland) where it was used", (id) =>
+    expect(deriveSkillLevel(id, cv, YEAR).usedIn).toContain("lhel"),
   );
 
   it.each(["jest", "nodejs", "tanstack-query"])(

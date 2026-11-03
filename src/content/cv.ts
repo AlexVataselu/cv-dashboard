@@ -32,6 +32,8 @@ const skills: Skill[] = [
     ["csharp", "C#"],
     ["php", "PHP"],
     ["mysql", "MySQL"],
+    ["magento", "Magento"],
+    ["prestashop", "PrestaShop"],
   ]),
   ...group("Testing & quality", [
     ["jest", "Jest"],
@@ -209,9 +211,13 @@ export const cv: Cv = {
       end: 2021,
       title: "Web Developer",
       company: "L.H.EL (Superland)",
-      stack: ["Magento", "PrestaShop"],
-      skillIds: [],
-      bullets: ["E-commerce sites on Magento and PrestaShop."],
+      stack: ["Magento", "PrestaShop", "JavaScript", "TypeScript", "HTML", "CSS"],
+      skillIds: ["magento", "prestashop", "javascript", "typescript", "html", "css"],
+      bullets: [
+        "Built e-commerce sites on Magento and PrestaShop, plus Odoo and WordPress, for the Superland entertainment group.",
+        "Managed the network infrastructure, including Cisco networking.",
+        "Handled Raspberry Pi deployments and the configuration of VR and AR devices.",
+      ],
     },
     {
       id: "zega",
@@ -221,7 +227,11 @@ export const cv: Cv = {
       company: "Zega Software",
       stack: ["ASP.NET MVC 2", "C#", "jQuery", "PHP", "MySQL"],
       skillIds: ["aspnet-mvc", "csharp", "jquery", "php", "mysql"],
-      bullets: ["Event booking platform in ASP.NET MVC 2, C# and jQuery, plus PHP and MySQL work."],
+      bullets: [
+        "Event booking platform in ASP.NET MVC 2, C# and jQuery.",
+        "Built other websites and web applications on the same stack with JavaScript, plus PHP and MySQL work.",
+        "My first production backend experience.",
+      ],
     },
     {
       id: "kemblimed",
@@ -232,11 +242,14 @@ export const cv: Cv = {
       stack: [],
       skillIds: [],
       bullets: [
-        "Web presence and network operations for a medical ophthalmology equipment provider.",
+        "Designed, built and maintained the company website, kemblimed.ro, on Wix.",
+        "Network operations for a medical ophthalmology equipment provider.",
+        "My first deep exposure to the medical sector and its reliability standards.",
       ],
     },
   ],
   earlier: "Hardware Technician, Teleplan IBM, Prague",
+  earlierDetail: "IBM laptop and desktop servicing, diagnostics and quality testing.",
   projects: [
     {
       id: "stremio",
@@ -246,7 +259,7 @@ export const cv: Cv = {
       stack: ["Node.js", "ffmpeg", "Chromaprint", "React", "Jest", "Stremio client fork"],
       skillIds: ["nodejs", "react", "jest"],
       description:
-        "Finds the intro by matching audio fingerprints across a season, and the recap by matching subtitle lines against earlier episodes. Runs locally, with no third-party database.",
+        "Finds the intro by matching audio fingerprints across a season, and the recap by matching subtitle lines against earlier episodes. Runs locally, with no third-party database. The same fork adds stream list filters: resolution chips and a torrent site dropdown.",
     },
     {
       id: "powderino",
@@ -290,6 +303,10 @@ export const cv: Cv = {
     {
       degree: "Bachelor's, Computer Science Management",
       school: "Romanian American University, Bucharest",
+    },
+    {
+      degree: "High school, Mathematics & Computer Science",
+      school: "Toma N. Socolescu Technical High School, Ploiesti",
     },
   ],
   languages: [
