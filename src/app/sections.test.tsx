@@ -41,10 +41,10 @@ describe("Overview", () => {
 });
 
 describe("Experience", () => {
-  it("lists roles newest first then the Before 2017 line, using details/summary", () => {
+  it("lists roles newest first then the Earlier line, using details/summary", () => {
     const { container } = render(<ExperiencePage />);
     const details = Array.from(container.querySelectorAll("details"));
-    expect(details).toHaveLength(5);
+    expect(details).toHaveLength(7);
     expect(details.every((d) => d.querySelector("summary"))).toBe(true);
     const text = details.map((d) => d.querySelector("summary")!.textContent ?? "");
     expect(text[0]).toContain("Freelance, self-employed");
@@ -52,22 +52,24 @@ describe("Experience", () => {
     expect(text[2]).toContain("TryAngle Labs");
     expect(text[3]).toContain("healthcare, fintech");
     expect(text[4]).toContain("L.H.EL");
-    expect(screen.getByText(cv.before2017, { exact: false })).toBeTruthy();
-    expect(screen.getByText(/Before 2017/)).toBeTruthy();
+    expect(text[5]).toContain("Zega Software");
+    expect(text[6]).toContain("Kemblimed");
+    expect(screen.getByText(cv.earlier, { exact: false })).toBeTruthy();
+    expect(screen.getByText("Earlier")).toBeTruthy();
   });
 
   it("opens only the default role initially and follows expandedRoleId", async () => {
     const { container } = render(<ExperiencePage />);
     const open = () =>
       Array.from(container.querySelectorAll("details")).map((d) => d.open);
-    expect(open()).toEqual([true, false, false, false, false]);
+    expect(open()).toEqual([true, false, false, false, false, false, false]);
     const summaries = container.querySelectorAll("summary");
     await userEvent.click(summaries[1]);
     expect(useUiStore.getState().expandedRoleId).toBe("pentalog");
-    expect(open()).toEqual([false, true, false, false, false]);
+    expect(open()).toEqual([false, true, false, false, false, false, false]);
     await userEvent.click(summaries[1]);
     expect(useUiStore.getState().expandedRoleId).toBeNull();
-    expect(open()).toEqual([false, false, false, false, false]);
+    expect(open()).toEqual([false, false, false, false, false, false, false]);
   });
 });
 
@@ -132,7 +134,7 @@ describe("skill highlighting", () => {
     const flag = (root: HTMLElement, sel: string) =>
       Array.from(root.querySelectorAll(sel)).map((e) => e.getAttribute("data-highlight"));
     expect(flag(projects.container, "article")).toEqual([null, "true", null]);
-    expect(flag(experience.container, "details")).toEqual([null, null, "true", null, null]);
+    expect(flag(experience.container, "details")).toEqual([null, null, "true", null, null, null, null]);
   });
 });
 
@@ -167,7 +169,7 @@ describe("year counts run to the CV's year, not the clock", () => {
     exp.unmount();
 
     const skills = render(<SkillsPage />);
-    expect(within(skills.container).getByText("22 of 33 skills have a dated first use")).toBeTruthy();
+    expect(within(skills.container).getByText("27 of 38 skills have a dated first use")).toBeTruthy();
     expect(skills.container.textContent).not.toContain("2026:");
   });
 });

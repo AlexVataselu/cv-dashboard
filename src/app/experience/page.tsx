@@ -8,7 +8,7 @@ import { pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Experience",
-  description: "Nine years of frontend work across Pentalog, TryAngle Labs and independent contracting: healthcare, fintech and cultural heritage products in React, Next.js, TypeScript and React Native.",
+  description: "14 years building software, from backend work at Zega Software to frontend at Pentalog, TryAngle Labs and as an independent contractor: healthcare, fintech and cultural heritage products in React, Next.js, TypeScript and React Native.",
   path: "/experience",
 });
 
@@ -17,7 +17,7 @@ export default function ExperiencePage() {
   return (
     <SectionShell
       title="Experience"
-      lead="Product teams at Pentalog and TryAngle Labs, and my own clients in healthcare, fintech and cultural heritage."
+      lead="Backend work first, then product teams at Pentalog and TryAngle Labs and my own clients in healthcare, fintech and cultural heritage."
     >
       <div className="mt-6">
         <CareerTimeline />
@@ -36,8 +36,8 @@ export default function ExperiencePage() {
             </li>
           ))}
           <li className="grid gap-x-6 gap-y-1 px-4 py-4 md:grid-cols-[9rem_minmax(0,1fr)_10rem] md:px-5">
-            <span className="text-[14px] font-medium">Before 2017</span>
-            <span className="text-[14px] text-muted">{cv.before2017}</span>
+            <span className="text-[14px] font-medium">Earlier</span>
+            <span className="text-[14px] text-muted">{cv.earlier}</span>
           </li>
         </ol>
       </section>
