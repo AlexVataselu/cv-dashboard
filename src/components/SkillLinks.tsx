@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { cv } from "@/content/cv";
+import { skillName } from "@/state/skillCatalog";
 import { useUiStore } from "@/state/uiStore";
 
 /**
@@ -29,7 +29,7 @@ export function SkillLinks() {
         } else delete el.dataset.highlight;
       }
       if (!announce || !live || !document.querySelector(".tl")) return;
-      const name = cv.skills.find((s) => s.id === id)?.name;
+      const name = skillName(id);
       live.textContent = name
         ? `${name}: marked on ${n.role} ${n.role === 1 ? "role" : "roles"} and ${n.project} ${n.project === 1 ? "project" : "projects"} in the timeline.`
         : "Skill mark cleared.";

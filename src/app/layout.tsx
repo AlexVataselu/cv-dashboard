@@ -8,6 +8,7 @@ import { SkillParamSync } from "@/components/SkillParamSync";
 import { StatusBar } from "@/components/StatusBar";
 import { MotionBoot } from "@/components/MotionBoot";
 import { SkillLinks } from "@/components/SkillLinks";
+import { cv } from "@/content/cv";
 import { HOME_DESCRIPTION, SITE_URL, pageMetadata, personJsonLd } from "@/lib/site";
 import "./globals.css";
 
@@ -75,7 +76,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Script id="yield-before-hydration" strategy="beforeInteractive">
           {"void 0"}
         </Script>
-        <SkillParamSync />
+        <SkillParamSync skills={cv.skills.map((s) => [s.id, s.name])} />
         {/* The frame: the profile rail and the section tabs on one tint; the sheet beside them.
             The tabs, the sheet and the status bar stay mounted across tab switches; only <main> changes.
             From 1024x640 up (with JS) the frame is exactly one screen tall: the page never scrolls, and

@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { cv } from "@/content/cv";
+/** The newest role, open on Experience until another is chosen (a test keeps it equal to cv.roles[0]). */
+export const DEFAULT_ROLE = "freelance-2025";
 
 type UiState = {
   selectedSkill: string | null;
@@ -12,7 +13,7 @@ type UiState = {
 
 export const useUiStore = create<UiState>((set) => ({
   selectedSkill: null,
-  expandedRoleId: cv.roles[0]?.id ?? null,
+  expandedRoleId: DEFAULT_ROLE,
   paletteOpen: false,
   selectSkill: (id) => set({ selectedSkill: id }),
   toggleRole: (id) =>

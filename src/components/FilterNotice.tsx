@@ -1,6 +1,6 @@
 "use client";
 
-import { cv } from "@/content/cv";
+import { skillName } from "@/state/skillCatalog";
 import { useUiStore } from "@/state/uiStore";
 
 /**
@@ -11,7 +11,7 @@ import { useUiStore } from "@/state/uiStore";
 export function FilterNotice() {
   const id = useUiStore((s) => s.selectedSkill);
   const selectSkill = useUiStore((s) => s.selectSkill);
-  const name = cv.skills.find((s) => s.id === id)?.name;
+  const name = skillName(id);
   return (
     <p
       className="flex min-h-7 min-w-0 basis-full items-center whitespace-nowrap text-[14px] leading-7 md:basis-auto"

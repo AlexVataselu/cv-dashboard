@@ -1,6 +1,6 @@
 "use client";
 
-import { cv } from "@/content/cv";
+import { skillName } from "@/state/skillCatalog";
 import { useUiStore } from "@/state/uiStore";
 
 /**
@@ -11,7 +11,7 @@ export function SkillBadge({ skillIds }: { skillIds: string[] }) {
   const id = useUiStore((s) =>
     s.selectedSkill !== null && skillIds.includes(s.selectedSkill) ? s.selectedSkill : null,
   );
-  const name = id ? cv.skills.find((s) => s.id === id)?.name : undefined;
+  const name = skillName(id);
   return name ? (
     <span className="min-w-0 truncate rounded-full bg-primary px-2.5 text-[12px] font-semibold leading-6 text-primary-ink">
       Uses {name}

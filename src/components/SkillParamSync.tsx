@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import { registerSkills } from "@/state/skillCatalog";
 import { useSkillParam } from "@/state/useSkillParam";
 
 function Sync() {
@@ -13,7 +14,9 @@ function Sync() {
  * Suspense boundary. The boundary sits here, outside <main>, and its fallback is empty, so
  * no page content is ever held back behind it.
  */
-export function SkillParamSync() {
+export function SkillParamSync({ skills }: { skills: [string, string][] }) {
+  // Before any island below reads a name (it renders first in the layout, on the server and on hydration).
+  registerSkills(skills);
   return (
     <Suspense fallback={null}>
       <Sync />

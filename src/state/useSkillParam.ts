@@ -1,11 +1,9 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { cv } from "@/content/cv";
+import { isSkill } from "./skillCatalog";
 import { useUiStore } from "./uiStore";
 
 const PARAM = "skill";
-
-const isSkill = (id: string | null): id is string => !!id && cv.skills.some((s) => s.id === id);
 
 function writeUrl(skill: string | null) {
   const url = new URL(window.location.href);

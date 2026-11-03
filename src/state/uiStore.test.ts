@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { useUiStore } from "./uiStore";
+import { cv } from "@/content/cv";
+import { DEFAULT_ROLE, useUiStore } from "./uiStore";
 
 const initial = useUiStore.getState();
 
@@ -11,6 +12,7 @@ describe("uiStore", () => {
   it("defaults to the newest role expanded", () => {
     const s = useUiStore.getState();
     expect(s.expandedRoleId).toBe("freelance-2025");
+    expect(DEFAULT_ROLE).toBe(cv.roles[0].id);
     expect(s.selectedSkill).toBeNull();
     expect(s.paletteOpen).toBe(false);
   });
