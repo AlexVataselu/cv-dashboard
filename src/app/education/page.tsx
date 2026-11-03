@@ -75,7 +75,7 @@ export default function EducationPage() {
               <h2 id="languages" className="card-title">
                 Languages
               </h2>
-              <p className="meta">{cv.languages.length} I work in</p>
+              <p className="meta">{cv.languages.length} languages</p>
             </div>
             <ul className="grid gap-px overflow-hidden rounded-lg bg-rule">
               {cv.languages.map((l) => (

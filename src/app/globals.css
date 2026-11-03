@@ -1339,6 +1339,12 @@ summary:focus-visible,
       display: none;
     }
   }
+  /* a phone: the first year, 2020 and the last */
+  @container sm (max-width: 420px) {
+    .sm-years > span:not(:first-child, :last-child, :nth-child(9)) {
+      display: none !important;
+    }
+  }
   /* a narrower card: a narrower name column, and the years every four (2012, 2016, 2020, 2026) */
   @container sm (min-width: 561px) and (max-width: 760px) {
     .sm-head,

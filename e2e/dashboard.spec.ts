@@ -149,11 +149,11 @@ test("/projects?skill=expo highlights Powderino in the project list with a text 
 
 test("/skills shows where each skill was used, linking with ?skill kept", async ({ page }) => {
   await page.goto("/skills");
-  const row = page
-    .getByRole("listitem")
-    .filter({ has: page.getByRole("button", { name: /^Expo\b/ }) });
-  await expect(row).toContainText("Used in");
-  await row.getByRole("link", { name: "Powderino" }).click();
+  await page.getByRole("button", { name: /^Expo\b/ }).hover();
+  const card = page.locator('[data-detail="expo"]');
+  await expect(card).toBeVisible();
+  await expect(card).toContainText("Used in 1 role and 1 project.");
+  await card.getByRole("link", { name: /Powderino/ }).click();
   await expect(page).toHaveURL(/\/projects\?skill=expo#project-powderino$/);
   await expect(page.locator("#project-powderino")).toHaveAttribute("data-highlight", "true");
 });
@@ -340,20 +340,38 @@ test("prefers-reduced-motion: the chevron and the button press do not animate", 
   expect(await chev.evaluate((el) => getComputedStyle(el).transitionDuration)).not.toBe("0s");
 });
 
-test("skill-adoption tick labels sit centred on their gridlines", async ({ page }) => {
+test("skills matrix: each span starts and ends on its years of the shared axis", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/skills");
-  const chart = page.locator("figure", { has: page.getByRole("heading", { name: /first appear on the CV/ }) });
-  const centres = await chart.evaluate((fig) => {
-    const [labels, plot] = Array.from(fig.querySelectorAll<HTMLElement>(".relative.h-48"));
-    const ys = (els: HTMLElement[]) => els.map((e) => { const r = e.getBoundingClientRect(); return r.top + r.height / 2; });
+  const at = await page.evaluate(() => {
+    const years = [...document.querySelectorAll<HTMLElement>(".sm-years > span")];
+    // a centred label's middle is its year's line; the first and last labels sit on their own edge
+    const x = (y: string) => {
+      const r = years.find((e) => e.textContent === y)!.getBoundingClientRect();
+      return y === "2012" ? r.left : y === "2026" ? r.right : r.left + r.width / 2;
+    };
+    const span = (id: string) => document.querySelector(`.sm-row[data-skill="${id}"] .sm-span`)!.getBoundingClientRect();
+    const lane = (name: string) =>
+      [...document.querySelectorAll<HTMLElement>(".cs-lane")]
+        .find((l) => l.textContent!.startsWith(name))!
+        .querySelector(".cs-bar")!
+        .getBoundingClientRect();
+    const year = (y: number) => x("2012") + ((x("2026") - x("2012")) * (y - 2012)) / 14;
     return {
-      labels: ys(Array.from(labels.children) as HTMLElement[]),
-      lines: ys(Array.from(plot.querySelectorAll<HTMLElement>(":scope > span"))),
+      labels: [x("2020"), year(2020)],
+      react: [span("react").left, year(2021)],
+      js: [span("javascript").left, span("javascript").right, x("2012"), x("2026")],
+      lhel: [lane("L.H.EL").left, year(2017)],
     };
   });
-  expect(centres.labels.length).toBeGreaterThan(2);
-  expect(centres.labels.length).toBe(centres.lines.length);
-  centres.labels.forEach((y, i) => expect(Math.abs(y - centres.lines[i]), `tick ${i}`).toBeLessThanOrEqual(1));
+  // the 2020 label sits on 2020's place between the ends; React starts at 2021
+  expect(Math.abs(at.labels[0] - at.labels[1])).toBeLessThanOrEqual(1.5);
+  expect(Math.abs(at.react[0] - at.react[1])).toBeLessThanOrEqual(1.5);
+  // JavaScript runs the whole axis, 2012 to 2026
+  expect(Math.abs(at.js[0] - at.js[2])).toBeLessThanOrEqual(1.5);
+  expect(Math.abs(at.js[1] - at.js[3])).toBeLessThanOrEqual(1.5);
+  // the career strip shares the axis: L.H.EL starts at 2017
+  expect(Math.abs(at.lhel[0] - at.lhel[1])).toBeLessThanOrEqual(1.5);
 });
 
 for (const width of [320, 412, 768, 1280]) {

@@ -127,19 +127,79 @@ test.describe("every CV fact is reachable by keyboard", () => {
     }
   });
 
-  test("Skills: the group filter is a radio group; each group shows alone", async ({ page }) => {
+  test("Skills: the group filter is a radio group; each group shows alone, every skill in it reachable", async ({ page }) => {
     await page.goto("/skills");
     await hydrated(page);
-    const card = page.getByRole("region", { name: "Skills by group" });
+    const card = page.getByRole("region", { name: "Skills across the career" });
     await card.getByRole("radio", { name: /^All/ }).focus();
     for (const g of ["Frontend", "State & data", "Backend", "Testing & quality", "Tooling"]) {
       await page.keyboard.press("ArrowRight");
-      await expect(card.getByRole("heading", { level: 2, name: g })).toBeVisible();
-      await expect(card.getByRole("heading", { level: 2 })).toHaveCount(1);
+      await expect(card.getByRole("heading", { level: 3, name: g })).toBeVisible();
+      await expect(card.getByRole("heading", { level: 3 })).toHaveCount(1);
       for (const s of cv.skills.filter((s) => s.group === g)) {
-        await expect(card.getByRole("button", { name: new RegExp(`^${s.name.replace(/[.()+]/g, "\\$&")}( ·|$)`) })).toBeVisible();
+        const row = card.getByRole("button", { name: new RegExp(`^${s.name.replace(/[.()+]/g, "\\$&")}( ·|$)`) });
+        await row.scrollIntoViewIfNeeded();
+        await expect(row).toBeVisible();
       }
     }
+  });
+
+  test("Skills: the rows are one tab stop; arrows move, focus opens the skill's card, Enter marks it", async ({ page }) => {
+    await page.goto("/skills");
+    await hydrated(page);
+    const rows = page.locator(".sm-row");
+    await expect(page.locator(".sm-row[tabindex='0']")).toHaveCount(1);
+    await rows.first().focus();
+    await expect(page.locator('[data-detail="react"]')).toBeVisible();
+    await page.keyboard.press("ArrowDown");
+    await expect(rows.nth(1)).toBeFocused();
+    await expect(page.locator('[data-detail="nextjs"]')).toBeVisible();
+    await expect(page.locator('[data-detail="react"]')).toBeHidden();
+    await page.keyboard.press("End");
+    await expect(rows.last()).toBeFocused();
+    await page.keyboard.press("Home");
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowDown");
+    await expect(rows.nth(2)).toBeFocused();
+    // TypeScript is dated from L.H.EL (Superland): that role lights in the strip; Kemblimed does not.
+    await expect(page.locator('[data-detail="typescript"]')).toContainText("since 2017");
+    const lit = (name: string) =>
+      page.locator(".cs-lane", { hasText: name }).first().evaluate((el) => Number(getComputedStyle(el).opacity));
+    await expect.poll(() => lit("L.H.EL")).toBe(1);
+    await expect.poll(() => lit("Kemblimed")).toBeLessThan(0.5);
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/\/skills\?skill=typescript$/);
+    await expect(rows.nth(2)).toHaveAttribute("aria-pressed", "true");
+    // One tab stop: Tab leaves the rows for the card of the skill in focus (its first link), even
+    // when that skill is not the selected one; the card stays while focus travels into it.
+    await page.keyboard.press("ArrowDown");
+    await expect(page.locator('[data-detail="javascript"]')).toBeVisible();
+    await page.keyboard.press("Tab");
+    await expect(page.locator('[data-detail="javascript"] a').first()).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/\?skill=javascript#/);
+  });
+
+  test("Projects: the Stremio gallery switches by arrow keys; each shot is captioned and loads only when chosen", async ({ page }) => {
+    await page.goto("/projects");
+    await hydrated(page);
+    const gallery = page.locator("#preview-stremio .gallery");
+    const loaded = (i: number) =>
+      gallery.locator(`.shot[data-shot="${i}"] img`).evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0);
+    expect(await loaded(1)).toBe(false);
+    await gallery.getByRole("radio", { name: "Filters" }).focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(gallery.getByRole("radio", { name: "Site dropdown" })).toBeChecked();
+    await expect(gallery.locator('.shot[data-shot="1"]')).toBeVisible();
+    await expect(gallery.locator('.shot[data-shot="0"]')).toBeHidden();
+    await expect(gallery.locator('.shot[data-shot="1"] figcaption')).toContainText("torrent site dropdown");
+    await expect.poll(() => loaded(1)).toBe(true);
+    await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("ArrowRight");
+    await expect(gallery.getByRole("img", { name: /stremio-web fork on GitHub/ })).toBeVisible();
+    // Powderino keeps its facts until Alex's screenshots are in.
+    await page.locator("#pick-powderino").check({ force: true });
+    await expect(page.locator("#preview-powderino")).toContainText("3,000+");
   });
 });
 
@@ -168,6 +228,27 @@ test("linked views: a hovered or focused role lights its results and skills; a c
   await expect(page.locator('.tl-row[data-link="pentalog"]')).not.toHaveAttribute("data-highlight", "true");
   await expect(page.locator('.tl-proj[data-name="Powderino"]')).toHaveAttribute("data-highlight", "true");
   await expect(page.locator("#skill-live")).toHaveText(/Expo: marked on 1 role and 1 project/);
+});
+
+test("L.H.EL (Superland): hovering its row lights Magento, PrestaShop, JavaScript, TypeScript, HTML and CSS; Experience lists them", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+  await hydrated(page);
+  const ring = (id: string) => page.locator(`.cloud [data-skill="${id}"]`).evaluate((el) => getComputedStyle(el).boxShadow);
+  expect(await ring("magento")).toBe("none");
+  await page.locator('.tl-row[data-link="lhel"]').hover();
+  for (const id of ["magento", "prestashop", "javascript", "typescript", "html", "css"]) {
+    await expect.poll(() => ring(id), id).not.toBe("none");
+  }
+  expect(await ring("react")).toBe("none");
+
+  await page.goto("/experience");
+  await hydrated(page);
+  await page.locator('a[data-open-role="lhel"]').click();
+  const panel = page.locator('.rs-panel[data-role="lhel"]');
+  await expect(panel).toBeVisible();
+  await expect(panel.locator(".skill-name")).toHaveText(["Magento", "PrestaShop", "JavaScript", "TypeScript", "HTML", "CSS"]);
+  for (const b of cv.roles.find((r) => r.id === "lhel")!.bullets) await expect(page.locator("#role-lhel")).toContainText(b);
 });
 
 test("prefers-reduced-motion: no motion layer, no bar growth, instant section switches", async ({ page }) => {

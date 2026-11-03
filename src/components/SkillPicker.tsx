@@ -64,8 +64,21 @@ export function SkillPicker({
       read(selected());
       stop();
     };
-    const over = (e: Event) => read((e.target as Element).closest<HTMLButtonElement>("button[data-skill]") ?? selected());
-    const leave = () => read(selected());
+    // In the matrix, the skill in focus stays put while the pointer or focus travels into its card
+    // (to follow one of its links) or across the gaps between rows; it changes on another skill, and
+    // falls back to the selected one only when the pointer or focus leaves the whole view.
+    const over = (e: Event) => {
+      const chip = (e.target as Element).closest<HTMLButtonElement>("button[data-skill]");
+      if (tracks && !chip) return;
+      read(chip ?? selected());
+    };
+    const leave = (e: Event) => {
+      if (tracks && e.type === "focusout") {
+        const next = (e as FocusEvent).relatedTarget;
+        if (next instanceof Node && root.contains(next)) return;
+      }
+      read(selected());
+    };
     // A group filter changed what shows: the tab stop moves to a row that is still there.
     const changed = () => requestAnimationFrame(stop);
     paint(useUiStore.getState().selectedSkill);
