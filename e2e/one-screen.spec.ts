@@ -55,48 +55,25 @@ test.describe("without JavaScript", () => {
 test.describe("every CV fact is reachable by keyboard", () => {
   test.use({ viewport: { width: 1280, height: 720 } });
 
-  test("Overview: the headline figures are tabs that switch the main chart; results, skills and About behind the switch", async ({
-    page,
-  }) => {
+  test("Overview: every card is in view at once, no tabs; a year in focus reads what it held", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
     await hydrated(page);
-    const tabs = page.getByRole("group", { name: "Chart the career by" }).getByRole("radio");
-    await expect(tabs).toHaveCount(cv.glance.length);
-    const view = (mode: string) => page.locator(`.ov-main[data-mode="${mode}"]`);
-    // The career timeline shows first: every dated role on it.
-    await expect(tabs.first()).toBeChecked();
-    await expect(view("career")).toBeVisible();
-    for (const r of cv.roles) await expect(view("career")).toContainText(r.company.split(/,| · /)[0].trim());
-    // Arrow keys move between the figures; each opens its own view and hides the others.
-    await tabs.first().focus();
-    for (const mode of ["stack", "kinds", "industries"]) {
-      await page.keyboard.press("ArrowRight");
-      await expect(view(mode)).toBeVisible();
-      await expect(page.locator(".ov-main:visible")).toHaveCount(1);
-    }
-    // The stack view: a year in focus reads what it held and what was new.
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.press("ArrowLeft");
-    await expect(view("stack")).toBeVisible();
+    // Nothing waits behind a switch or a tab: the figures, the timeline, results, both charts,
+    // skills, About and the industries all show on one screen.
+    for (const g of cv.glance) await expect(page.locator(".kpi-label", { hasText: g.label })).toBeInViewport();
+    for (const sel of [".ov-tl", ".ov-res", ".ov-stack", ".ov-kinds", ".ov-skills", ".ov-about", ".ov-ind"])
+      await expect(page.locator(sel)).toBeInViewport({ ratio: 0.99 });
+    for (const r of cv.roles) await expect(page.locator(".ov-tl")).toContainText(r.company.split(/,| · /)[0].trim());
+    for (const i of cv.impact) await expect(page.getByText(i.label)).toBeInViewport();
+    // The skills-by-year chart: a year in focus reads what it held and what was new.
     await page.locator('.st-col[data-y="2021"]').focus();
     await expect(page.locator('.st-read[data-y="2021"]')).toBeVisible();
     await expect(page.locator('.st-read[data-y="2021"]')).toContainText("React");
-    // The industries view links each live site.
-    await tabs.nth(3).check({ force: true });
-    for (const s of sites) await expect(view("industries").locator(`a[href="${s.url}"]`)).toBeVisible();
-    await tabs.first().check({ force: true });
-
-    // A short screen shares one slot: arrow keys move the switch from Results to Skills to About.
-    const results = page.getByRole("radio", { name: "Results" });
-    await results.focus();
-    for (const i of cv.impact) await expect(page.getByText(i.label)).toBeVisible();
-    await page.keyboard.press("ArrowRight");
-    await expect(page.getByRole("radio", { name: "Skills" })).toBeChecked();
-    await expect(page.getByRole("region", { name: "Skills, by first dated use" })).toBeVisible();
-    await page.keyboard.press("ArrowRight");
-    const about = page.getByRole("region", { name: "About, scrollable" });
-    await expect(about).toBeVisible();
+    // The industries card links each live site.
+    for (const s of sites) await expect(page.locator(`.ov-ind a[href="${s.url}"]`)).toBeAttached();
     // The About card scrolls inside itself and takes focus, so the keyboard can scroll it.
+    const about = page.getByRole("region", { name: "About, scrollable" });
     await about.focus();
     await page.keyboard.press("End");
     await expect(page.getByText(cv.education[1].degree, { exact: false })).toBeInViewport();
@@ -234,7 +211,6 @@ test("linked views: a hovered or focused role lights its results and skills; a c
   await expect.poll(() => bg('.result[data-roles="tryangle"]')).not.toBe(plain);
 
   // Choosing a skill marks the roles and projects that used it, keeps ?skill=, and says so.
-  await page.locator(".ov-switch input[value=\"skills\"]").check({ force: true });
   await page.getByRole("button", { name: /^Expo\b/ }).click();
   await expect(page).toHaveURL(/\?skill=expo$/);
   await expect(page.locator('.tl-row[data-link="tryangle"]')).toHaveAttribute("data-highlight", "true");

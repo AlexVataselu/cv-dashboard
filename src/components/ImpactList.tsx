@@ -14,7 +14,8 @@ export function ImpactList({ className }: { className?: string }) {
           Results, with their source
         </h2>
       </div>
-      <ul className="scroll-y -mx-2 grid content-start">
+      {/* focusable: on a short screen the list scrolls inside its card, and the keyboard can scroll it */}
+      <ul className="scroll-y -mx-2 grid content-start" tabIndex={0} aria-label="Results">
         {cv.impact.map((i) => {
           const roleId = IMPACT_ROLE[i.source];
           const role = cv.roles.find((r) => r.id === roleId);

@@ -76,7 +76,7 @@ export function CareerTimeline({
           {yrs(total)} in dated roles{compact && shared ? `, ${shared.start}–${shared.end} side by side` : ""}
         </p>
       </div>
-      <ul className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px]" aria-label="Kinds of work, with years">
+      <ul className="tl-legend mb-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px]" aria-label="Kinds of work, with years">
         {KINDS.map((k) => (
           <li key={k} className="flex items-center gap-2" data-kind={k}>
             <span className="key" aria-hidden="true" />

@@ -2,7 +2,7 @@ import { BrowserFrame } from "@/components/BrowserFrame";
 import { CareerTimeline } from "@/components/CareerTimeline";
 import { ImpactList } from "@/components/ImpactList";
 import { KpiStrip } from "@/components/KpiStrip";
-import { IndustriesMode, KindsMode, StackMode } from "@/components/OverviewModes";
+import { IndustriesCard, KindsCard, StackCard } from "@/components/OverviewCards";
 import { LinkedStyles } from "@/components/LinkedStyles";
 import { SectionShell } from "@/components/SectionShell";
 import { SkillGroups } from "@/components/SkillGroups";
@@ -45,13 +45,11 @@ function SitesStrip() {
 }
 
 /*
-  The Overview on one screen (1024x640 and up): a 12-column grid.
-  Row 1, the four headline figures, which are also the tabs of the main card below them: the career
-  timeline (14 years), the skills in use year by year (5 years on the React stack), the years by
-  kind of work (product teams and independent work), the industries with their live sites.
-  Under them, the main card (8 columns) beside a right-hand slot (4) that results, skills and About
-  share behind a three-way switch. The client sites are a strip by the title.
-  Below desktop the page flows: the figures, the chosen view, then results, skills and About.
+  The Overview on one screen (1024x640 and up), everything in view at once, on a 12-column grid:
+  the four headline figures across the top; the career timeline (6) beside the results (3), with
+  the skills in use by year over the kinds of work in the last column (3); then the skills (6),
+  About (3) and the industries with their live sites (3). On a short screen the panel scrolls
+  rather than hiding anything. Below desktop the cards flow one under the other.
   The whole grid is a `.linked` area: a role hovered or focused on the timeline (or a result) lights
   its results and skills.
 */
@@ -68,35 +66,9 @@ export default function Home() {
       <LinkedStyles />
       <div className="panel-grid ov linked">
         <KpiStrip className="ov-kpis" />
-        <div className="ov-main" data-mode="career">
-          <CareerTimeline compact className="ov-tl" />
-        </div>
-        <div className="ov-main" data-mode="stack">
-          <StackMode />
-        </div>
-        <div className="ov-main" data-mode="kinds">
-          <KindsMode />
-        </div>
-        <div className="ov-main" data-mode="industries">
-          <IndustriesMode />
-        </div>
-        {/* On a desktop the three cards on the right share one slot, behind this switch (radios:
-            no JS needed); below desktop it is hidden and all three show, one under the other. */}
-        <fieldset className="seg ov-switch">
-          <legend className="sr-only">Show in the side panel</legend>
-          <label>
-            <input type="radio" name="ov-card" value="results" defaultChecked />
-            Results
-          </label>
-          <label>
-            <input type="radio" name="ov-card" value="skills" />
-            Skills
-          </label>
-          <label>
-            <input type="radio" name="ov-card" value="about" />
-            About
-          </label>
-        </fieldset>
+        <CareerTimeline compact className="ov-tl" />
+        <StackCard className="ov-stack" />
+        <KindsCard className="ov-kinds" />
         <ImpactList className="ov-res" />
         <SkillGroups className="ov-skills" />
         <section aria-labelledby="about" className="card card-col ov-about">
@@ -117,6 +89,7 @@ export default function Home() {
             </dl>
           </div>
         </section>
+        <IndustriesCard className="ov-ind" />
       </div>
     </SectionShell>
   );
