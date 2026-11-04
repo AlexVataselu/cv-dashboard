@@ -128,12 +128,13 @@ export const projectMedia: ProjectMedia[] = [
     links: [],
   },
   {
-    // Alex's Figma page designs: the deployed app needs its GraphQL API, which is no longer running.
+    // v2 run locally against its database (its Vercel deployment cannot load data); v1's database is gone.
     projectId: "localsonly",
-    shots: shots.localsonly.map((s) => ({ ...s, frame: "app" as const, address: "LocalsOnly · Figma design" })),
+    shots: shots.localsonly.map((s) => ({ ...s, frame: "app" as const, address: "LocalsOnly v2 · run locally" })),
     links: [
-      { label: "Front end", href: "https://github.com/AlexVataselu/localsOnly", address: "github.com/AlexVataselu/localsOnly" },
-      { label: "GraphQL API", href: "https://github.com/AlexVataselu/locals-only-api", address: "github.com/AlexVataselu/locals-only-api" },
+      { label: "v2 repository", href: "https://github.com/AlexVataselu/localOnlyV2", address: "github.com/AlexVataselu/localOnlyV2" },
+      { label: "2023 front end", href: "https://github.com/AlexVataselu/localsOnly", address: "github.com/AlexVataselu/localsOnly" },
+      { label: "2023 GraphQL API", href: "https://github.com/AlexVataselu/locals-only-api", address: "github.com/AlexVataselu/locals-only-api" },
     ],
   },
   {

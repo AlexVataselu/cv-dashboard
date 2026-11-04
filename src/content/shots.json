@@ -256,8 +256,8 @@
       "width": 1120,
       "height": 630,
       "label": "Home",
-      "alt": "LocalsOnly home page design: 'Way of the fox' hero over a mountain photo, with challenge badges below",
-      "caption": "Figma design: the home page, with challenges and their badges"
+      "alt": "LocalsOnly's home page: 'The bear necessities' hero, the search bar, and challenge badges such as Foraging and Honey Hunter",
+      "caption": "The home page: search, and challenges with badges to earn"
     },
     {
       "image": "/work/localsonly-2",
@@ -267,9 +267,9 @@
       ],
       "width": 1120,
       "height": 630,
-      "label": "Listing",
-      "alt": "LocalsOnly listing design: filter chips, recommended experiences and a grid of all experiences with prices",
-      "caption": "Figma design: experiences near you, recommended ones first"
+      "label": "New this week",
+      "alt": "LocalsOnly's 'New this week' row: experience cards with photos, tags, location, host, rating and price",
+      "caption": "New this week: each card with its tags, host, rating and price"
     },
     {
       "image": "/work/localsonly-3",
@@ -279,21 +279,21 @@
       ],
       "width": 1120,
       "height": 630,
-      "label": "Details",
-      "alt": "LocalsOnly experience page design: a photo gallery, the experience's facts, the booking panel and a route map",
-      "caption": "Figma design: an experience's page, with photos, booking and the route on a map"
+      "label": "Experiences",
+      "alt": "The Experiences page: price and time filters, activity chips, and a grid of experiences from the database",
+      "caption": "Experiences from the database, with price, time and activity filters"
     },
     {
       "image": "/work/localsonly-4",
       "widths": [
         640,
-        733
+        1120
       ],
-      "width": 733,
-      "height": 412,
+      "width": 1120,
+      "height": 630,
       "label": "Filters",
-      "alt": "LocalsOnly filters design: activity type, a price range slider, time of day, duration and specials",
-      "caption": "Figma design: filters by activity, price, time of day and duration"
+      "alt": "The Filters panel: a price range slider, activity types, time of day, duration and specials, with 'Show all 18 results'",
+      "caption": "Filters by price, activity, time of day, duration and specials, with a live result count"
     },
     {
       "image": "/work/localsonly-5",
@@ -303,9 +303,21 @@
       ],
       "width": 1120,
       "height": 630,
-      "label": "Home, dark",
-      "alt": "A dark LocalsOnly home page design: 'The bear necessities' hero with badges, trust points and new experiences",
-      "caption": "Figma design: an alternative dark home page"
+      "label": "Experience",
+      "alt": "The Wine & Cheese Evening experience page in Barcelona: rating, reviews and a photo gallery",
+      "caption": "An experience's page: rating, reviews and its photo gallery"
+    },
+    {
+      "image": "/work/localsonly-6",
+      "widths": [
+        640,
+        1120
+      ],
+      "width": 1120,
+      "height": 630,
+      "label": "Guides",
+      "alt": "LocalsOnly's 'Only local guides' row: guide cards with name, rating and hourly price",
+      "caption": "Local guides, each with a rating and an hourly price"
     }
   ],
   "cvdashboard": [

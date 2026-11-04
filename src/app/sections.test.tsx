@@ -138,7 +138,7 @@ describe("Projects", () => {
       "2026",
       "2024–2025",
       "2021",
-      "2023",
+      "2023, v2 2026",
     ]);
     const [stremio, powderino, reamp, dashboard, builder, innobyte, localsonly] = cards;
     expect(within(stremio).getByRole("heading", { name: /Stremio Skip Intro/ })).toBeTruthy();
@@ -169,7 +169,7 @@ describe("Projects", () => {
 
     expect(within(localsonly).getByRole("heading", { name: /LocalsOnly/ })).toBeTruthy();
     expect(within(localsonly).getByText("Freelance project")).toBeTruthy();
-    expect(within(localsonly).getAllByRole("radio")).toHaveLength(5);
+    expect(within(localsonly).getAllByRole("radio")).toHaveLength(6);
 
     // every project with more to say than the CV has room for shows it under Details
     for (const card of [stremio, powderino, reamp, dashboard, builder, localsonly]) {
