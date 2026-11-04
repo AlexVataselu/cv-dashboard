@@ -870,8 +870,10 @@ html[data-backlight="off"]::view-transition-old(root) {
     min-width: 0;
   }
   @media (min-width: 1024px) {
+    /* the sheet's outer margins match the rail's (24px top and bottom, 20px at the side), so
+       the portrait's top and the switches' foot line up with the sheet's edges */
     .workspace {
-      padding: 12px 12px 12px 0;
+      padding: 24px 20px 24px 0;
     }
   }
   .section-nav {
@@ -2061,6 +2063,8 @@ html[data-backlight="off"]::view-transition-old(root) {
       position: absolute;
       top: 0;
       bottom: 0;
+      /* the keys' front ends line up with the rail's content edge (Email me, the portrait) */
+      left: 16px;
       right: -1px;
       flex-direction: column;
       justify-content: center;
@@ -2068,7 +2072,7 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
     .keys-col .section-nav {
       pointer-events: auto;
-      width: 184px;
+      width: 100%;
       padding: 0 0 0 4px;
       /* the keys' far ends run under the sheet's edge; the fillets may reach above and below */
       overflow-x: clip;
@@ -2153,7 +2157,7 @@ html[data-backlight="off"]::view-transition-old(root) {
   .keys-col {
     --key-press: 16px;
     --key-h: 48px;
-    --key-gap: 12px;
+    --key-gap: 8px;
   }
   @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
     /* One curve and one pace for every key movement and for the glide of the mark. */
@@ -2274,13 +2278,13 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
     [data-js] .keys-col {
       --key-h: 34px;
-      --key-gap: 8px;
+      --key-gap: 6px;
     }
   }
   @media (min-width: 1024px) and (min-height: 700px) and (max-height: 739.98px) {
     [data-js] .keys-col {
       --key-h: 32px;
-      --key-gap: 6px;
+      --key-gap: 5px;
     }
   }
 }
