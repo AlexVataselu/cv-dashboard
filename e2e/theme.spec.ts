@@ -13,11 +13,13 @@ test("the dark theme is the default, whatever the system setting", async ({ page
 
 test("the backlight switch says what it does, flips the theme and is remembered across pages", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Backlight on" }).click();
+  await page.getByRole("button", { name: "Backlight OFF" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   expect(await page.evaluate(ground)).toBe(LIGHT);
   expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe("light");
-  await expect(page.getByRole("button", { name: "Backlight off" })).toBeVisible();
+  const on = page.getByRole("button", { name: "Backlight ON" });
+  await expect(on).toBeVisible();
+  await expect(on).toHaveAttribute("aria-pressed", "true");
 
   // The saved choice holds from the first paint of the next page and after a reload.
   await page.goto("/experience");
@@ -26,7 +28,7 @@ test("the backlight switch says what it does, flips the theme and is remembered 
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 
   // Keyboard: Enter on the focused switch turns the backlight off again.
-  await page.getByRole("button", { name: "Backlight off" }).focus();
+  await page.getByRole("button", { name: "Backlight ON" }).focus();
   await page.keyboard.press("Enter");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe("dark");
@@ -39,7 +41,7 @@ test("switching the backlight on lights the panel from its middle, then leaves i
   const glowOf = () => sheet.evaluate((el) => getComputedStyle(el).boxShadow);
   expect(await glowOf()).not.toContain("150, 185, 255");
 
-  await page.getByRole("button", { name: "Backlight on" }).click();
+  await page.getByRole("button", { name: "Backlight OFF" }).click();
   // During the sweep the page is marked, and the light starts from the middle of the panel.
   const mid = await page.evaluate(() => {
     const r = document.querySelector(".sheet")!.getBoundingClientRect();
@@ -50,7 +52,7 @@ test("switching the backlight on lights the panel from its middle, then leaves i
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   expect(await glowOf()).toContain("150, 185, 255");
 
-  await page.getByRole("button", { name: "Backlight off" }).click();
+  await page.getByRole("button", { name: "Backlight ON" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(page.locator("html")).not.toHaveAttribute("data-backlight", /.+/);
 });
@@ -64,7 +66,7 @@ test("no backlight animation outlives its transition, so on after off never star
     page.evaluate(() => document.getAnimations().filter((a) => a.effect && "pseudoElement" in a.effect && a.effect.pseudoElement).length);
   const done = () => expect(page.locator("html")).not.toHaveAttribute("data-backlight", /.+/, { timeout: 5000 });
 
-  for (const name of ["Backlight on", "Backlight off", "Backlight on"]) {
+  for (const name of ["Backlight OFF", "Backlight ON", "Backlight OFF"]) {
     await page.getByRole("button", { name }).click();
     await done();
     // A finished transition leaves nothing behind on its pseudo-elements: a leftover from "off"

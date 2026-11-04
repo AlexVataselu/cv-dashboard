@@ -29,7 +29,8 @@ export function ProfileRail() {
             className="size-14 rounded-full bg-active object-cover md:size-16 lg:size-20"
           />
         </picture>
-        <div className="grid min-w-0 gap-0.5 max-lg:pr-14">
+        {/* Below desktop the backlight switch sits top right: its width is kept clear here. */}
+        <div className="grid min-w-0 gap-0.5 max-lg:pr-[7.5rem]">
           <p className="text-[20px] font-semibold leading-tight lg:text-[22px]">{cv.name}</p>
           <p className="text-[14px] text-muted">{cv.title}</p>
           {/* Hidden on phones, as the spec's compact header has it; its ș would also pull the

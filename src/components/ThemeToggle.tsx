@@ -1,11 +1,15 @@
 "use client";
 
-import type { CSSProperties } from "react";
-
-/** A ray's place in the order they light up (top first, then the diagonals, then the sides). */
-const ray = (i: number) => ({ "--i": i }) as CSSProperties;
+import { useSyncExternalStore } from "react";
 
 const root = () => document.documentElement;
+
+function onThemeChange(notify: () => void) {
+  const observer = new MutationObserver(notify);
+  observer.observe(root(), { attributes: true, attributeFilter: ["data-theme"] });
+  return () => observer.disconnect();
+}
+const backlightOn = () => root().dataset.theme === "light";
 
 function setTheme(next: "light" | "dark") {
   root().dataset.theme = next;
@@ -38,10 +42,12 @@ const OFF_MS = 640;
  * point in the middle of the panel stretches into a bright line, which opens up and down to fill
  * the screen; switching off (the dark theme, the default) closes the picture to a line, then a
  * point. Without the View Transitions API, or with reduced motion, the theme just switches.
- * Labels and the lit screen in the icon come from CSS on data-theme, so the first paint is
- * already right and nothing changes at hydration.
+ * The button says its state, "Backlight OFF" or "Backlight ON": while off it breathes a soft glow
+ * to be noticed; on, it looks switched on. Its words and look come from CSS on data-theme, so the
+ * first paint is already right; aria-pressed follows the theme after hydration.
  */
 export function ThemeToggle() {
+  const on = useSyncExternalStore(onThemeChange, backlightOn, () => false);
   const toggle = () => {
     const next = root().dataset.theme === "light" ? "dark" : "light";
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -101,23 +107,19 @@ export function ThemeToggle() {
   };
 
   return (
-    <button type="button" onClick={toggle} className="theme-toggle btn min-h-11 min-w-11 px-3 lg:min-h-10 lg:flex-1">
-      {/* A screen lit from behind: rays reach out past its edges, and a glow sits behind it. */}
-      <svg className="backlight-icon" viewBox="0 0 22 22" width="20" height="20" aria-hidden="true" focusable="false">
-        <rect className="backlight-halo" x="4" y="7" width="14" height="10" rx="3" />
-        <g className="backlight-rays">
-          <path style={ray(0)} d="M11,5.2V2.6" />
-          <path style={ray(1)} d="M5.6,6.6L3.8,4.8" />
-          <path style={ray(1)} d="M16.4,6.6L18.2,4.8" />
-          <path style={ray(2)} d="M3.2,12H0.8" />
-          <path style={ray(2)} d="M18.8,12H21.2" />
-        </g>
-        <rect className="backlight-screen" x="5" y="8" width="12" height="9" rx="1.8" />
-        <path className="backlight-stand" d="M9,19.6h4" />
-      </svg>
-      {/* One phrase per theme; CSS shows the one that matches. Below desktop width only the icon shows. */}
-      <span className="backlight-label backlight-label-on max-lg:sr-only">Backlight on</span>
-      <span className="backlight-label backlight-label-off max-lg:sr-only">Backlight off</span>
+    <button
+      type="button"
+      aria-pressed={on}
+      onClick={toggle}
+      className="theme-toggle btn min-h-11 px-3 whitespace-nowrap max-lg:px-2.5 max-lg:text-[13px] lg:min-h-10 lg:flex-1"
+    >
+      {/* The current state; CSS shows the phrase that matches data-theme. */}
+      <span className="backlight-state backlight-state-off">
+        Backlight <b>OFF</b>
+      </span>
+      <span className="backlight-state backlight-state-on">
+        Backlight <b>ON</b>
+      </span>
     </button>
   );
 }
