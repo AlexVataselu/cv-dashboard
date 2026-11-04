@@ -26,10 +26,10 @@ const work = cv.workProjects.map(toItem);
 const siteItems = sites.map((s) => ({ id: s.id, name: s.name, meta: s.domain, skillIds: [] as string[] }));
 const items = [...personal, ...work, ...siteItems];
 
-/** "Client project at Pentalog (Globant), 2024–2025" from the role the work was done in. */
+/** "Client project at Pentalog (Globant)" from the role the work was done in (its own years are its label). */
 const workContext = (roleId: string) => {
   const role = cv.roles.find((r) => r.id === roleId);
-  return role ? `Client project at ${companyShort(role)}, ${period(role)}` : undefined;
+  return role ? `Client project at ${companyShort(role)}` : undefined;
 };
 
 /**
@@ -108,7 +108,7 @@ export default function ProjectsPage() {
   return (
     <SectionShell
       title="Projects"
-      lead="Three things I build for myself, product work for Builder.ai, and six client sites I designed and built end to end."
+      lead="Three things I build for myself, product work for Builder.ai and Innobyte, and six client sites I designed and built end to end."
     >
       <PreviewStyles />
       <div className="panel-grid pr">

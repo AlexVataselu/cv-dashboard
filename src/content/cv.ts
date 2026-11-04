@@ -313,6 +313,17 @@ export const cv: Cv = {
       description:
         "Built features for Builder.ai's internal platform that turns customer requirements into apps, including its UI generation workflows, in a Turborepo monorepo whose shared components, hooks and services served web and mobile.",
     },
+    {
+      // Alex's own account (2026-11-04): at TryAngle Labs in 2021 he built the screens' UI and the map.
+      id: "innobyte",
+      roleId: "tryangle",
+      label: "2021",
+      start: 2021,
+      title: "Innobyte, an electric-vehicle charging app",
+      stack: ["React Native", "TypeScript"],
+      skillIds: ["react-native", "typescript"],
+      description: "Built the app's screens and its charger map, for drivers finding a place to charge and planning a trip.",
+    },
   ],
   education: [
     { degree: "Master's, IT Economics", school: "Romanian American University, Bucharest" },
