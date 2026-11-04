@@ -31,11 +31,12 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
-// Runs in <head> before the first paint: the saved choice wins, otherwise the system setting.
-// Wrapped in try/catch because storage can throw (private windows, blocked site data).
+// Runs in <head> before the first paint: the saved choice wins, otherwise the dark theme (the
+// default). Storage can throw (private windows, blocked site data), so dark is set first.
 // It also marks the page as scripted (data-js): the one-screen layout, whose cards scroll inside
 // themselves, applies only then. Without JS the page keeps every block open and scrolls as a page.
-const THEME_SCRIPT = 'document.documentElement.dataset.js="";try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}';
+const THEME_SCRIPT =
+  'var d=document.documentElement;d.dataset.js="";d.dataset.theme="dark";try{if(localStorage.getItem("theme")==="light")d.dataset.theme="light"}catch(e){}';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

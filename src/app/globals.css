@@ -50,19 +50,12 @@
 }
 
 /*
-  The dark tokens, written once. They apply in two cases, through one variant:
-  - the saved or toggled choice: data-theme="dark" (set by the head script or the toggle);
-  - no JS: the system is dark and the page has not been set to light.
-  `@variant dark` copies this one block under both selectors, so the two cannot drift apart.
+  The dark tokens, written once. Dark is the default: they apply unless the page has been set to
+  light (data-theme="light", from the saved choice or the light switch), with or without JS.
 */
 @custom-variant dark {
-  &:where([data-theme="dark"]) {
+  &:where(:not([data-theme="light"])) {
     @slot;
-  }
-  @media (prefers-color-scheme: dark) {
-    &:where(:not([data-theme="light"])) {
-      @slot;
-    }
   }
 }
 
@@ -706,20 +699,116 @@ summary:focus-visible,
   }
 }
 
-/* The theme button shows its state from data-theme, so it is right from the first paint. */
+/* The light switch shows its state from data-theme, so it is right from the first paint. */
 /* Without JS nothing sets data-theme and the button could not work: it is hidden, keeping its
    space. With JS the head script sets data-theme before the first paint, so it never shifts. */
 :root:not([data-theme]) .theme-toggle {
   visibility: hidden;
 }
-.theme-icon-moon {
+.theme-toggle {
+  touch-action: none; /* a pull on a touch screen moves the bulb, not the page */
+  overflow: visible;
+  cursor: grab;
+}
+.theme-toggle[data-pulling] {
+  cursor: grabbing;
+}
+/* Light on: the switch itself glows warm. */
+:root[data-theme="light"] .theme-toggle {
+  border-color: #e8b64c;
+  background: #fff8e6;
+  box-shadow: 0 6px 22px -8px rgb(245 183 10 / 0.7);
+}
+.lamp {
+  flex: none;
+  overflow: visible;
+  margin-block: -16px -6px; /* the cord hangs down from above the button, the bulb inside it */
+}
+.lamp-cord {
+  stroke: var(--muted);
+  stroke-width: 1.2;
+  transform-origin: 12px 0;
+  transform: scaleY(var(--cord, 1));
+}
+.lamp-bulb {
+  transform: translateY(var(--pull, 0px));
+}
+.lamp-hang {
+  transform-origin: 12px 0;
+}
+.lamp-cap,
+.lamp-base {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+.lamp-glass {
+  fill: transparent;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  transition: fill 220ms ease;
+}
+.lamp-filament {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lamp-glow {
+  fill: #ffc94a;
+  opacity: 0;
+  filter: blur(4px);
+  transition: opacity 260ms ease;
+}
+/* Light on: the light theme. */
+:root[data-theme="light"] .lamp-glass {
+  fill: #ffd76e;
+  stroke: #b7791f;
+}
+:root[data-theme="light"] .lamp-filament {
+  stroke: #b45309;
+}
+:root[data-theme="light"] .lamp-glow {
+  opacity: 0.55;
+}
+.lamp-label-off,
+:root[data-theme="light"] .lamp-label-on {
   display: none;
 }
-:root[data-theme="dark"] .theme-icon-moon {
-  display: block;
+:root[data-theme="light"] .lamp-label-off {
+  display: inline;
 }
-:root[data-theme="dark"] .theme-icon-sun {
-  display: none;
+@media (prefers-reduced-motion: no-preference) {
+  /* Let go: the bulb springs back up; a flip sets it swinging on its cord. */
+  .theme-toggle:not([data-pulling]) .lamp-bulb,
+  .theme-toggle:not([data-pulling]) .lamp-cord {
+    transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .theme-toggle[data-swing] .lamp-hang {
+    animation: lamp-swing 900ms cubic-bezier(0.36, 0, 0.3, 1);
+  }
+  .theme-toggle:hover:not([data-pulling]) .lamp-bulb {
+    transform: translateY(2px);
+  }
+}
+@keyframes lamp-swing {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
