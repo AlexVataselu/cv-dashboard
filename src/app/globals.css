@@ -711,31 +711,74 @@ summary:focus-visible,
   overflow: visible;
 }
 .backlight-screen,
-.backlight-power,
-.backlight-stand {
+.backlight-stand,
+.backlight-rays {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.backlight-power {
+.backlight-stand {
+  opacity: 0.6;
+}
+/* Off: the rays are drawn in behind the screen, short and faint; no glow. */
+.backlight-rays path {
+  opacity: 0.35;
+  transform-box: view-box;
+  transform-origin: 11px 12px;
+  transform: scale(0.72);
+}
+.backlight-halo {
+  fill: #ffcf5c;
+  opacity: 0;
+  filter: blur(3px);
+}
+/* On: the rays reach out in warm light, a glow sits behind the screen, and the screen is lit. */
+:root[data-theme="light"] .backlight-rays {
+  stroke: #e0a21a;
+}
+:root[data-theme="light"] .backlight-rays path {
+  opacity: 1;
+  transform: scale(1);
+}
+:root[data-theme="light"] .backlight-halo {
   opacity: 0.75;
 }
-/* Backlight on: the little screen glows, and so does the switch. */
 :root[data-theme="light"] .backlight-screen {
-  fill: #fff6d8;
-  stroke: #c08a1e;
-  filter: drop-shadow(0 0 3px rgb(255 196 64 / 0.9));
-}
-:root[data-theme="light"] .backlight-power {
+  fill: #fffaf0;
   stroke: #b7791f;
-  opacity: 1;
 }
 :root[data-theme="light"] .theme-toggle {
   box-shadow:
     0 0 0 1px rgb(255 196 64 / 0.45),
     0 6px 18px -8px rgb(255 176 32 / 0.6);
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The rays light up in turn (top, then the diagonals, then the sides); off, they draw back together. */
+  .backlight-rays path {
+    transition:
+      transform 360ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 240ms ease;
+  }
+  :root[data-theme="light"] .backlight-rays path {
+    transition-delay: calc(var(--i, 0) * 70ms + 120ms);
+  }
+  .backlight-halo,
+  .backlight-screen {
+    transition:
+      opacity 400ms ease 120ms,
+      fill 300ms ease 80ms,
+      stroke 300ms ease;
+  }
+  .theme-toggle:hover .backlight-rays path {
+    opacity: 0.6;
+    transform: scale(0.86);
+  }
+  :root[data-theme="light"] .theme-toggle:hover .backlight-rays path {
+    opacity: 1;
+    transform: scale(1.08);
+  }
 }
 .backlight-label-off,
 :root[data-theme="light"] .backlight-label-on {

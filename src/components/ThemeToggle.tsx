@@ -1,5 +1,10 @@
 "use client";
 
+import type { CSSProperties } from "react";
+
+/** A ray's place in the order they light up (top first, then the diagonals, then the sides). */
+const ray = (i: number) => ({ "--i": i }) as CSSProperties;
+
 const root = () => document.documentElement;
 
 function setTheme(next: "light" | "dark") {
@@ -97,10 +102,18 @@ export function ThemeToggle() {
 
   return (
     <button type="button" onClick={toggle} className="theme-toggle btn min-h-11 min-w-11 px-3 lg:min-h-10 lg:flex-1">
-      <svg className="backlight-icon" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false">
-        <rect className="backlight-screen" x="2.25" y="3.25" width="15.5" height="10.5" rx="2" />
-        <path className="backlight-power" d="M10,6.2v2.4M7.6,7.4a3.2,3.2,0,1,0,4.8,0" />
-        <path className="backlight-stand" d="M7.5,17h5M10,14v3" />
+      {/* A screen lit from behind: rays reach out past its edges, and a glow sits behind it. */}
+      <svg className="backlight-icon" viewBox="0 0 22 22" width="20" height="20" aria-hidden="true" focusable="false">
+        <rect className="backlight-halo" x="4" y="7" width="14" height="10" rx="3" />
+        <g className="backlight-rays">
+          <path style={ray(0)} d="M11,5.2V2.6" />
+          <path style={ray(1)} d="M5.6,6.6L3.8,4.8" />
+          <path style={ray(1)} d="M16.4,6.6L18.2,4.8" />
+          <path style={ray(2)} d="M3.2,12H0.8" />
+          <path style={ray(2)} d="M18.8,12H21.2" />
+        </g>
+        <rect className="backlight-screen" x="5" y="8" width="12" height="9" rx="1.8" />
+        <path className="backlight-stand" d="M9,19.6h4" />
       </svg>
       {/* One phrase per theme; CSS shows the one that matches. Below desktop width only the icon shows. */}
       <span className="backlight-label backlight-label-on max-lg:sr-only">Backlight on</span>
