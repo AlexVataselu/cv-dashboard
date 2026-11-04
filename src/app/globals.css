@@ -760,121 +760,18 @@ summary:focus-visible,
 }
 
 /*
-  The switch-on: a View Transition of the whole page (ThemeToggle sets html[data-backlight]),
-  like a CRT warming up. The lit page appears as a point in the middle of the panel (--bl-x,
-  --bl-y), stretches into a bright horizontal line, then opens up and down to fill the screen.
-  Switching off runs it backwards: the picture closes into a line, then the line into a point.
-  Two masks are intersected: one sets the lit width (--bl-w each side), one the height (--bl-h).
+  The switch-on is a View Transition of the whole page (ThemeToggle sets html[data-backlight] and
+  animates the snapshots with the Web Animations API: clip-path from a point to a line to the
+  whole screen). Here only the stacking: on, the lit new page is revealed over the old one; off,
+  the lit old page closes over the new, dark one.
 */
-@property --bl-w {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
-}
-@property --bl-h {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
-}
 html[data-backlight]::view-transition-old(root),
 html[data-backlight]::view-transition-new(root) {
-  --bl-x0: var(--bl-x, 50vw);
-  --bl-y0: var(--bl-y, 50vh);
-  mask-image:
-    linear-gradient(
-      to right,
-      transparent calc(var(--bl-x0) - var(--bl-w) - 3vw),
-      #000 calc(var(--bl-x0) - var(--bl-w)),
-      #000 calc(var(--bl-x0) + var(--bl-w)),
-      transparent calc(var(--bl-x0) + var(--bl-w) + 3vw)
-    ),
-    linear-gradient(
-      to bottom,
-      transparent calc(var(--bl-y0) - var(--bl-h) - 1.5px - var(--bl-h) * 0.3),
-      #000 calc(var(--bl-y0) - var(--bl-h)),
-      #000 calc(var(--bl-y0) + var(--bl-h)),
-      transparent calc(var(--bl-y0) + var(--bl-h) + 1.5px + var(--bl-h) * 0.3)
-    );
-  mask-composite: intersect;
-  mask-repeat: no-repeat;
-}
-html[data-backlight="on"]::view-transition-old(root) {
   animation: none;
-  mask-image: none;
-}
-html[data-backlight="on"]::view-transition-new(root) {
-  animation: backlight-on 1300ms linear both;
-}
-html[data-backlight="off"]::view-transition-new(root) {
-  animation: none;
-  mask-image: none;
+  mix-blend-mode: normal;
 }
 html[data-backlight="off"]::view-transition-old(root) {
   z-index: 1;
-  animation: backlight-off 760ms linear both;
-}
-/* Point, then a flickering line that runs out to both sides, then the picture opens up and down. */
-@keyframes backlight-on {
-  0% {
-    --bl-w: 0px;
-    --bl-h: 1px;
-    filter: brightness(2.6) saturate(0);
-    animation-timing-function: ease-out;
-  }
-  7% {
-    --bl-w: 0.5vw;
-    --bl-h: 1px;
-    filter: brightness(2.6) saturate(0);
-    animation-timing-function: cubic-bezier(0.6, 0, 0.3, 1);
-  }
-  34% {
-    --bl-w: 115vw;
-    --bl-h: 1px;
-    filter: brightness(2.4) saturate(0.2);
-    animation-timing-function: steps(1);
-  }
-  38% {
-    --bl-w: 115vw;
-    --bl-h: 1px;
-    filter: brightness(1.2) saturate(0.4);
-    animation-timing-function: steps(1);
-  }
-  42% {
-    --bl-w: 115vw;
-    --bl-h: 1px;
-    filter: brightness(2.4) saturate(0.4);
-    animation-timing-function: cubic-bezier(0.55, 0, 0.2, 1);
-  }
-  100% {
-    --bl-w: 115vw;
-    --bl-h: 115vh;
-    filter: none;
-  }
-}
-/* Picture closes to a bright line, then the line pulls in to a point and goes out. */
-@keyframes backlight-off {
-  0% {
-    --bl-w: 115vw;
-    --bl-h: 115vh;
-    filter: none;
-    animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.5);
-  }
-  55% {
-    --bl-w: 115vw;
-    --bl-h: 1px;
-    filter: brightness(2.4) saturate(0.2);
-    animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.4);
-  }
-  92% {
-    --bl-w: 0.4vw;
-    --bl-h: 1px;
-    filter: brightness(2.8) saturate(0);
-  }
-  100% {
-    --bl-w: 0px;
-    --bl-h: 0px;
-    filter: brightness(2.8) saturate(0);
-  }
 }
 @media (prefers-reduced-motion: no-preference) {
   .backlight-screen {
