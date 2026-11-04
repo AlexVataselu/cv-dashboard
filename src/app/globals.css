@@ -2055,15 +2055,19 @@ html[data-backlight="off"]::view-transition-old(root) {
      left a little; the open section is the key held pressed in, its gold mark on its front end;
      pressing pushes a key the whole way and it stays down. */
   @media (min-width: 1024px) {
+    /* the keys are centred on the screen, at the rail's right edge: a full-height column that
+       lets clicks through to the rail beside it, holding the stack in its middle */
     .keys-col {
-      flex: 1;
-      min-height: 0;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: -1px;
       flex-direction: column;
       justify-content: center;
-      align-items: flex-end;
-      margin-right: -21px;
+      pointer-events: none;
     }
     .keys-col .section-nav {
+      pointer-events: auto;
       width: 184px;
       padding: 0 0 0 4px;
       /* the keys' far ends run under the sheet's edge; the fillets may reach above and below */
@@ -2073,32 +2077,37 @@ html[data-backlight="off"]::view-transition-old(root) {
       position: relative;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: var(--key-gap);
       overflow: visible;
     }
-    /* the fillets: the sheet's edge curves out into the first key's top and the last key's foot */
-    .keys .tabs::before,
-    .keys .tabs::after {
+    /* the fillets: the sheet's edge curves out into each key's top and foot, so every key grows
+       out of the sheet; between two keys the fillets meet in a smooth notch */
+    .keys-col .tabs > li {
+      position: relative;
+      --r: calc(var(--key-gap) / 2);
+    }
+    .keys-col .tabs > li::before,
+    .keys-col .tabs > li::after {
       content: "";
       position: absolute;
       right: 0;
-      width: 14px;
-      height: 14px;
+      width: var(--r);
+      height: var(--r);
       background: var(--surface);
     }
-    .keys .tabs::before {
-      top: -14px;
-      mask: radial-gradient(circle at 0 0, transparent 13.5px, #000 14px);
+    .keys-col .tabs > li::before {
+      top: calc(var(--r) * -1);
+      mask: radial-gradient(circle at 0 0, transparent calc(var(--r) - 0.5px), #000 var(--r));
     }
-    .keys .tabs::after {
-      bottom: -14px;
-      mask: radial-gradient(circle at 0 100%, transparent 13.5px, #000 14px);
+    .keys-col .tabs > li::after {
+      bottom: calc(var(--r) * -1);
+      mask: radial-gradient(circle at 0 100%, transparent calc(var(--r) - 0.5px), #000 var(--r));
     }
     .keys .tab,
     [data-js] .keys .tab {
       justify-content: flex-start;
       width: 100%;
-      height: var(--key-h, 50px);
+      height: var(--key-h);
       padding: 0 0 0 26px;
       font-size: 15px;
       color: var(--muted);
@@ -2143,6 +2152,8 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
   .keys-col {
     --key-press: 16px;
+    --key-h: 48px;
+    --key-gap: 12px;
   }
   @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
     /* One curve and one pace for every key movement and for the glide of the mark. */
@@ -2193,9 +2204,44 @@ html[data-backlight="off"]::view-transition-old(root) {
   :root:not([data-theme="light"]) .rail-photo img {
     filter: brightness(0.86) contrast(1.06);
   }
+  /* From desktop the name block is the portrait's width: the name and the title are sized to span
+     it exactly (container units of that width; their ratios measured in IBM Plex Sans), and the
+     location is justified across it. */
   @media (min-width: 1024px) {
-    .rail-photo {
-      width: 100%;
+    .rail-head {
+      --photo-w: 100%;
+    }
+    .rail-photo,
+    .rail-id {
+      width: var(--photo-w);
+    }
+    .rail-id {
+      container-type: inline-size;
+      gap: 4px;
+    }
+    .rail-name {
+      font-size: 15.7cqi;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+    .rail-title {
+      font-size: 8.7cqi;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+    .rail-location {
+      align-items: flex-start;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .rail-location .icon {
+      margin-top: 1px;
+    }
+    .rail-loc-sep {
+      display: none;
+    }
+    .rail-loc-mode {
+      display: block;
     }
   }
   /* The one-screen desktop: the rail holds the portrait, the name, the keys and the contact
@@ -2205,22 +2251,36 @@ html[data-backlight="off"]::view-transition-old(root) {
     [data-js] .shell > aside {
       overflow: visible;
     }
-    [data-js] .rail-photo {
-      width: clamp(88px, calc(100dvh - 724px), 100%);
+    /* the portrait (and the name block, set to its width) ends above the centred keys */
+    [data-js] .rail-head {
+      --photo-w: clamp(140px, calc((50dvh - 248px) / 1.29), 100%);
     }
   }
-  @media (min-width: 1024px) and (min-height: 700px) and (max-height: 799.98px) {
-    [data-js] .shell > aside {
-      gap: 16px;
-    }
+  /* under 900px tall: the location line gives way first, then the portrait */
+  @media (min-width: 1024px) and (min-height: 700px) and (max-height: 899.98px) {
     [data-js] .rail-location {
       display: none !important; /* over the md:flex utility */
     }
-    [data-js] .rail-photo {
-      width: clamp(88px, calc(100dvh - 642px), 100%);
+    [data-js] .rail-head {
+      --photo-w: clamp(140px, calc((50dvh - 212px) / 1.29), 100%);
+    }
+  }
+  @media (min-width: 1024px) and (min-height: 700px) and (max-height: 819.98px) {
+    [data-js] .shell > aside {
+      gap: 16px;
+    }
+    [data-js] .rail-head {
+      --photo-w: clamp(140px, calc((50dvh - 169px) / 1.3), 100%);
     }
     [data-js] .keys-col {
-      --key-h: 42px;
+      --key-h: 34px;
+      --key-gap: 8px;
+    }
+  }
+  @media (min-width: 1024px) and (min-height: 700px) and (max-height: 739.98px) {
+    [data-js] .keys-col {
+      --key-h: 32px;
+      --key-gap: 6px;
     }
   }
 }

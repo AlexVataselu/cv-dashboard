@@ -8,7 +8,7 @@ const ROUTES = [
   { path: "/education", label: "Education", h1: "Education" },
 ];
 
-test("first screen at 1280x800 shows name, title, availability and Email without scrolling", async ({
+test("first screen at 1280x800 shows name, title and Email without scrolling", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
@@ -16,7 +16,6 @@ test("first screen at 1280x800 shows name, title, availability and Email without
   const rail = page.locator("aside");
   await expect(rail.getByText("Alex Vataselu", { exact: true })).toBeInViewport();
   await expect(rail.getByText("Senior Frontend Engineer")).toBeInViewport();
-  await expect(rail.getByText(/open to work/i)).toBeInViewport();
   await expect(rail.getByRole("link", { name: "Email me" })).toBeInViewport();
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
 });

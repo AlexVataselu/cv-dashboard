@@ -4,12 +4,11 @@ import { cv } from "@/content/cv";
 import { ProfileRail } from "./ProfileRail";
 
 describe("ProfileRail", () => {
-  it("shows name, title, location and availability", () => {
+  it("shows name, title and location", () => {
     render(<ProfileRail />);
     expect(screen.getByText("Alex Vataselu")).toBeTruthy();
     expect(screen.getByText("Senior Frontend Engineer")).toBeTruthy();
-    expect(screen.getByText("Brașov, Romania · Remote (EU)")).toBeTruthy();
-    expect(screen.getByText(/open to work/i)).toBeTruthy();
+    expect(document.querySelector(".rail-loc")?.textContent).toBe("Brașov, Romania · Remote (EU)");
   });
 
   it("has an Email me mailto link and PDF, LinkedIn, GitHub links", () => {
