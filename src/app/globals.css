@@ -720,10 +720,33 @@ summary:focus-visible,
   display: inline;
 }
 .theme-toggle {
+  position: relative;
+  overflow: hidden; /* the sheen is clipped to the button */
+  isolation: isolate;
   border-color: rgb(255 196 64 / 0.5);
   box-shadow:
     0 0 0 1px rgb(255 196 64 / 0.35),
     0 0 16px -2px rgb(255 190 60 / 0.4);
+}
+.backlight-state {
+  position: relative;
+  z-index: 1; /* the words stay above the sheen */
+}
+/* A glint of warm light, parked off the button's left edge until it sweeps across. */
+:root:not([data-theme="light"]) .theme-toggle::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgb(255 214 120 / 0.16) 42%,
+    rgb(255 226 150 / 0.5) 50%,
+    rgb(255 214 120 / 0.16) 58%,
+    transparent 70%
+  );
+  transform: translateX(-110%);
+  pointer-events: none;
 }
 .backlight-state-off b {
   color: #ffc94a;
@@ -740,26 +763,33 @@ summary:focus-visible,
 :root[data-theme="light"] .theme-toggle:hover {
   background: linear-gradient(to bottom, #ffe599, #f8c04f);
 }
+/* While the backlight is off, the glint sweeps across three times soon after the page opens,
+   with a rest between passes, then stops; hovering or focusing the switch plays it once more.
+   Only transform moves, so the sweep runs on the compositor. */
 @media (prefers-reduced-motion: no-preference) {
-  :root:not([data-theme="light"]) .theme-toggle {
-    animation: backlight-call 2.6s ease-in-out infinite;
+  :root:not([data-theme="light"]) .theme-toggle::after {
+    animation: backlight-sheen 3.4s ease-in-out 1.4s 3;
   }
-  :root:not([data-theme="light"]) .theme-toggle:hover,
-  :root:not([data-theme="light"]) .theme-toggle:focus-visible {
-    animation-play-state: paused;
+  :root:not([data-theme="light"]) .theme-toggle:hover::after,
+  :root:not([data-theme="light"]) .theme-toggle:focus-visible::after {
+    animation: backlight-sheen-once 900ms ease-in-out;
   }
 }
-@keyframes backlight-call {
-  0%,
-  100% {
-    box-shadow:
-      0 0 0 1px rgb(255 196 64 / 0.25),
-      0 0 6px -3px rgb(255 190 60 / 0.25);
+@keyframes backlight-sheen {
+  0% {
+    transform: translateX(-110%);
   }
-  50% {
-    box-shadow:
-      0 0 0 1px rgb(255 196 64 / 0.6),
-      0 0 22px 2px rgb(255 190 60 / 0.45);
+  32%,
+  100% {
+    transform: translateX(110%);
+  }
+}
+@keyframes backlight-sheen-once {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(110%);
   }
 }
 
