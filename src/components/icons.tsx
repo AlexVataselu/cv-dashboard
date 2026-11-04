@@ -75,3 +75,9 @@ export const ArrowRightIcon = (p: SVGProps<SVGSVGElement>) => (
     <path d="M3,8h10M9,4l4,4-4,4" />
   </Icon>
 );
+export const SearchIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <circle cx="7" cy="7" r="4.25" />
+    <path d="m10.25 10.25 3.25 3.25" />
+  </Icon>
+);

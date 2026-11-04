@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { cv } from "@/content/cv";
 import { SECTIONS } from "@/lib/sections";
 import { useUiStore } from "@/state/uiStore";
@@ -125,9 +126,11 @@ function PaletteDialog() {
     }
   };
 
-  return (
+  // Rendered on <body>: the trigger lives in the sticky rail, whose stacking context would
+  // otherwise trap the overlay under the sheet beside it, whatever its z-index.
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-3 pt-[12vh]"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-3 pt-[12vh]"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) close();
       }}
@@ -200,6 +203,7 @@ function PaletteDialog() {
           </p>
         ) : null}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

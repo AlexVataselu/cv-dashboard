@@ -4,8 +4,8 @@
   Framed sheet (tasteskill app style, seed 1934517381), with colour on the data.
   - The frame: one blue-grey tint (from the cobalt) holds the profile rail and the section tabs, with
     no rule between them. The work sits on a white sheet with a 1px edge, 16px corners and no shadow.
-  - One confident primary, cobalt, for the one action (Email me), the current tab and the product-team
-    data. Three supporting data hues: teal for independent work, amber for the e-commerce years, rose
+  - One accent, gold on black: the one action (Email me) filled amber, the current section's marker,
+    links and focus. Cobalt stays a data hue, for the product-team work. Three supporting data hues: teal for independent work, amber for the e-commerce years, rose
     for the backend years before them. The four hues mean the same thing on every screen (the career
     timeline, Experience, the results).
   - Dark is designed, not inverted: true neutral greys (no navy, no slate), the hues lifted so dark
@@ -22,10 +22,15 @@
   --control: #c9cfd9;
   --ink: #10131a; /* 18.9:1 on white */
   --muted: #545b68; /* 6.8:1 on white, 6.0:1 on the frame */
-  --primary: #1d5bd6; /* cobalt: 6.0:1 on white */
-  --primary-ink: #ffffff;
-  --primary-hover: #1749ad;
-  --focus: #1d5bd6;
+  /* the accent: gold. --primary is the text-safe gold (links, markers, chips with white text);
+     --primary-fill is the bright amber the one action is filled with, with near-black ink on it. */
+  --primary: #8a5a00; /* 6.3:1 on white */
+  --primary-ink: #ffffff; /* 6.3:1 on the primary */
+  --primary-hover: #6f4800;
+  --primary-fill: #f0b43c;
+  --primary-fill-ink: #1b1400; /* 10.4:1 on the fill */
+  --primary-fill-hover: #f5c463;
+  --focus: #a26a00;
 
   /* data hues, by kind of work. *-on is the text colour on a filled bar. */
   --hue-product: #1d5bd6;
@@ -71,10 +76,13 @@
     --control: #44474f;
     --ink: #f2f3f5;
     --muted: #a9adb5; /* 8.0:1 on the sheet */
-    --primary: #7ea6ff; /* 7.5:1 on the sheet */
-    --primary-ink: #0b0c0f; /* 8.2:1 on the primary */
-    --primary-hover: #a3c0ff;
-    --focus: #7ea6ff;
+    --primary: #f2b84b; /* 9.9:1 on the sheet */
+    --primary-ink: #120d00; /* 11.2:1 on the primary */
+    --primary-hover: #f7cc74;
+    --primary-fill: #f2b84b;
+    --primary-fill-ink: #120d00;
+    --primary-fill-hover: #f7cc74;
+    --focus: #f2b84b;
     --hue-product: #7ea6ff;
     --hue-product-on: #0b0c0f;
     --hue-indie: #3cc2ab;
@@ -333,6 +341,7 @@ summary:focus-visible,
   }
   .btn:hover {
     background: var(--raised);
+    border-color: color-mix(in srgb, var(--primary) 55%, var(--control));
   }
   /* the press nudge is motion: none under prefers-reduced-motion */
   @media (prefers-reduced-motion: no-preference) {
@@ -347,13 +356,14 @@ summary:focus-visible,
     }
   }
   .btn-primary {
-    background: var(--primary);
+    background: var(--primary-fill);
     border-color: transparent;
-    color: var(--primary-ink);
+    color: var(--primary-fill-ink);
     font-weight: 600;
   }
   .btn-primary:hover {
-    background: var(--primary-hover);
+    background: var(--primary-fill-hover);
+    border-color: transparent;
   }
   .icon {
     width: 16px;
@@ -706,8 +716,8 @@ summary:focus-visible,
   visibility: hidden;
 }
 /* ---------- the backlight: the dark theme is the screen with its backlight off ---------- */
-/* The switch says its state. Off (the dark default) it breathes a warm glow to be noticed;
-   on (the light theme) it looks switched on: lit amber and pressed in. */
+/* The switch says its state. Off (the dark default) a gold edge and a glint that sweeps across
+   it a few times catch the eye; on (the light theme) it is lit: a flat amber fill. */
 .backlight-state b {
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -723,10 +733,7 @@ summary:focus-visible,
   position: relative;
   overflow: hidden; /* the sheen is clipped to the button */
   isolation: isolate;
-  border-color: rgb(255 196 64 / 0.5);
-  box-shadow:
-    0 0 0 1px rgb(255 196 64 / 0.35),
-    0 0 16px -2px rgb(255 190 60 / 0.4);
+  border-color: color-mix(in srgb, var(--primary-fill) 60%, transparent);
 }
 .backlight-state {
   position: relative;
@@ -749,19 +756,16 @@ summary:focus-visible,
   pointer-events: none;
 }
 .backlight-state-off b {
-  color: #ffc94a;
+  color: var(--primary);
 }
+/* on: the switch is lit, a flat amber fill like the one action */
 :root[data-theme="light"] .theme-toggle {
-  border-color: #c98a12;
-  background: linear-gradient(to bottom, #ffdf85, #f6b93b);
-  color: #2e2104;
-  box-shadow:
-    inset 0 1px 2px rgb(0 0 0 / 0.18),
-    inset 0 -1px 0 rgb(255 255 255 / 0.35),
-    0 4px 14px -6px rgb(240 160 10 / 0.75);
+  border-color: transparent;
+  background: var(--primary-fill);
+  color: var(--primary-fill-ink);
 }
 :root[data-theme="light"] .theme-toggle:hover {
-  background: linear-gradient(to bottom, #ffe599, #f8c04f);
+  background: var(--primary-fill-hover);
 }
 /* While the backlight is off, the glint sweeps across three times soon after the page opens,
    with a rest between passes, then stops; hovering or focusing the switch plays it once more.
@@ -865,7 +869,7 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
   @media (min-width: 1024px) {
     .workspace {
-      padding: 0 12px 12px 0;
+      padding: 12px 12px 12px 0;
     }
   }
   .section-nav {
@@ -1905,5 +1909,52 @@ html[data-backlight="off"]::view-transition-old(root) {
   ::view-transition-old(*),
   ::view-transition-new(*) {
     animation: none !important;
+  }
+}
+
+/* ---------- the sections, in the rail ---------- */
+/* On a phone or tablet: the tab row over the sheet (the rail's last block). From 1024px: a list
+   down the rail, the current section on a neutral pill with a gold marker that glides between rows. */
+@layer components {
+  .rail-nav .section-nav {
+    padding: 0;
+  }
+  @media (max-width: 1023.98px) {
+    .rail-nav {
+      margin-top: -8px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .rail-nav .tabs {
+      flex-direction: column;
+      gap: 2px;
+      overflow: visible;
+    }
+    .rail-nav .tab,
+    [data-js] .rail-nav .tab {
+      height: 40px;
+      padding: 0 10px 0 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      transition:
+        color 150ms ease,
+        background-color 150ms ease;
+    }
+    .rail-nav .tab:hover {
+      background: var(--raised);
+    }
+    .rail-nav .tab[aria-current="page"] {
+      background: var(--active);
+    }
+    .rail-nav .tab-ink,
+    [data-js] .rail-nav .tab-ink {
+      left: 0;
+      right: auto;
+      top: 10px;
+      bottom: 10px;
+      width: 3px;
+      height: auto;
+      background: var(--primary-fill);
+    }
   }
 }

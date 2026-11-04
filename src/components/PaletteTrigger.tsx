@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
+import { SearchIcon } from "@/components/icons";
 import { useUiStore } from "@/state/uiStore";
 
 // Loaded only after the first open; the chunk stays out of the first-load JS.
@@ -42,12 +43,13 @@ export function PaletteTrigger() {
       <button
         ref={ref}
         type="button"
-        aria-label="⌘K Open command palette"
+        aria-label="Search: Open command palette"
+        title="Search (Ctrl K)"
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
-        className="btn hidden min-h-10 min-w-11 px-3 text-muted lg:inline-flex"
+        className="btn hidden min-h-10 min-w-11 px-0 text-muted hover:text-ink lg:inline-flex"
       >
-        <span aria-hidden="true">⌘K</span>
+        <SearchIcon className="icon size-[18px]" />
       </button>
       {loaded ? <CommandPalette /> : null}
     </>

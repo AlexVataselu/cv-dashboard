@@ -1,4 +1,5 @@
 import { PaletteTrigger } from "@/components/PaletteTrigger";
+import { SectionNav } from "@/components/SectionNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ExternalIcon, FileIcon, GitHubIcon, LinkedInIcon, MailIcon, PinIcon } from "@/components/icons";
 import { cv } from "@/content/cv";
@@ -7,9 +8,10 @@ const link =
   "flex min-h-11 items-center gap-2.5 rounded-lg px-2.5 text-[14px] font-medium text-ink transition-colors hover:bg-active lg:min-h-10";
 
 /**
- * The profile rail: who, what, where, available, and how to reach him. It sits on the frame tint,
- * held in place on wide screens while the sheet beside it switches section. On a phone it folds
- * into a compact header: the photo, the name, the title and the contact buttons in one row.
+ * The profile rail: who, what, where and available at the top, the sections under it, and how to
+ * reach him at its foot. It sits on the frame tint, held in place on wide screens while the sheet
+ * beside it switches section. On a phone it folds into a compact header: the photo, the name, the
+ * title and the contact buttons, then the section tabs over the sheet.
  */
 export function ProfileRail() {
   return (
@@ -48,7 +50,14 @@ export function ProfileRail() {
         </div>
       </div>
 
-      <div className="grid gap-2 md:flex md:items-center lg:grid">
+      {/* The sections: a list down the rail on a desktop; on a phone, the tab row just above the
+          sheet (last in the rail's order), so the contact buttons stay with the name. */}
+      <div className="rail-nav max-lg:order-last">
+        <SectionNav />
+      </div>
+
+      {/* How to reach him, at the foot of the rail on a desktop. */}
+      <div className="grid gap-2 md:flex md:items-center lg:mt-auto lg:grid">
         <a href={`mailto:${cv.email}`} className="btn btn-primary w-full md:w-auto lg:w-full">
           <MailIcon />
           Email me
@@ -71,7 +80,7 @@ export function ProfileRail() {
         </nav>
       </div>
 
-      <div className="flex items-center gap-2 max-lg:absolute max-lg:right-4 max-lg:top-4 md:max-lg:right-6 md:max-lg:top-5 lg:mt-auto">
+      <div className="flex items-center gap-2 max-lg:absolute max-lg:right-4 max-lg:top-4 md:max-lg:right-6 md:max-lg:top-5">
         <ThemeToggle />
         <PaletteTrigger />
       </div>
