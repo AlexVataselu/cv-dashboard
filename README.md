@@ -1,7 +1,7 @@
 # CV Dashboard
 
 Alex Vataselu's CV as a fast, accessible dashboard: experience, skills with where each was used, projects and education.
-Live site: _link to be added after the first production deploy_.
+Live site: https://alexvataselu.vercel.app
 
 Static Next.js (App Router, TypeScript, Tailwind) site, exported to `out/`.
 
