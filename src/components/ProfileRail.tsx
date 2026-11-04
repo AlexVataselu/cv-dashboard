@@ -15,7 +15,7 @@ const link =
  */
 export function ProfileRail() {
   return (
-    <aside className="relative flex flex-col gap-4 px-4 pb-1 pt-4 md:px-6 md:pt-5 lg:sticky lg:top-0 lg:h-svh lg:gap-6 lg:overflow-y-auto lg:px-5 lg:py-6">
+    <aside className="relative flex flex-col gap-4 px-4 pb-1 pt-4 md:px-6 md:pt-5 lg:sticky lg:top-0 lg:h-svh lg:gap-6 lg:px-5 lg:py-6">
       <div className="rail-head flex items-center gap-4 lg:flex-col lg:items-start">
         <picture className="rail-photo block shrink-0">
           <source srcSet="/photo.avif" type="image/avif" />

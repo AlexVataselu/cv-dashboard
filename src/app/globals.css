@@ -2048,12 +2048,12 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
   }
 
-  /* ----- from 1024px: keys in the rail's open middle, reaching to the sheet ----- */
-  /* Piano keys seen from above, lying across the rail with their far ends under the sheet's edge.
-     A key at rest stands out of the row (raised); hovering presses it in from the left a little;
-     the open section is the key held pressed in: pushed toward the sheet, sunk to the sheet's own
-     colour and joined to it, a gold mark on its front end. Pressing a key pushes it the whole way
-     and it stays down, so the open section is always the one pressed key. */
+  /* ----- from 1024px: keys growing out of the sheet's edge into the rail ----- */
+  /* The keys are part of the sheet: its colour, no outlines, the stack joined to the sheet's edge
+     with curved fillets at its top and bottom, so the sheet seems to reach into the rail. Keys sit
+     side by side like a piano's, parted by a hairline groove. Hovering presses a key in from the
+     left a little; the open section is the key held pressed in, its gold mark on its front end;
+     pressing pushes a key the whole way and it stays down. */
   @media (min-width: 1024px) {
     .keys-col {
       flex: 1;
@@ -2065,83 +2065,95 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
     .keys-col .section-nav {
       width: 184px;
-      padding: 4px 0 4px 4px;
-      /* the keys' far ends slide under the sheet's edge, not over it */
+      padding: 0 0 0 4px;
+      /* the keys' far ends run under the sheet's edge; the fillets may reach above and below */
       overflow-x: clip;
     }
     .keys .tabs {
+      position: relative;
       display: flex;
       flex-direction: column;
-      gap: 0;
+      gap: 2px;
       overflow: visible;
+    }
+    /* the fillets: the sheet's edge curves out into the first key's top and the last key's foot */
+    .keys .tabs::before,
+    .keys .tabs::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      width: 14px;
+      height: 14px;
+      background: var(--surface);
+    }
+    .keys .tabs::before {
+      top: -14px;
+      mask: radial-gradient(circle at 0 0, transparent 13.5px, #000 14px);
+    }
+    .keys .tabs::after {
+      bottom: -14px;
+      mask: radial-gradient(circle at 0 100%, transparent 13.5px, #000 14px);
     }
     .keys .tab,
     [data-js] .keys .tab {
       justify-content: flex-start;
       width: 100%;
-      height: var(--key-h, 52px);
-      padding: 0 0 0 24px;
+      height: var(--key-h, 50px);
+      padding: 0 0 0 26px;
       font-size: 15px;
+      color: var(--muted);
     }
-    /* a key at rest: raised out of the row, hairlines between keys */
+    /* a key's body: the sheet's own colour, rounded at its front end */
     .keys .tab::before {
       content: "";
       position: absolute;
-      top: 0;
-      bottom: -1px;
-      left: 0;
-      right: 0;
-      border: 1px solid var(--border);
-      border-right: 0;
-      border-radius: 10px 0 0 10px;
-      background: var(--raised);
+      inset: 0 -2px 0 0;
+      border-radius: 12px 0 0 12px;
+      background: var(--surface);
     }
-    .keys .tab:hover {
-      color: var(--ink);
-    }
+    .keys .tab:hover,
     .keys .tab[aria-current="page"] {
       color: var(--ink);
     }
-    /* the held key: pushed in toward the sheet, in the sheet's colour, joined to it */
+    .keys .tab[aria-current="page"] {
+      font-weight: 600;
+    }
     .keys .tab[aria-current="page"]::before,
     .keys .tab[aria-current="page"] .tab-label {
       transform: translateX(var(--key-press));
     }
+    /* the held key's mark: one element that glides from key to key on a switch */
     .keys .tab-ink,
     [data-js] .keys .tab-ink {
-      top: -1px;
-      bottom: -1px;
+      top: 0;
+      bottom: 0;
       left: var(--key-press);
       right: 0;
-      border: 1px solid var(--border);
-      border-right: 0;
-      border-radius: 10px 0 0 10px;
-      background: var(--surface);
+      border: 0;
+      border-radius: 0;
+      background: transparent;
     }
     .keys .tab-ink::after {
-      left: 8px;
-      top: 15px;
-      bottom: 15px;
+      left: 10px;
+      top: calc(50% - 10px);
+      height: 20px;
       width: 3px;
       border-radius: 2px;
     }
   }
   .keys-col {
-    --key-press: 18px;
+    --key-press: 16px;
   }
   @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-    /* One curve and one pace for every key movement and for the glide of the held key, so a
-       click reads as one continuous motion. */
+    /* One curve and one pace for every key movement and for the glide of the mark. */
     .keys .tab::before,
     .keys .tab-label {
-      transition:
-        transform 420ms var(--key-ease),
-        background-color 200ms ease;
+      transition: transform 420ms var(--key-ease);
     }
     /* hover: the key gives under a finger from the left, part of the way */
     .keys .tab:hover::before,
     .keys .tab:hover .tab-label {
-      transform: translateX(7px);
+      transform: translateX(6px);
     }
     /* press: all the way in, quickly */
     .keys .tab:active::before,
@@ -2224,6 +2236,19 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
     [data-js] .seg[data-filter] label {
       padding: 0 8px;
+    }
+  }
+}
+
+/* the rail paints above the sheet, so the keys reaching out of it cover the sheet's edge where
+   they join it (the rail itself never overlaps the sheet otherwise) */
+@layer components {
+  @media (min-width: 1024px) {
+    .shell > aside {
+      z-index: 3;
+      /* a desktop rail scrolls only when the page is not one screen; on the one-screen desktop it
+         fits and stays visible, so the keys can reach out of it (rule above) */
+      overflow-y: auto;
     }
   }
 }
