@@ -319,7 +319,8 @@ test("Overview thumbnails load the 240px files, not the 640px ones", async ({ pa
     if (r.url().includes("/work/")) work.push(new URL(r.url()).pathname);
   });
   await page.goto("/");
-  const thumbs = page.locator('main img[alt^="Front page of"]');
+  // the strip by the title (the industries view's pictures load only when it opens)
+  const thumbs = page.locator('section[aria-labelledby="shipped"] img[alt^="Front page of"]');
   await expect(thumbs).toHaveCount(6);
   for (const img of await thumbs.all()) {
     await img.scrollIntoViewIfNeeded();

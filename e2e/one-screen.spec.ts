@@ -55,26 +55,36 @@ test.describe("without JavaScript", () => {
 test.describe("every CV fact is reachable by keyboard", () => {
   test.use({ viewport: { width: 1280, height: 720 } });
 
-  test("Overview: each headline figure opens its breakdown; results, skills and About behind the switch", async ({ page }) => {
+  test("Overview: the headline figures are tabs that switch the main chart; results, skills and About behind the switch", async ({
+    page,
+  }) => {
     await page.goto("/");
     await hydrated(page);
-    const figures = page.locator(".kpi-btn");
-    await expect(figures).toHaveCount(cv.glance.length);
-    for (let i = 0; i < cv.glance.length; i++) {
-      await figures.nth(i).focus();
-      await page.keyboard.press("Enter");
-      const pop = page.locator(`#kpi-${i}`);
-      await expect(pop).toBeVisible();
-      await expect(pop).toBeInViewport();
-      await page.keyboard.press("Escape");
-      await expect(pop).toBeHidden();
+    const tabs = page.getByRole("group", { name: "Chart the career by" }).getByRole("radio");
+    await expect(tabs).toHaveCount(cv.glance.length);
+    const view = (mode: string) => page.locator(`.ov-main[data-mode="${mode}"]`);
+    // The career timeline shows first: every dated role on it.
+    await expect(tabs.first()).toBeChecked();
+    await expect(view("career")).toBeVisible();
+    for (const r of cv.roles) await expect(view("career")).toContainText(r.company.split(/,| · /)[0].trim());
+    // Arrow keys move between the figures; each opens its own view and hides the others.
+    await tabs.first().focus();
+    for (const mode of ["stack", "kinds", "industries"]) {
+      await page.keyboard.press("ArrowRight");
+      await expect(view(mode)).toBeVisible();
+      await expect(page.locator(".ov-main:visible")).toHaveCount(1);
     }
-    // The 14-year breakdown lists every dated role and the undated earlier one.
-    await figures.nth(0).focus();
-    await page.keyboard.press("Enter");
-    for (const r of cv.roles) await expect(page.locator("#kpi-0")).toContainText(r.title);
-    await expect(page.locator("#kpi-0")).toContainText(cv.earlier);
-    await page.keyboard.press("Escape");
+    // The stack view: a year in focus reads what it held and what was new.
+    await page.keyboard.press("ArrowLeft");
+    await page.keyboard.press("ArrowLeft");
+    await expect(view("stack")).toBeVisible();
+    await page.locator('.st-col[data-y="2021"]').focus();
+    await expect(page.locator('.st-read[data-y="2021"]')).toBeVisible();
+    await expect(page.locator('.st-read[data-y="2021"]')).toContainText("React");
+    // The industries view links each live site.
+    await tabs.nth(3).check({ force: true });
+    for (const s of sites) await expect(view("industries").locator(`a[href="${s.url}"]`)).toBeVisible();
+    await tabs.first().check({ force: true });
 
     // A short screen shares one slot: arrow keys move the switch from Results to Skills to About.
     const results = page.getByRole("radio", { name: "Results" });
@@ -224,6 +234,7 @@ test("linked views: a hovered or focused role lights its results and skills; a c
   await expect.poll(() => bg('.result[data-roles="tryangle"]')).not.toBe(plain);
 
   // Choosing a skill marks the roles and projects that used it, keeps ?skill=, and says so.
+  await page.locator(".ov-switch input[value=\"skills\"]").check({ force: true });
   await page.getByRole("button", { name: /^Expo\b/ }).click();
   await expect(page).toHaveURL(/\?skill=expo$/);
   await expect(page.locator('.tl-row[data-link="tryangle"]')).toHaveAttribute("data-highlight", "true");

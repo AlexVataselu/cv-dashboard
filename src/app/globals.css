@@ -227,10 +227,10 @@ summary:focus-visible,
     padding: 16px 20px 18px;
     min-width: 0;
   }
-  .kpi:nth-child(2n) {
+  .kpi:nth-of-type(2n) {
     border-left: 1px solid var(--border);
   }
-  .kpi:nth-child(n + 3) {
+  .kpi:nth-of-type(n + 3) {
     border-top: 1px solid var(--border);
   }
   @media (min-width: 900px) {
@@ -240,7 +240,7 @@ summary:focus-visible,
     .kpi + .kpi {
       border-left: 1px solid var(--border);
     }
-    .kpi:nth-child(n + 3) {
+    .kpi:nth-of-type(n + 3) {
       border-top: 0;
     }
   }
@@ -1032,20 +1032,6 @@ html[data-backlight="off"]::view-transition-old(root) {
     [data-js] .panel-grid {
       grid-template-rows: minmax(0, 1fr);
     }
-    [data-js] .ov {
-      grid-template-rows: auto auto minmax(0, 1fr);
-    }
-    [data-js] .ov > .ov-kpis {
-      grid-row: 1;
-    }
-    [data-js] .ov > .ov-tl,
-    [data-js] .ov > .ov-res {
-      grid-row: 2;
-    }
-    [data-js] .ov > .ov-skills,
-    [data-js] .ov > .ov-about {
-      grid-row: 3;
-    }
     /* Experience: the navigator is as tall as its rows, not the screen (no stretched rows); the
        open role's skills take what height is left under it */
     [data-js] .ex {
@@ -1071,34 +1057,8 @@ html[data-backlight="off"]::view-transition-old(root) {
   .seg.ov-switch {
     display: none;
   }
-  /* a short laptop screen: the timeline runs down the left, the other three share the right */
+  /* a short laptop screen */
   @media (min-width: 1024px) and (min-height: 640px) and (max-height: 819.98px) {
-    [data-js] .ov > .ov-switch {
-      display: flex;
-      grid-column: 8 / -1;
-      grid-row: 2;
-      align-self: start;
-    }
-    [data-js] .ov > .ov-tl {
-      grid-column: 1 / span 7;
-      grid-row: 2 / span 2;
-    }
-    [data-js] .ov > :is(.ov-res, .ov-skills, .ov-about) {
-      grid-column: 8 / -1;
-      grid-row: 3;
-    }
-    [data-js] .ov > .ov-switch label {
-      flex: 1;
-      justify-content: center;
-    }
-    [data-js] .ov:has(.ov-switch input[value="results"]:checked) > :is(.ov-skills, .ov-about),
-    [data-js] .ov:has(.ov-switch input[value="skills"]:checked) > :is(.ov-res, .ov-about),
-    [data-js] .ov:has(.ov-switch input[value="about"]:checked) > :is(.ov-res, .ov-skills) {
-      display: none;
-    }
-    [data-js] .ov .tl-compact :is(.tl-label, .tl-track) {
-      min-height: 30px;
-    }
     /* Experience on a short screen: one line per role (name, then dates), as on the Overview */
     [data-js] .ex .tl {
       --label: 212px;
@@ -1125,28 +1085,29 @@ html[data-backlight="off"]::view-transition-old(root) {
       grid-row: 1 / span 2;
       align-self: start;
     }
-    /* the timeline runs the full height here: its rows share it */
-    [data-js] .ov .tl-compact {
-      flex: 1;
-      grid-template-rows: repeat(9, minmax(30px, 1fr)) auto;
-    }
   }
 
-  /* ---------- KPI figures that open their breakdown (native popover: no JS) ---------- */
+  /* ---------- KPI figures: the Overview's tabs (radios: no JS) ---------- */
+  .kpis {
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
   .kpis .kpi {
     padding: 0;
     position: relative;
   }
   .kpi-btn {
+    position: relative;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
     gap: 4px 14px;
     width: 100%;
     height: 100%;
     padding: 12px 16px;
-    text-align: left;
     border-radius: 9px;
+    cursor: pointer;
     transition: background-color 150ms ease;
   }
   .kpi-btn:hover {
@@ -1156,53 +1117,46 @@ html[data-backlight="off"]::view-transition-old(root) {
     font-size: 13px;
     line-height: 1.35;
     color: var(--muted);
+    transition: color 150ms ease;
   }
-  .kpi-more {
+  .kpi-value {
     color: var(--muted);
+    transition: color 150ms ease;
+  }
+  /* the chosen figure: its view is open below it; a gold edge under it, like a held key */
+  .kpi-btn:has(:checked) {
+    background: var(--raised);
+  }
+  .kpi-btn:has(:checked) :is(.kpi-value, .kpi-label) {
+    color: var(--ink);
+  }
+  .kpi-btn::after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--primary-fill);
+    transform: scaleX(0);
+  }
+  .kpi-btn:has(:checked)::after {
+    transform: scaleX(1);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .kpi-btn::after {
+      transition: transform 320ms var(--key-ease);
+    }
+  }
+  .kpi-btn:has(:focus-visible) {
+    outline: 2px solid var(--focus);
+    outline-offset: -2px;
   }
   @media (max-width: 1439.98px) {
     .kpi-btn {
-      grid-template-columns: auto minmax(0, 1fr);
       padding: 12px 14px;
       gap: 4px 12px;
-    }
-    .kpi-more {
-      display: none;
-    }
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .kpi-more {
-      transition: transform 200ms var(--ease-out);
-    }
-  }
-  .kpi:has(:popover-open) .kpi-btn {
-    background: var(--raised);
-  }
-  .kpi:has(:popover-open) .kpi-more {
-    transform: rotate(180deg);
-  }
-  .kpi-pop {
-    width: min(380px, calc(100vw - 32px));
-    max-height: min(440px, calc(100dvh - 32px));
-    overflow-y: auto;
-    padding: 14px 16px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--surface);
-    color: var(--ink);
-    box-shadow: 0 8px 28px rgb(0 0 0 / 0.16);
-  }
-  @supports (position-area: bottom) {
-    .kpi-pop {
-      inset: auto;
-      margin: 6px 0 0;
-      position-area: bottom span-right;
-      position-try-fallbacks: flip-inline, flip-block;
-    }
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .kpi-pop:popover-open {
-      animation: rise 180ms var(--ease-out) both;
     }
   }
 
@@ -2394,6 +2348,343 @@ html[data-backlight="off"]::view-transition-old(root) {
       /* a desktop rail scrolls only when the page is not one screen; on the one-screen desktop it
          fits and stays visible, so the keys can reach out of it (rule above) */
       overflow-y: auto;
+    }
+  }
+}
+
+/* ---------- the Overview: the figures as tabs over one main card ---------- */
+@layer components {
+  /* only the chosen figure's view shows (the radios work without JS) */
+  .ov:has(.ov-kpis input[value="career"]:checked) > .ov-main:not([data-mode="career"]),
+  .ov:has(.ov-kpis input[value="stack"]:checked) > .ov-main:not([data-mode="stack"]),
+  .ov:has(.ov-kpis input[value="kinds"]:checked) > .ov-main:not([data-mode="kinds"]),
+  .ov:has(.ov-kpis input[value="industries"]:checked) > .ov-main:not([data-mode="industries"]) {
+    display: none;
+  }
+  .ov-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+  }
+  .ov-main > .card {
+    flex: 1;
+    min-height: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ov-main > .card {
+      animation: ov-in 260ms var(--key-ease) both;
+    }
+  }
+  @keyframes ov-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  @media (min-width: 1024px) and (min-height: 640px) {
+    [data-js] .ov {
+      grid-template-rows: auto auto minmax(0, 1fr);
+    }
+    [data-js] .ov > .ov-kpis {
+      grid-row: 1;
+    }
+    [data-js] .ov > .ov-main {
+      grid-column: 1 / span 8;
+      grid-row: 2 / span 2;
+    }
+    [data-js] .ov > .ov-switch {
+      display: flex;
+      grid-column: 9 / -1;
+      grid-row: 2;
+      align-self: start;
+    }
+    [data-js] .ov > .ov-switch label {
+      flex: 1;
+      justify-content: center;
+    }
+    [data-js] .ov > :is(.ov-res, .ov-skills, .ov-about) {
+      grid-column: 9 / -1;
+      grid-row: 3;
+    }
+    [data-js] .ov:has(.ov-switch input[value="results"]:checked) > :is(.ov-skills, .ov-about),
+    [data-js] .ov:has(.ov-switch input[value="skills"]:checked) > :is(.ov-res, .ov-about),
+    [data-js] .ov:has(.ov-switch input[value="about"]:checked) > :is(.ov-res, .ov-skills) {
+      display: none;
+    }
+    /* the timeline fills the main card: its rows share the height */
+    [data-js] .ov .tl-compact {
+      flex: 1;
+      grid-template-rows: repeat(9, minmax(30px, 1fr)) auto;
+    }
+    [data-js] .ov .tl-compact :is(.tl-label, .tl-track) {
+      min-height: 30px;
+    }
+  }
+
+  /* ----- the stack, year by year: columns of the skills in use ----- */
+  .st {
+    flex: none;
+  }
+  .st-plot {
+    position: relative;
+    height: clamp(140px, 30vh, 260px);
+    margin: 18px 0 22px 28px;
+  }
+  .st-grid > span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--grid);
+  }
+  .st-grid > span > span {
+    position: absolute;
+    left: -28px;
+    top: -8px;
+    width: 22px;
+    text-align: right;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .st-cols {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(15, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .st-col {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-radius: 4px;
+    cursor: default;
+  }
+  .st-col:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .st-bar {
+    position: relative;
+    display: block;
+    min-height: 2px;
+    border-radius: 3px 3px 0 0;
+    background: var(--control);
+    transform-origin: bottom;
+    transition: background-color 150ms ease;
+  }
+  .st-col[data-now] .st-bar {
+    background: var(--primary-fill);
+  }
+  .st-col:is(:hover, :focus-visible) .st-bar {
+    background: color-mix(in srgb, var(--muted) 70%, var(--ink));
+  }
+  .st-col[data-now]:is(:hover, :focus-visible) .st-bar {
+    background: var(--primary-fill-hover);
+  }
+  .st-n {
+    position: absolute;
+    bottom: calc(100% + 3px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+  /* the first year, the last, and the one in focus are labelled with their count */
+  .st-col:first-child .st-n,
+  .st-col:last-child .st-n,
+  .st-col:is(:hover, :focus-visible) .st-n {
+    opacity: 1;
+  }
+  .st:has(.st-col:is(:hover, :focus-visible)) .st-col:not(:is(:hover, :focus-visible)) .st-n {
+    opacity: 0;
+  }
+  .st-y {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .st-bar {
+      animation: st-grow 520ms var(--key-ease) both;
+      animation-delay: calc(var(--i, 0) * 28ms);
+    }
+  }
+  @keyframes st-grow {
+    from {
+      transform: scaleY(0);
+    }
+  }
+  .st-key {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--control);
+  }
+  .st-key-now {
+    background: var(--primary-fill);
+  }
+  .st-readout {
+    min-height: 40px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--raised);
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+  .st-read {
+    display: none;
+  }
+  .st-read[data-y="idle"] {
+    display: block;
+  }
+  .st-read b {
+    color: var(--ink);
+  }
+  .st-used {
+    min-height: 0;
+  }
+  .ov-proj-key {
+    flex: none;
+    align-self: center;
+    width: 10px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--muted);
+  }
+
+  /* ----- years by kind of work: a 100% bar, the years, the kinds ----- */
+  .kb {
+    display: flex;
+    gap: 2px;
+    min-height: 52px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .kb > li {
+    flex-basis: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6px 10px;
+    background: var(--hue);
+    color: var(--hue-on);
+  }
+  .kb-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .kb-n {
+    font-size: 12px;
+    opacity: 0.85;
+  }
+  .ky {
+    display: grid;
+    grid-template-columns: repeat(15, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .ky-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    height: 34px;
+  }
+  .ky-cell > span {
+    flex: 1;
+    border-radius: 3px;
+    background: var(--hue);
+  }
+  .ky-cell:empty {
+    border-radius: 3px;
+    background: var(--raised);
+  }
+  .ky-y {
+    display: block;
+    height: 14px;
+    margin-top: 4px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .kl {
+    min-height: 0;
+  }
+  .kl-kind + .kl-kind {
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .kb > li,
+    .ky-cell > span {
+      animation: ov-in 360ms var(--key-ease) both;
+    }
+    .ky > li:nth-child(n) .ky-cell > span {
+      animation-delay: 60ms;
+    }
+  }
+
+  /* ----- industries, with the sites shipped ----- */
+  .ind {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    align-content: start;
+  }
+  @media (max-width: 767.98px) {
+    .ind {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .ind-col {
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  /* a site: its live front page across the column, its name and address under it */
+  .ind-site {
+    display: grid;
+    gap: 6px;
+    padding: 6px;
+    margin: 0 -6px;
+    border-radius: 8px;
+    transition: background-color 150ms ease;
+  }
+  .ind-site img {
+    border-radius: 6px;
+  }
+  .ind-site:hover {
+    background: var(--raised);
+  }
+  .ind-empty {
+    padding: 12px;
+    border: 1px dashed var(--control);
+    border-radius: 8px;
+  }
+}
+/* the Overview below 1440px wide: the right-hand slot a column wider, so results read on two lines */
+@layer components {
+  @media (min-width: 1024px) and (max-width: 1439.98px) and (min-height: 640px) {
+    [data-js] .ov > .ov-main {
+      grid-column: 1 / span 7;
+    }
+    [data-js] .ov > .ov-switch,
+    [data-js] .ov > :is(.ov-res, .ov-skills, .ov-about) {
+      grid-column: 8 / -1;
     }
   }
 }

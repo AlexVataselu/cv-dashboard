@@ -2,6 +2,7 @@ import { BrowserFrame } from "@/components/BrowserFrame";
 import { CareerTimeline } from "@/components/CareerTimeline";
 import { ImpactList } from "@/components/ImpactList";
 import { KpiStrip } from "@/components/KpiStrip";
+import { IndustriesMode, KindsMode, StackMode } from "@/components/OverviewModes";
 import { LinkedStyles } from "@/components/LinkedStyles";
 import { SectionShell } from "@/components/SectionShell";
 import { SkillGroups } from "@/components/SkillGroups";
@@ -44,11 +45,13 @@ function SitesStrip() {
 }
 
 /*
-  The Overview on one screen (1024x640 and up): a 12-column grid in three rows.
-  Row 1, the four headline figures, each opening its breakdown. Row 2, the career timeline (7) beside
-  the results (5). Row 3, the skills (7) beside About (5), taking what height is left. Under 820px
-  tall the timeline takes rows 2 and 3, and results, skills and About share the right-hand slot
-  behind a three-way switch. The client sites are a strip by the title.
+  The Overview on one screen (1024x640 and up): a 12-column grid.
+  Row 1, the four headline figures, which are also the tabs of the main card below them: the career
+  timeline (14 years), the skills in use year by year (5 years on the React stack), the years by
+  kind of work (product teams and independent work), the industries with their live sites.
+  Under them, the main card (8 columns) beside a right-hand slot (4) that results, skills and About
+  share behind a three-way switch. The client sites are a strip by the title.
+  Below desktop the page flows: the figures, the chosen view, then results, skills and About.
   The whole grid is a `.linked` area: a role hovered or focused on the timeline (or a result) lights
   its results and skills.
 */
@@ -65,9 +68,20 @@ export default function Home() {
       <LinkedStyles />
       <div className="panel-grid ov linked">
         <KpiStrip className="ov-kpis" />
-        <CareerTimeline compact className="ov-tl span-7" />
-        {/* On a short laptop screen (under 820px tall) the three cards on the right share one slot,
-            behind this switch (radios: no JS needed); on a taller screen it is hidden and all show. */}
+        <div className="ov-main" data-mode="career">
+          <CareerTimeline compact className="ov-tl" />
+        </div>
+        <div className="ov-main" data-mode="stack">
+          <StackMode />
+        </div>
+        <div className="ov-main" data-mode="kinds">
+          <KindsMode />
+        </div>
+        <div className="ov-main" data-mode="industries">
+          <IndustriesMode />
+        </div>
+        {/* On a desktop the three cards on the right share one slot, behind this switch (radios:
+            no JS needed); below desktop it is hidden and all three show, one under the other. */}
         <fieldset className="seg ov-switch">
           <legend className="sr-only">Show in the side panel</legend>
           <label>
@@ -83,9 +97,9 @@ export default function Home() {
             About
           </label>
         </fieldset>
-        <ImpactList className="ov-res span-5" />
-        <SkillGroups className="ov-skills span-7" />
-        <section aria-labelledby="about" className="card card-col ov-about span-5">
+        <ImpactList className="ov-res" />
+        <SkillGroups className="ov-skills" />
+        <section aria-labelledby="about" className="card card-col ov-about">
           <div className="card-head">
             <h2 id="about" className="card-title">
               About
