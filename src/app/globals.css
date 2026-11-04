@@ -13,6 +13,8 @@
   Every text pair below is WCAG AA or better (checked with a contrast script; values in the report).
 */
 :root {
+  /* the keys' one curve: quick to leave, long soft landing */
+  --key-ease: cubic-bezier(0.32, 0.72, 0, 1);
   --ground: #edf1f7; /* the frame */
   --surface: #ffffff; /* the sheet and its cards */
   --raised: #f4f6fa; /* a filled well, hover rows */
@@ -1865,8 +1867,32 @@ html[data-backlight="off"]::view-transition-old(root) {
   animation: none;
 }
 ::view-transition-group(tab-ink) {
-  animation-duration: 320ms;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-duration: 420ms;
+  animation-timing-function: var(--key-ease);
+}
+/* each key's label is its own layer, above the gliding key, so no label is hidden under it
+   mid-glide; a label stays where it is and only fades between its weights */
+.tabs > li:nth-child(1) .tab-label {
+  view-transition-name: key-1;
+}
+.tabs > li:nth-child(2) .tab-label {
+  view-transition-name: key-2;
+}
+.tabs > li:nth-child(3) .tab-label {
+  view-transition-name: key-3;
+}
+.tabs > li:nth-child(4) .tab-label {
+  view-transition-name: key-4;
+}
+.tabs > li:nth-child(5) .tab-label {
+  view-transition-name: key-5;
+}
+.tab-label {
+  view-transition-class: key-label;
+}
+::view-transition-group(*.key-label) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--key-ease);
 }
 ::view-transition-old(.panel) {
   animation: 140ms cubic-bezier(0.4, 0, 1, 1) both vt-out;
@@ -2030,7 +2056,13 @@ html[data-backlight="off"]::view-transition-old(root) {
     .workspace > .section-nav {
       flex: none;
       width: 116px;
-      padding-top: 28px;
+      /* the keys sit in the middle of the screen, in the rail's open space between the
+         portrait block and the contact block */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      /* centred in the space below the name block, not on the whole screen */
+      padding-top: 128px;
       /* the keys reach back over the rail's inner margin; the open one joins the sheet over its edge */
       margin-left: -16px;
       margin-right: -1px;
@@ -2068,8 +2100,10 @@ html[data-backlight="off"]::view-transition-old(root) {
     .workspace .tab[aria-current="page"] {
       color: var(--ink);
     }
+    /* the open key's own body is drawn out too, under the gliding one, so a key slides out
+       and the one left behind slides back in, rather than either appearing */
     .workspace .tab[aria-current="page"]::before {
-      display: none;
+      transform: translateX(-12px);
     }
     .workspace .tab[aria-current="page"] .tab-label {
       transform: translateX(-12px);
@@ -2094,23 +2128,27 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
   }
   @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-    .workspace .tab::before {
+    /* One curve and one pace for every key movement (hover, press, open, close) and for the
+       glide of the open key, so a click reads as one continuous motion: no jumps, no bounce. */
+    .workspace .tab::before,
+    .workspace .tab-label {
       transition:
-        transform 200ms var(--ease-out),
-        background-color 160ms ease;
+        transform 420ms var(--key-ease),
+        background-color 200ms ease;
     }
-    /* hovering pulls a key out a little; pressing pushes it in */
+    /* hovering pulls a key out a little; pressing holds it partway */
     .workspace .tab:hover::before,
     .workspace .tab:hover .tab-label {
-      transform: translateX(-6px);
+      transform: translateX(-5px);
     }
     .workspace .tab:active::before,
     .workspace .tab:active .tab-label {
-      transform: translateX(3px);
+      transform: translateX(-3px);
+      transition-duration: 160ms;
     }
-    /* the key just chosen slides out and settles */
+    .workspace .tab[aria-current="page"]::before,
     .workspace .tab[aria-current="page"] .tab-label {
-      animation: key-out 380ms cubic-bezier(0.22, 1, 0.36, 1);
+      transform: translateX(-12px);
     }
   }
   @media (max-width: 1023.98px) and (prefers-reduced-motion: no-preference) {
@@ -2128,17 +2166,6 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
   100% {
     transform: translateY(1px);
-  }
-}
-@keyframes key-out {
-  0% {
-    transform: translateX(0);
-  }
-  60% {
-    transform: translateX(-14px);
-  }
-  100% {
-    transform: translateX(-12px);
   }
 }
 
