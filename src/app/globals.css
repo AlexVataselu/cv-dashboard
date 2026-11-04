@@ -856,7 +856,7 @@ html[data-backlight="off"]::view-transition-old(root) {
   @media (min-width: 1024px) {
     .shell {
       display: grid;
-      grid-template-columns: 232px minmax(0, 1fr);
+      grid-template-columns: 240px minmax(0, 1fr);
     }
   }
   @media (min-width: 1440px) {
@@ -1938,21 +1938,21 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
 }
 
-/* ---------- the sections: piano keys on the sheet's edge ---------- */
-/* The keys are the sheet's own colour. From 1024px they lie along the sheet's left edge and reach
-   out over the frame, like the keys of a piano seen from above: the open section is the key
+/* ---------- the sections: piano keys ---------- */
+/* The keys are the sheet's own colour. From 1024px they sit in the rail's open middle and reach
+   out to the sheet's edge, like the keys of a piano seen from above: the open section is the key
    drawn out to full length and joined to the sheet, with a gold front edge; hovering pulls a key
    out a little, pressing pushes it in. Below 1024px they are a row along the sheet's top, the
    open one sunk with a gold edge. The open key's body is one element with one view-transition
    name, so a section switch glides it to the new key while the panel slides the same way. */
 @layer components {
-  .workspace > .section-nav {
+  .keys .section-nav {
     position: relative;
     z-index: 2;
     padding: 0;
   }
-  .workspace .tab,
-  [data-js] .workspace .tab {
+  .keys .tab,
+  [data-js] .keys .tab {
     transition:
       color 160ms ease,
       background-color 160ms ease;
@@ -1961,14 +1961,14 @@ html[data-backlight="off"]::view-transition-old(root) {
     position: relative;
     z-index: 2;
   }
-  .workspace .tab-ink,
-  [data-js] .workspace .tab-ink {
+  .keys .tab-ink,
+  [data-js] .keys .tab-ink {
     z-index: 1;
     width: auto;
     height: auto;
     background: var(--surface);
   }
-  .workspace .tab-ink::after {
+  .keys .tab-ink::after {
     content: "";
     position: absolute;
     background: var(--primary-fill);
@@ -1981,50 +1981,50 @@ html[data-backlight="off"]::view-transition-old(root) {
 
   /* ----- below 1024px: a row of keys along the top of the sheet ----- */
   @media (max-width: 1023.98px) {
-    .workspace > .section-nav {
+    .keys .section-nav {
       padding: 0 12px;
       background: var(--surface);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
-    .workspace > .section-nav + .sheet {
+    .keys-row + .sheet {
       border-top: 0;
     }
-    .workspace .tabs {
+    .keys .tabs {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 0;
     }
-    .workspace .tabs > li + li {
+    .keys .tabs > li + li {
       border-left: 1px solid var(--rule);
     }
-    .workspace .tab,
-    [data-js] .workspace .tab {
+    .keys .tab,
+    [data-js] .keys .tab {
       justify-content: center;
       width: 100%;
       height: 48px;
       padding: 0 2px;
       font-size: 15px;
     }
-    .workspace .tab:hover {
+    .keys .tab:hover {
       background: var(--raised);
     }
-    .workspace .tab:active {
+    .keys .tab:active {
       background: var(--active);
     }
-    .workspace .tab:active .tab-label {
+    .keys .tab:active .tab-label {
       transform: translateY(2px);
     }
-    .workspace .tab[aria-current="page"] .tab-label {
+    .keys .tab[aria-current="page"] .tab-label {
       transform: translateY(1px);
     }
-    .workspace .tab-ink,
-    [data-js] .workspace .tab-ink {
+    .keys .tab-ink,
+    [data-js] .keys .tab-ink {
       inset: 0;
       border-radius: 0;
       background: var(--active);
     }
-    .workspace .tab-ink::after {
+    .keys .tab-ink::after {
       left: 0;
       right: 0;
       bottom: 0;
@@ -2032,57 +2032,53 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
   }
   @media (max-width: 767.98px) {
-    .workspace .tab,
-    [data-js] .workspace .tab {
+    .keys .tab,
+    [data-js] .keys .tab {
       font-size: 13px;
     }
   }
   @media (max-width: 379.98px) {
-    .workspace .tabs {
+    .keys .tabs {
       display: flex;
       overflow-x: auto;
     }
-    .workspace .tab,
-    [data-js] .workspace .tab {
+    .keys .tab,
+    [data-js] .keys .tab {
       padding: 0 12px;
     }
   }
 
   /* ----- from 1024px: keys down the sheet's left edge, out over the frame ----- */
   @media (min-width: 1024px) {
-    .workspace {
-      flex-direction: row;
-    }
-    .workspace > .section-nav {
-      flex: none;
-      width: 116px;
-      /* the keys sit in the middle of the screen, in the rail's open space between the
-         portrait block and the contact block */
-      display: flex;
+    /* the rail's open middle band: the keys sit centred in it, right-aligned, and reach across
+       the rail's inner margin so the open key joins the sheet over its 1px edge */
+    .keys-col {
+      flex: 1;
+      min-height: 0;
       flex-direction: column;
       justify-content: center;
-      /* centred in the space below the name block, not on the whole screen */
-      padding-top: 128px;
-      /* the keys reach back over the rail's inner margin; the open one joins the sheet over its edge */
-      margin-left: -16px;
-      margin-right: -1px;
+      align-items: flex-end;
+      margin-right: -21px;
     }
-    .workspace .tabs {
+    .keys-col .section-nav {
+      width: 136px;
+    }
+    .keys .tabs {
       display: flex;
       flex-direction: column;
       gap: 0;
       overflow: visible;
     }
-    .workspace .tab,
-    [data-js] .workspace .tab {
+    .keys .tab,
+    [data-js] .keys .tab {
       justify-content: flex-start;
       width: 100%;
-      height: 52px;
+      height: var(--key-h, 44px);
       padding: 0 0 0 26px;
       font-size: 14px;
     }
     /* a key at rest: the sheet's colour, set back from the open one, hairlines between keys */
-    .workspace .tab::before {
+    .keys .tab::before {
       content: "";
       position: absolute;
       top: 0;
@@ -2094,23 +2090,23 @@ html[data-backlight="off"]::view-transition-old(root) {
       border-radius: 8px 0 0 8px;
       background: var(--surface);
     }
-    .workspace .tab:hover::before {
+    .keys .tab:hover::before {
       background: var(--raised);
     }
-    .workspace .tab[aria-current="page"] {
+    .keys .tab[aria-current="page"] {
       color: var(--ink);
     }
     /* the open key's own body is drawn out too, under the gliding one, so a key slides out
        and the one left behind slides back in, rather than either appearing */
-    .workspace .tab[aria-current="page"]::before {
-      transform: translateX(-12px);
+    .keys .tab[aria-current="page"]::before {
+      transform: translateX(-9px);
     }
-    .workspace .tab[aria-current="page"] .tab-label {
-      transform: translateX(-12px);
+    .keys .tab[aria-current="page"] .tab-label {
+      transform: translateX(-9px);
     }
     /* the open key: drawn out to full length and joined to the sheet */
-    .workspace .tab-ink,
-    [data-js] .workspace .tab-ink {
+    .keys .tab-ink,
+    [data-js] .keys .tab-ink {
       top: -1px;
       bottom: -1px;
       left: 0;
@@ -2119,7 +2115,7 @@ html[data-backlight="off"]::view-transition-old(root) {
       border-right: 0;
       border-radius: 10px 0 0 10px;
     }
-    .workspace .tab-ink::after {
+    .keys .tab-ink::after {
       left: 7px;
       top: 14px;
       bottom: 14px;
@@ -2130,29 +2126,29 @@ html[data-backlight="off"]::view-transition-old(root) {
   @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
     /* One curve and one pace for every key movement (hover, press, open, close) and for the
        glide of the open key, so a click reads as one continuous motion: no jumps, no bounce. */
-    .workspace .tab::before,
-    .workspace .tab-label {
+    .keys .tab::before,
+    .keys .tab-label {
       transition:
         transform 420ms var(--key-ease),
         background-color 200ms ease;
     }
     /* hovering pulls a key out a little; pressing holds it partway */
-    .workspace .tab:hover::before,
-    .workspace .tab:hover .tab-label {
+    .keys .tab:hover::before,
+    .keys .tab:hover .tab-label {
       transform: translateX(-5px);
     }
-    .workspace .tab:active::before,
-    .workspace .tab:active .tab-label {
+    .keys .tab:active::before,
+    .keys .tab:active .tab-label {
       transform: translateX(-3px);
       transition-duration: 160ms;
     }
-    .workspace .tab[aria-current="page"]::before,
-    .workspace .tab[aria-current="page"] .tab-label {
-      transform: translateX(-12px);
+    .keys .tab[aria-current="page"]::before,
+    .keys .tab[aria-current="page"] .tab-label {
+      transform: translateX(-9px);
     }
   }
   @media (max-width: 1023.98px) and (prefers-reduced-motion: no-preference) {
-    .workspace .tab[aria-current="page"] .tab-label {
+    .keys .tab[aria-current="page"] .tab-label {
       animation: key-settle 360ms cubic-bezier(0.22, 1, 0.36, 1);
     }
   }
@@ -2183,10 +2179,29 @@ html[data-backlight="off"]::view-transition-old(root) {
       width: 100%;
     }
   }
-  /* a short desktop screen: a smaller square, so the rail still fits without scrolling */
-  @media (min-width: 1024px) and (max-height: 820px) {
-    .rail-photo {
-      width: 168px;
+  /* The one-screen desktop: the rail holds the portrait, the name, the keys and the contact
+     block in one screen height, so the portrait gives way first as the screen gets shorter
+     (full rail width from about 900px tall). The rail no longer scrolls: the keys reach out of it. */
+  @media (min-width: 1024px) and (min-height: 700px) {
+    [data-js] .shell > aside {
+      overflow: visible;
+    }
+    [data-js] .rail-photo {
+      width: clamp(88px, calc(100dvh - 684px), 100%);
+    }
+  }
+  @media (min-width: 1024px) and (min-height: 700px) and (max-height: 799.98px) {
+    [data-js] .shell > aside {
+      gap: 16px;
+    }
+    [data-js] .rail-location {
+      display: none !important; /* over the md:flex utility */
+    }
+    [data-js] .rail-photo {
+      width: clamp(88px, calc(100dvh - 612px), 100%);
+    }
+    [data-js] .keys-col {
+      --key-h: 36px;
     }
   }
 }

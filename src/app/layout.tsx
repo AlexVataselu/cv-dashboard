@@ -78,14 +78,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {"void 0"}
         </Script>
         <SkillParamSync skills={cv.skills.map((s) => [s.id, s.name])} />
-        {/* The frame: the profile rail on one tint; the sheet beside it, with the section keys along
-            its left edge (along its top below desktop). The keys, the sheet and the status bar stay mounted across tab switches; only <main> changes.
+        {/* The frame: the profile rail on one tint, with the section keys in its middle reaching out
+            to the sheet beside it (below desktop, a row of keys along the sheet's top). The keys, the sheet and the status bar stay mounted across tab switches; only <main> changes.
             From 1024x640 up (with JS) the frame is exactly one screen tall: the page never scrolls, and
             a card whose content is longer than its slot scrolls inside itself. */}
         <div className="shell">
           <ProfileRail />
           <div className="workspace">
-            <SectionNav />
+            <div className="keys keys-row lg:hidden">
+              <SectionNav />
+            </div>
             <div className="sheet">
               {/* Section switches cross-fade and slide through the View Transitions API (no JS of our own). */}
               <ViewTransition default="panel">{children}</ViewTransition>
