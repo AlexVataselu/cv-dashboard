@@ -11,6 +11,7 @@
 //              every picture has a caption Alex wrote: { "file.png": { "alt": "...", "caption": "..." } }.
 //              Each becomes 320px and 640px wide, its own aspect kept.
 // - reamp/     desktop captures of ReAMP signed in, listed in REAMP; cut to 16:9 from the top, 640 and 1120px.
+// - builderai/ Builder.ai's public pages from the Internet Archive, listed in BUILDERAI.
 // Output: public/work/<id>-<width>.{avif,webp} and src/content/shots.json (read by projectMedia.ts).
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -149,7 +150,58 @@ for (const [i, s] of REAMP.entries()) {
   console.log(`reamp: ${s.file} -> ${id}`);
 }
 
+/**
+ * Builder.ai's own public pages as the Internet Archive kept them (builder.ai is offline since the
+ * company's 2025 insolvency); the internal tools Alex worked on were never public. Each crop is
+ * written no wider than its source, so nothing is upscaled.
+ */
+const BUILDERAI = [
+  {
+    file: "archive-home.png",
+    crop: { left: 0, top: 0, width: 1424, height: 801 },
+    label: "Home",
+    alt: "Builder.ai's home page in February 2025: 'We make building an app so easy, anyone can do it', with app screens beside the headline",
+    caption: "Builder.ai's public home page, February 2025 (Internet Archive)",
+  },
+  {
+    file: "step1.png",
+    label: "Explain the idea",
+    alt: "Builder Studio's first step: a chat with Natasha, Builder.ai's AI, asking what you are building, with Talk, Chat and Upload options",
+    caption: "Builder Studio, step 1: describe the app to Natasha by talk, chat or a document",
+  },
+  {
+    file: "step2.png",
+    label: "Features",
+    alt: "Builder Studio's second step: base apps to start from, a list of user journeys, and the phone screens for the chosen journey",
+    caption: "Builder Studio, step 2: features grouped into user journeys, with the screens for each",
+  },
+];
+
+manifest.builderai = [];
+for (const [i, s] of BUILDERAI.entries()) {
+  const src = join(shotsDir, "builderai", s.file);
+  if (!existsSync(src)) {
+    console.warn(`missing ${src}: skipped`);
+    continue;
+  }
+  const id = `builderai-${i + 1}`;
+  const base = s.crop ? sharp(src).extract(s.crop) : sharp(src);
+  const meta = s.crop ?? (await sharp(src).metadata());
+  const widths = [640, Math.min(1120, meta.width)];
+  for (const w of widths) await write(base.clone().resize({ width: w }), id, w);
+  manifest.builderai.push({
+    image: `/work/${id}`,
+    widths,
+    width: widths[1],
+    height: Math.round((meta.height / meta.width) * widths[1]),
+    label: s.label,
+    alt: s.alt,
+    caption: s.caption,
+  });
+  console.log(`builderai: ${s.file} -> ${id}`);
+}
+
 writeFileSync(join(root, "src", "content", "shots.json"), JSON.stringify(manifest, null, 2) + "\n");
 console.log(
-  `wrote src/content/shots.json: ${manifest.stremio.length} stremio, ${manifest.powderino.length} powderino, ${manifest.reamp.length} reamp`,
+  `wrote src/content/shots.json: ${manifest.stremio.length} stremio, ${manifest.powderino.length} powderino, ${manifest.reamp.length} reamp, ${manifest.builderai.length} builderai`,
 );

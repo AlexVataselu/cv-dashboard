@@ -36,7 +36,7 @@ export interface ProjectMedia {
 }
 
 type Processed = Omit<Shot, "frame" | "address" | "href">;
-const shots = shotsJson as { stremio: Processed[]; powderino: Processed[]; reamp: Processed[] };
+const shots = shotsJson as { stremio: Processed[]; powderino: Processed[]; reamp: Processed[]; builderai: Processed[] };
 
 const FORK = "https://github.com/AlexVataselu/stremio-web";
 
@@ -98,6 +98,20 @@ export const projectMedia: ProjectMedia[] = [
       { label: "Live app", href: "https://re-amp.vercel.app", address: "re-amp.vercel.app" },
       { label: "Repository", href: "https://github.com/AlexVataselu/ReAmp", address: "github.com/AlexVataselu/ReAmp" },
     ],
+  },
+  {
+    // builder.ai is offline; these are its public pages from the Internet Archive, not the internal tools.
+    projectId: "builderai",
+    shots: shots.builderai.map((s, i) => ({
+      ...s,
+      frame: "browser" as const,
+      address: i === 0 ? "builder.ai · archived Feb 2025" : "builder.ai/products/builder-studio · archived Jan 2025",
+      href:
+        i === 0
+          ? "https://web.archive.org/web/20250201232535/https://www.builder.ai/"
+          : "https://web.archive.org/web/20250124124515/https://www.builder.ai/products/builder-studio",
+    })),
+    links: [],
   },
 ];
 

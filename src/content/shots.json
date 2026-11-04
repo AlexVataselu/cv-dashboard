@@ -157,5 +157,43 @@
       "alt": "Both decks playing while ReAMP crossfades between them, the Crossfading indicator lit and the deck volumes moving",
       "caption": "A crossfade in progress between the two decks"
     }
+  ],
+  "builderai": [
+    {
+      "image": "/work/builderai-1",
+      "widths": [
+        640,
+        1120
+      ],
+      "width": 1120,
+      "height": 630,
+      "label": "Home",
+      "alt": "Builder.ai's home page in February 2025: 'We make building an app so easy, anyone can do it', with app screens beside the headline",
+      "caption": "Builder.ai's public home page, February 2025 (Internet Archive)"
+    },
+    {
+      "image": "/work/builderai-2",
+      "widths": [
+        640,
+        1105
+      ],
+      "width": 1105,
+      "height": 418,
+      "label": "Explain the idea",
+      "alt": "Builder Studio's first step: a chat with Natasha, Builder.ai's AI, asking what you are building, with Talk, Chat and Upload options",
+      "caption": "Builder Studio, step 1: describe the app to Natasha by talk, chat or a document"
+    },
+    {
+      "image": "/work/builderai-3",
+      "widths": [
+        640,
+        1105
+      ],
+      "width": 1105,
+      "height": 430,
+      "label": "Features",
+      "alt": "Builder Studio's second step: base apps to start from, a list of user journeys, and the phone screens for the chosen journey",
+      "caption": "Builder Studio, step 2: features grouped into user journeys, with the screens for each"
+    }
   ]
 }

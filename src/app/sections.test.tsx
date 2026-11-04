@@ -127,18 +127,28 @@ describe("Skills", () => {
 });
 
 describe("Projects", () => {
-  it("lists the three projects with their labels", () => {
+  it("lists the three personal projects, then the Builder.ai product work, with their labels", () => {
     render(<ProjectsPage />);
     const cards = screen.getAllByRole("article");
-    expect(cards).toHaveLength(3);
+    expect(cards).toHaveLength(4);
     expect(cards.map((c) => c.querySelector("p")!.textContent)).toEqual([
       "2026",
       "2026",
       "Since 2024",
+      "2024–2025",
     ]);
     expect(within(cards[0]).getByRole("heading", { name: /Stremio Skip Intro/ })).toBeTruthy();
     expect(within(cards[1]).getByRole("heading", { name: /Powderino/ })).toBeTruthy();
     expect(within(cards[2]).getByRole("heading", { name: /ReAMP/ })).toBeTruthy();
+    expect(within(cards[3]).getByRole("heading", { name: /Builder\.ai/ })).toBeTruthy();
+    expect(within(cards[3]).getByText("Client project at Pentalog (Globant), 2024–2025")).toBeTruthy();
+    // its pictures are Builder.ai's public pages from the Internet Archive, and the card says so
+    expect(within(cards[3]).getByText(/Internet Archive/, { selector: "p" })).toBeTruthy();
+    expect(within(cards[3]).getAllByRole("radio").map((t) => t.parentElement!.textContent)).toEqual([
+      "Home",
+      "Explain the idea",
+      "Features",
+    ]);
   });
 
   it("Stremio has a gallery of the fork's stream filters and the GitHub fork, each captioned", async () => {
@@ -195,7 +205,7 @@ describe("skill highlighting", () => {
     act(() => useUiStore.getState().selectSkill("expo"));
     const flag = (root: HTMLElement, sel: string) =>
       Array.from(root.querySelectorAll(sel)).map((e) => e.getAttribute("data-highlight"));
-    expect(flag(projects.container, "article")).toEqual([null, "true", null]);
+    expect(flag(projects.container, "article")).toEqual([null, "true", null, null]);
     expect(flag(experience.container, "details")).toEqual([null, null, "true", null, null, null, null]);
   });
 });
@@ -231,7 +241,7 @@ describe("year counts run to the CV's year, not the clock", () => {
     exp.unmount();
 
     const skills = render(<SkillsPage />);
-    expect(within(skills.container).getByText("29 of 40 skills have a dated first use")).toBeTruthy();
+    expect(within(skills.container).getByText("30 of 40 skills have a dated first use")).toBeTruthy();
     expect(skills.container.textContent).not.toContain("2026:");
   });
 });

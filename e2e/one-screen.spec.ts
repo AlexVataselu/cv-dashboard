@@ -112,7 +112,7 @@ test.describe("every CV fact is reachable by keyboard", () => {
   test("Projects: arrow keys walk the list and each preview shows its own item", async ({ page }) => {
     await page.goto("/projects");
     await hydrated(page);
-    const ids = [...cv.projects.map((p) => p.id), ...sites.map((s) => s.id)];
+    const ids = [...cv.projects.map((p) => p.id), ...cv.workProjects.map((p) => p.id), ...sites.map((s) => s.id)];
     await page.locator(`#pick-${ids[0]}`).focus();
     for (const [i, id] of ids.entries()) {
       if (i > 0) await page.keyboard.press("ArrowDown");

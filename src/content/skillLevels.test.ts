@@ -122,12 +122,17 @@ describe("deriveSkillLevel", () => {
     "zustand",
     "storybook",
     "supabase",
-    "rest",
     "tdd",
     "git",
   ])("%s since null", (id) =>
     expect(deriveSkillLevel(id, cv, YEAR).since).toBeNull(),
   );
+
+  it("rest is dated by the Builder.ai work at Pentalog", () => {
+    const l = deriveSkillLevel("rest", cv, YEAR);
+    expect(l).toMatchObject({ since: 2024, until: null, usedIn: ["pentalog"] });
+    expect(formatLevel(l)).toBe("since 2024 · 2 yrs");
+  });
 
   // Brief said figma => null, but cv.ts lists figma on tryangle (2021).
   it("figma since 2021 (tryangle evidence)", () => {

@@ -42,7 +42,16 @@ function PowderinoFacts() {
  * A server component: only the highlight (HighlightCard) and the badge (SkillBadge) are client
  * islands, so the frames, the diagram and the media data stay out of the client bundle.
  */
-export function ProjectCard({ project, eager = false }: { project: Project; eager?: boolean }) {
+export function ProjectCard({
+  project,
+  eager = false,
+  context,
+}: {
+  project: Project;
+  eager?: boolean;
+  /** for work done in a role: who it was done for and through */
+  context?: string;
+}) {
   const [name, ...rest] = project.title.split(", ");
   const media = mediaFor(project.id);
   const inProgress = /in progress/.test(project.title);
@@ -64,6 +73,7 @@ export function ProjectCard({ project, eager = false }: { project: Project; eage
         {rest.length > 0 ? (
           <p className="mt-1 text-[15px] text-muted">{rest.join(", ").replace(/ \(in progress\)$/, "")}</p>
         ) : null}
+        {context ? <p className="mt-3 text-[14px] text-muted">{context}</p> : null}
         {inProgress ? (
           <p className="mt-3">
             <span className="pill">In progress</span>
@@ -97,6 +107,12 @@ export function ProjectCard({ project, eager = false }: { project: Project; eage
         {/* Powderino shows its facts until Alex's own iOS screenshots are in (then they follow them). */}
         {project.id === "powderino" ? <PowderinoFacts /> : null}
         {media ? <ShotGallery id={project.id} title={name} shots={media.shots} eager={eager} /> : null}
+        {project.id === "builderai" ? (
+          <p className="text-[13px] text-muted">
+            builder.ai is offline; these are its public product pages as the Internet Archive kept them. The internal
+            tools I worked on were never public.
+          </p>
+        ) : null}
       </div>
       {project.id === "stremio" ? (
         <div className="min-w-0 @2xl:col-span-12">

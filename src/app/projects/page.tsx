@@ -15,10 +15,22 @@ export const metadata = pageMetadata({
   path: "/projects",
 });
 
-const items = [
-  ...cv.projects.map((p) => ({ id: p.id, name: p.title.split(", ")[0], meta: p.label, skillIds: p.skillIds })),
-  ...sites.map((s) => ({ id: s.id, name: s.name, meta: s.domain, skillIds: [] as string[] })),
-];
+const toItem = (p: { id: string; title: string; label: string; skillIds: string[] }) => ({
+  id: p.id,
+  name: p.title.split(", ")[0],
+  meta: p.label,
+  skillIds: p.skillIds,
+});
+const personal = cv.projects.map(toItem);
+const work = cv.workProjects.map(toItem);
+const siteItems = sites.map((s) => ({ id: s.id, name: s.name, meta: s.domain, skillIds: [] as string[] }));
+const items = [...personal, ...work, ...siteItems];
+
+/** "Client project at Pentalog (Globant), 2024–2025" from the role the work was done in. */
+const workContext = (roleId: string) => {
+  const role = cv.roles.find((r) => r.id === roleId);
+  return role ? `Client project at ${companyShort(role)}, ${period(role)}` : undefined;
+};
 
 /**
  * One rule per item: with JS, the preview of the chosen item shows alone (CSS :has on the radio, so
@@ -94,7 +106,10 @@ function SitePreview({ site }: { site: (typeof sites)[number] }) {
 */
 export default function ProjectsPage() {
   return (
-    <SectionShell title="Projects" lead="Three things I build for myself, and six client sites I designed and built end to end.">
+    <SectionShell
+      title="Projects"
+      lead="Three things I build for myself, product work for Builder.ai, and six client sites I designed and built end to end."
+    >
       <PreviewStyles />
       <div className="panel-grid pr">
         <section aria-labelledby="pick-title" className="pick-wrap card card-col span-4">
@@ -110,13 +125,19 @@ export default function ProjectsPage() {
           <div role="radiogroup" aria-labelledby="pick-title" className="scroll-y mt-1">
             <p className="px-2.5 pb-1 pt-2 text-[13px] font-medium text-muted">Personal projects</p>
             <div className="pick-list">
-              {items.slice(0, cv.projects.length).map((i, n) => (
+              {personal.map((i, n) => (
                 <Pick key={i.id} {...i} first={n === 0} />
+              ))}
+            </div>
+            <p className="px-2.5 pb-1 pt-4 text-[13px] font-medium text-muted">Product work</p>
+            <div className="pick-list">
+              {work.map((i) => (
+                <Pick key={i.id} {...i} first={false} />
               ))}
             </div>
             <p className="px-2.5 pb-1 pt-4 text-[13px] font-medium text-muted">Client sites, live</p>
             <div className="pick-list">
-              {items.slice(cv.projects.length).map((i) => (
+              {siteItems.map((i) => (
                 <Pick key={i.id} {...i} first={false} />
               ))}
             </div>
@@ -128,6 +149,11 @@ export default function ProjectsPage() {
           {cv.projects.map((p, i) => (
             <div key={p.id} id={`preview-${p.id}`} className="preview">
               <ProjectCard project={p} eager={i === 0} />
+            </div>
+          ))}
+          {cv.workProjects.map((p) => (
+            <div key={p.id} id={`preview-${p.id}`} className="preview">
+              <ProjectCard project={p} context={workContext(p.roleId)} />
             </div>
           ))}
           {sites.map((s) => (

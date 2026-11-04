@@ -33,6 +33,12 @@ export interface Project {
   description: string;
 }
 
+/** A project done inside one of the roles (for an employer's client), shown with the personal ones. */
+export interface WorkProject extends Project {
+  /** the role on the CV it was done in */
+  roleId: string;
+}
+
 export interface ImpactStat {
   value: string;
   label: string;
@@ -67,6 +73,8 @@ export interface Cv {
   /** What the earlier role was, in one line. */
   earlierDetail?: string;
   projects: Project[];
+  /** Product work done in a role; kept apart from `projects`, which the timeline and skills read as personal. */
+  workProjects: WorkProject[];
   education: { degree: string; school: string }[];
   languages: { name: string; level: string }[];
 }

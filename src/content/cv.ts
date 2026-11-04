@@ -116,11 +116,13 @@ export const cv: Cv = {
       title: "Frontend Engineer, Web & Mobile",
       company: "Pentalog (Globant), client: Builder.ai",
       location: "Brasov, hybrid",
-      stack: ["React", "React Native", "TypeScript", "SonarQube", "GitHub Actions", "Sentry"],
+      stack: ["React", "React Native", "TypeScript", "Turborepo", "Tailwind CSS", "SonarQube", "GitHub Actions", "Sentry"],
       skillIds: [
         "react",
         "react-native",
         "typescript",
+        "tailwind",
+        "rest",
         "sonarqube",
         "github-actions",
         "sentry",
@@ -297,6 +299,19 @@ export const cv: Cv = {
       skillIds: ["nextjs", "react", "typescript", "prisma"],
       description:
         "Unifies Spotify and YouTube in one playback engine; playback logic is pure functions, testable in isolation and kept apart from React.",
+    },
+  ],
+  workProjects: [
+    {
+      id: "builderai",
+      roleId: "pentalog",
+      label: "2024–2025",
+      start: 2024,
+      title: "Builder.ai, an app-building and UI generation platform",
+      stack: ["React", "React Native", "TypeScript", "Turborepo", "Styled Components", "Tailwind CSS", "REST APIs", "SonarQube"],
+      skillIds: ["react", "react-native", "typescript", "tailwind", "rest", "sonarqube"],
+      description:
+        "Built features for Builder.ai's internal platform that turns customer requirements into apps, including its UI generation workflows, in a Turborepo monorepo whose shared components, hooks and services served web and mobile.",
     },
   ],
   education: [
