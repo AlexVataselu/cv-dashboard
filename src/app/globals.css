@@ -2233,19 +2233,18 @@ html[data-backlight="off"]::view-transition-old(root) {
       line-height: 1.35;
       white-space: nowrap;
     }
+    /* the location keeps to one line: it may run past the portrait's width into the rail's
+       margin (the rail's content is wider than the portrait wherever this line shows) */
     .rail-location {
-      align-items: flex-start;
       margin-top: 4px;
-      line-height: 1.4;
+      font-size: 12.5px;
+      white-space: nowrap;
     }
-    .rail-location .icon {
-      margin-top: 1px;
-    }
-    .rail-loc-sep {
-      display: none;
-    }
-    .rail-loc-mode {
-      display: block;
+  }
+  /* the narrower rail below 1440px wide */
+  @media (min-width: 1024px) and (max-width: 1439.98px) {
+    .rail-location {
+      font-size: 12px;
     }
   }
   /* The one-screen desktop: the rail holds the portrait, the name, the keys and the contact

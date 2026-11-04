@@ -14,7 +14,6 @@ const link =
  * the contact buttons.
  */
 export function ProfileRail() {
-  const [city, mode] = cv.location.split(" · ");
   return (
     <aside className="relative flex flex-col gap-4 px-4 pb-1 pt-4 md:px-6 md:pt-5 lg:sticky lg:top-0 lg:h-svh lg:gap-6 lg:px-5 lg:py-6">
       <div className="rail-head flex items-center gap-4 lg:flex-col lg:items-start">
@@ -39,14 +38,9 @@ export function ProfileRail() {
           <p className="rail-title text-muted max-lg:text-[14px]">{cv.title}</p>
           {/* Hidden on phones, as the spec's compact header has it; its ș would also pull the
               text face's latin-ext file onto the critical path. */}
-          <p className="rail-location hidden items-center gap-1.5 text-[13px] text-muted md:flex">
+          <p className="rail-location hidden items-center gap-1.5 text-muted max-lg:text-[13px] md:flex">
             <PinIcon />
-            {/* city, then the work mode: on one line below desktop, two lines in the narrow rail */}
-            <span className="rail-loc">
-              {city}
-              <span className="rail-loc-sep"> · </span>
-              <span className="rail-loc-mode">{mode}</span>
-            </span>
+            <span className="rail-loc">{cv.location}</span>
           </p>
         </div>
       </div>
