@@ -12,7 +12,7 @@ import { HOME_DESCRIPTION, pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({ description: HOME_DESCRIPTION, path: "/" });
 
-/** The five client sites as a strip of thumbnails beside the title: each a link to the live site. */
+/** The client sites as a strip of thumbnails beside the title: each a link to the live site. */
 function SitesStrip() {
   return (
     <section aria-labelledby="shipped" className="flex shrink-0 items-center gap-3">

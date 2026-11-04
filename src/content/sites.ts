@@ -35,6 +35,15 @@ export const sites: Site[] = [
     image: "/work/litoralinlucru",
   },
   {
+    id: "arhivelelitoralului",
+    name: "Arhivele Litoralului",
+    domain: "arhivelelitoralului.ro",
+    url: "https://arhivelelitoralului.ro",
+    roleId: "freelance-2021",
+    note: "Digital archive of the Romanian seaside's history, searchable by keyword, tag and year.",
+    image: "/work/arhivelelitoralului",
+  },
+  {
     id: "recuperareacasa",
     name: "RecuperareAcasa",
     domain: "recuperareacasa.ro",

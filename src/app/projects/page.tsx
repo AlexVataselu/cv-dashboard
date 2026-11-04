@@ -94,7 +94,7 @@ function SitePreview({ site }: { site: (typeof sites)[number] }) {
 */
 export default function ProjectsPage() {
   return (
-    <SectionShell title="Projects" lead="Three things I build for myself, and five client sites I designed and built end to end.">
+    <SectionShell title="Projects" lead="Three things I build for myself, and six client sites I designed and built end to end.">
       <PreviewStyles />
       <div className="panel-grid pr">
         <section aria-labelledby="pick-title" className="pick-wrap card card-col span-4">

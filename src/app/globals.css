@@ -1610,9 +1610,10 @@ summary:focus-visible,
       width: 58px;
     }
   }
+  /* six thumbnails and their gaps fit a 320px screen's 288px of content */
   @media (max-width: 639.98px) {
     .site-thumb {
-      width: 48px;
+      width: 40px;
     }
   }
   .site-tip {

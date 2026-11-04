@@ -203,6 +203,7 @@ export const cv: Cv = {
         "RecuperareAcasa.ro: mobile-first physiotherapy home-visit booking on an Atomic Design system, with a multi-step intake form, Google Maps and Resend email.",
         "LocalsOnly: full-stack Next.js and GraphQL platform for local experiences. Cut first load by 40% and redundant API calls by 35% by pairing SSR for SEO with CSR for interactivity.",
         "EyeExcellence.ro / OrlRasnov.ro: healthcare platforms with WCAG 2.1 accessibility work and structured data markup. Organic traffic rose 28% after launch.",
+        "ArhiveleLitoralului.ro: digital archive of the Romanian seaside's history on a custom WordPress theme, with collections searchable by keyword, tag and a year timeline, a photo lightbox and downloads.",
       ],
     },
     {

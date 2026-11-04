@@ -321,7 +321,7 @@ test("Overview thumbnails load the 240px files, not the 640px ones", async ({ pa
   });
   await page.goto("/");
   const thumbs = page.locator('main img[alt^="Front page of"]');
-  await expect(thumbs).toHaveCount(5);
+  await expect(thumbs).toHaveCount(6);
   for (const img of await thumbs.all()) {
     await img.scrollIntoViewIfNeeded();
     await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.currentSrc)).toMatch(/-240\.(avif|webp)$/);
