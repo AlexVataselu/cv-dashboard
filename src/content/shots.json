@@ -34,5 +34,128 @@
       "caption": "The 1080p chip selected: the list keeps only 1080p streams"
     }
   ],
-  "powderino": []
+  "powderino": [
+    {
+      "image": "/work/powderino-1",
+      "widths": [
+        320,
+        640
+      ],
+      "width": 640,
+      "height": 1386,
+      "label": "Powder",
+      "alt": "Powderino's Powder tab: a powder alert for Caviahue (13 cm in 24 h), Fresh now and Incoming toggles, a search box, filters, and resorts ranked by snow with their 24 h, 72 h and next-72 h figures",
+      "caption": "Resorts ranked by fresh snow, with a powder alert for a starred resort"
+    },
+    {
+      "image": "/work/powderino-2",
+      "widths": [
+        320,
+        640
+      ],
+      "width": 640,
+      "height": 1386,
+      "label": "Resort",
+      "alt": "Caviahue, Argentina: summit, base and snow depth, snow in the last 24 h, last 72 h and next 72 h, and a chart of snowfall at the summit over the last 3 days and next 7",
+      "caption": "A resort's snow: depth, recent and incoming snowfall, and a 10-day summit chart"
+    },
+    {
+      "image": "/work/powderino-3",
+      "widths": [
+        320,
+        640
+      ],
+      "width": 640,
+      "height": 1386,
+      "label": "Season",
+      "alt": "A resort's snow quality (wet snow), avalanche danger with its source, last season's snow depth chart (928 cm, 78 snowy days) and nearby webcams",
+      "caption": "Snow quality, avalanche bulletin, the season's snow depth and nearby webcams"
+    },
+    {
+      "image": "/work/powderino-4",
+      "widths": [
+        320,
+        640
+      ],
+      "width": 640,
+      "height": 1386,
+      "label": "Weather",
+      "alt": "Powderino's Weather tab for Caviahue, Argentina: current conditions, the next 24 hours hour by hour, and the week ahead",
+      "caption": "Weather at the resort: now, the next 24 hours and the week ahead"
+    },
+    {
+      "image": "/work/powderino-5",
+      "widths": [
+        320,
+        640
+      ],
+      "width": 640,
+      "height": 1386,
+      "label": "Air & moon",
+      "alt": "Moonset time and phase, European air quality index with PM2.5, PM10, O3, NO2, SO2 and CO bars, and the moon phase for the next days",
+      "caption": "Air quality by pollutant, and the moon, for nights on the mountain"
+    },
+    {
+      "image": "/work/powderino-6",
+      "widths": [
+        320,
+        640
+      ],
+      "width": 640,
+      "height": 1386,
+      "label": "Settings",
+      "alt": "Powderino's settings: automated location, metric or imperial units, powder radius, snow alert and storm alert thresholds, and quiet nights",
+      "caption": "Settings: powder radius, snow and storm alert thresholds, quiet nights"
+    }
+  ],
+  "reamp": [
+    {
+      "image": "/work/reamp-app-1",
+      "widths": [
+        640,
+        1120
+      ],
+      "width": 1120,
+      "height": 630,
+      "label": "Decks",
+      "alt": "ReAMP signed in: a playlist mixing Spotify and YouTube tracks on the left, a video player, and Deck A and Deck B, each with a spinning record, progress, play and stop, and volume",
+      "caption": "Two decks on one playlist that mixes Spotify and YouTube tracks"
+    },
+    {
+      "image": "/work/reamp-app-2",
+      "widths": [
+        640,
+        1120
+      ],
+      "width": 1120,
+      "height": 630,
+      "label": "Search",
+      "alt": "ReAMP's search for 'gorillaz' open over the decks, listing YouTube results, each with an add button",
+      "caption": "One search across both services; each result adds to the playlist"
+    },
+    {
+      "image": "/work/reamp-app-3",
+      "widths": [
+        640,
+        1120
+      ],
+      "width": 1120,
+      "height": 630,
+      "label": "Crossfade",
+      "alt": "ReAMP's crossfade settings panel: duration, auto threshold and minimum time sliders, with auto crossfade on",
+      "caption": "Crossfade settings: duration, auto threshold and minimum play time"
+    },
+    {
+      "image": "/work/reamp-app-4",
+      "widths": [
+        640,
+        1120
+      ],
+      "width": 1120,
+      "height": 630,
+      "label": "Mixing",
+      "alt": "Both decks playing while ReAMP crossfades between them, the Crossfading indicator lit and the deck volumes moving",
+      "caption": "A crossfade in progress between the two decks"
+    }
+  ]
 }

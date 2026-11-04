@@ -10,6 +10,7 @@
 // - powderino/ iOS screenshots (portrait). Only files named in powderino/captions.json are used, so
 //              every picture has a caption Alex wrote: { "file.png": { "alt": "...", "caption": "..." } }.
 //              Each becomes 320px and 640px wide, its own aspect kept.
+// - reamp/     desktop captures of ReAMP signed in, listed in REAMP; cut to 16:9 from the top, 640 and 1120px.
 // Output: public/work/<id>-<width>.{avif,webp} and src/content/shots.json (read by projectMedia.ts).
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -105,5 +106,50 @@ for (const [i, f] of pFiles.entries()) {
   console.log(`powderino: ${f} -> ${id}`);
 }
 
+/** Alex's desktop captures of ReAMP signed in (2026-11-04), cut to 16:9 from the top. */
+const REAMP = [
+  {
+    file: "1-decks.png",
+    label: "Decks",
+    alt: "ReAMP signed in: a playlist mixing Spotify and YouTube tracks on the left, a video player, and Deck A and Deck B, each with a spinning record, progress, play and stop, and volume",
+    caption: "Two decks on one playlist that mixes Spotify and YouTube tracks",
+  },
+  {
+    file: "2-search.png",
+    label: "Search",
+    alt: "ReAMP's search for 'gorillaz' open over the decks, listing YouTube results, each with an add button",
+    caption: "One search across both services; each result adds to the playlist",
+  },
+  {
+    file: "3-crossfade-settings.png",
+    label: "Crossfade",
+    alt: "ReAMP's crossfade settings panel: duration, auto threshold and minimum time sliders, with auto crossfade on",
+    caption: "Crossfade settings: duration, auto threshold and minimum play time",
+  },
+  {
+    file: "4-crossfading.png",
+    label: "Mixing",
+    alt: "Both decks playing while ReAMP crossfades between them, the Crossfading indicator lit and the deck volumes moving",
+    caption: "A crossfade in progress between the two decks",
+  },
+];
+
+manifest.reamp = [];
+for (const [i, s] of REAMP.entries()) {
+  const src = join(shotsDir, "reamp", s.file);
+  if (!existsSync(src)) {
+    console.warn(`missing ${src}: skipped`);
+    continue;
+  }
+  const id = `reamp-app-${i + 1}`;
+  for (const w of [640, 1120]) {
+    await write(sharp(src).resize({ width: w, height: Math.round((w * 9) / 16), fit: "cover", position: "top" }), id, w);
+  }
+  manifest.reamp.push({ image: `/work/${id}`, widths: [640, 1120], width: 1120, height: 630, label: s.label, alt: s.alt, caption: s.caption });
+  console.log(`reamp: ${s.file} -> ${id}`);
+}
+
 writeFileSync(join(root, "src", "content", "shots.json"), JSON.stringify(manifest, null, 2) + "\n");
-console.log(`wrote src/content/shots.json: ${manifest.stremio.length} stremio, ${manifest.powderino.length} powderino`);
+console.log(
+  `wrote src/content/shots.json: ${manifest.stremio.length} stremio, ${manifest.powderino.length} powderino, ${manifest.reamp.length} reamp`,
+);

@@ -662,6 +662,12 @@ summary:focus-visible,
     justify-content: center;
     text-align: center;
   }
+  /* on the one-screen layout the phone shrinks with the window's height, so the screen fits the card */
+  @media (min-width: 1024px) and (min-height: 640px) {
+    [data-js] .phone {
+      width: min(100%, 260px, max(170px, calc((100dvh - 520px) * 0.462)));
+    }
+  }
 
   /* ---------- the architecture diagram ---------- */
   .flow-node {

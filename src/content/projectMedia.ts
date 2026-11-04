@@ -5,10 +5,10 @@ import shotsJson from "./shots.json";
  * - Stremio Skip Intro & Recap: the fork's stream list filters (resolution chips and a torrent site
  *   dropdown), captured from the fork (branch feature/stream-filters) built and served locally on
  *   2026-11-03, then the public fork on GitHub. Made by scripts/process-shots.mjs into shots.json.
- * - Powderino: the iOS screenshots Alex supplies (portrait), when there are any in shots.json;
- *   until then its card shows the CV's facts. No app UI is drawn or mocked here.
+ * - Powderino: six iOS screenshots Alex supplied on 2026-11-04 (portrait). No app UI is drawn or
+ *   mocked here.
  * - ReAMP is deployed: its start screen was captured from re-amp.vercel.app (the homepage named
- *   on its public repository) on 2026-10-31.
+ *   on its public repository) on 2026-10-31; then Alex's own captures of the app signed in (2026-11-04).
  */
 export interface Shot {
   /** e.g. "/work/reamp"; files are `${image}-${width}.avif` and `.webp` */
@@ -36,7 +36,7 @@ export interface ProjectMedia {
 }
 
 type Processed = Omit<Shot, "frame" | "address" | "href">;
-const shots = shotsJson as { stremio: Processed[]; powderino: Processed[] };
+const shots = shotsJson as { stremio: Processed[]; powderino: Processed[]; reamp: Processed[] };
 
 const FORK = "https://github.com/AlexVataselu/stremio-web";
 
@@ -87,6 +87,12 @@ export const projectMedia: ProjectMedia[] = [
         caption: "Start screen, live at re-amp.vercel.app",
         href: "https://re-amp.vercel.app",
       },
+      ...shots.reamp.map((s) => ({
+        ...s,
+        frame: "browser" as const,
+        address: "ReAMP · signed in",
+        href: "https://re-amp.vercel.app",
+      })),
     ],
     links: [
       { label: "Live app", href: "https://re-amp.vercel.app", address: "re-amp.vercel.app" },

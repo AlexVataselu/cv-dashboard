@@ -158,9 +158,13 @@ describe("Projects", () => {
     for (const i of imgs) expect(i.getAttribute("width") && i.getAttribute("height")).toBeTruthy();
     await userEvent.click(tabs[3]);
     expect((tabs[3] as HTMLInputElement).checked).toBe(true);
-    // Powderino keeps its facts until Alex's screenshots are in; ReAMP has one shot and no switcher
+    // Powderino keeps its facts and adds Alex's six iOS screens; ReAMP adds four in-app shots to its start screen
     expect(within(powderino).getByText("3,000+")).toBeTruthy();
-    expect(within(reamp).queryByRole("radio")).toBeNull();
+    const pTabs = within(within(powderino).getByRole("group", { name: /Screenshots of Powderino/ })).getAllByRole("radio");
+    expect(pTabs.map((t) => t.parentElement!.textContent)).toEqual(["Powder", "Resort", "Season", "Weather", "Air & moon", "Settings"]);
+    expect(powderino.querySelector(".gallery-phone")).toBeTruthy();
+    const rTabs = within(within(reamp).getByRole("group", { name: /Screenshots of ReAMP/ })).getAllByRole("radio");
+    expect(rTabs.map((t) => t.parentElement!.textContent)).toEqual(["Start screen", "Decks", "Search", "Crossfade", "Mixing"]);
     expect(within(reamp).getByRole("img", { name: /ReAMP's start screen/ })).toBeTruthy();
   });
 });
