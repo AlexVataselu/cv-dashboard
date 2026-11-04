@@ -706,72 +706,57 @@ summary:focus-visible,
   visibility: hidden;
 }
 .theme-toggle {
-  touch-action: none; /* a pull on a touch screen moves the bulb, not the page */
-  overflow: visible;
-  cursor: grab;
-}
-.theme-toggle[data-pulling] {
-  cursor: grabbing;
-}
-/* Light on: the switch itself glows warm. */
-:root[data-theme="light"] .theme-toggle {
-  border-color: #e8b64c;
-  background: #fff8e6;
-  box-shadow: 0 6px 22px -8px rgb(245 183 10 / 0.7);
+  position: relative;
+  overflow: hidden; /* the lamp's beam is clipped to the button */
+  isolation: isolate;
 }
 .lamp {
   flex: none;
   overflow: visible;
-  margin-block: -16px -6px; /* the cord hangs down from above the button, the bulb inside it */
+  color: var(--ink);
 }
-.lamp-cord {
-  stroke: var(--muted);
-  stroke-width: 1.2;
-  transform-origin: 12px 0;
-  transform: scaleY(var(--cord, 1));
-}
-.lamp-bulb {
-  transform: translateY(var(--pull, 0px));
-}
-.lamp-hang {
-  transform-origin: 12px 0;
-}
-.lamp-cap,
-.lamp-base {
+.lamp-line,
+.lamp-shade {
   fill: none;
-  stroke: var(--muted);
-  stroke-width: 1.2;
-  stroke-linecap: round;
-}
-.lamp-glass {
-  fill: transparent;
   stroke: currentColor;
-  stroke-width: 1.4;
-  transition: fill 220ms ease;
-}
-.lamp-filament {
-  fill: none;
-  stroke: var(--muted);
-  stroke-width: 1.1;
+  stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.lamp-glow {
-  fill: #ffc94a;
-  opacity: 0;
-  filter: blur(4px);
-  transition: opacity 260ms ease;
+.lamp-joint {
+  fill: var(--surface);
+  stroke: currentColor;
+  stroke-width: 1.3;
 }
-/* Light on: the light theme. */
-:root[data-theme="light"] .lamp-glass {
-  fill: #ffd76e;
-  stroke: #b7791f;
-}
-:root[data-theme="light"] .lamp-filament {
-  stroke: #b45309;
-}
-:root[data-theme="light"] .lamp-glow {
+.lamp-bulb {
+  fill: transparent;
+  stroke: currentColor;
+  stroke-width: 1.1;
   opacity: 0.55;
+}
+/* Off (the dark theme): the head is lifted away, no light. */
+.lamp-head {
+  transform-origin: 13.8px 7.6px;
+  transform: rotate(-16deg);
+}
+.lamp-beam {
+  opacity: 0;
+  pointer-events: none;
+}
+.lamp-label {
+  position: relative; /* above the beam */
+}
+/* On (the light theme): the head tilts down onto the label and a warm beam falls across it. */
+:root[data-theme="light"] .lamp-head {
+  transform: rotate(0deg);
+}
+:root[data-theme="light"] .lamp-beam {
+  opacity: 1;
+}
+:root[data-theme="light"] .lamp-bulb {
+  fill: #ffcf5c;
+  stroke: #c78a12;
+  opacity: 1;
 }
 .lamp-label-off,
 :root[data-theme="light"] .lamp-label-on {
@@ -781,33 +766,21 @@ summary:focus-visible,
   display: inline;
 }
 @media (prefers-reduced-motion: no-preference) {
-  /* Let go: the bulb springs back up; a flip sets it swinging on its cord. */
-  .theme-toggle:not([data-pulling]) .lamp-bulb,
-  .theme-toggle:not([data-pulling]) .lamp-cord {
-    transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  .lamp-head {
+    transition: transform 480ms cubic-bezier(0.34, 1.4, 0.64, 1);
   }
-  .theme-toggle[data-swing] .lamp-hang {
-    animation: lamp-swing 900ms cubic-bezier(0.36, 0, 0.3, 1);
+  .lamp-beam,
+  .lamp-bulb {
+    transition:
+      opacity 360ms ease 80ms,
+      fill 360ms ease 80ms;
   }
-  .theme-toggle:hover:not([data-pulling]) .lamp-bulb {
-    transform: translateY(2px);
+  /* A nudge of the head on hover, as if reaching for the switch. */
+  .theme-toggle:hover .lamp-head {
+    transform: rotate(-10deg);
   }
-}
-@keyframes lamp-swing {
-  0% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(10deg);
-  }
-  50% {
-    transform: rotate(-6deg);
-  }
-  75% {
-    transform: rotate(3deg);
-  }
-  100% {
-    transform: rotate(0deg);
+  :root[data-theme="light"] .theme-toggle:hover .lamp-head {
+    transform: rotate(-5deg);
   }
 }
 

@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 const ground = () => getComputedStyle(document.body).backgroundColor;
 const DARK = "rgb(14, 15, 17)";
@@ -32,30 +32,16 @@ test("the light switch says what it does, flips the theme and is remembered acro
   expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe("dark");
 });
 
-async function pullBulb(page: Page, by: number) {
-  const box = (await page.locator(".theme-toggle .lamp").boundingBox())!;
-  const x = box.x + box.width / 2;
-  const y = box.y + box.height * 0.7;
-  await page.mouse.move(x, y);
-  await page.mouse.down();
-  await page.mouse.move(x, y + by, { steps: 6 });
-  await page.mouse.up();
-}
-
-test("pulling the bulb down by its cord flips the light; a short tug does not", async ({ page }) => {
+test("the desk lamp tilts down and lights the button only when the light is on", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await pullBulb(page, 4);
-  // A tiny tug is a click in the end (the pointer barely moved), which also flips: undo it.
-  if ((await page.locator("html").getAttribute("data-theme")) === "light") {
-    await page.getByRole("button", { name: "Turn light off" }).click();
-  }
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await pullBulb(page, 16);
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  await pullBulb(page, 16);
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  const beam = page.locator(".theme-toggle .lamp-beam");
+  await expect(beam).toHaveCSS("opacity", "0");
+  await page.getByRole("button", { name: "Turn light on" }).click();
+  await expect(beam).toHaveCSS("opacity", "1");
+  // rotate(0): the head points down at the label (it is lifted, rotated, while the light is off).
+  await page.mouse.move(0, 0);
+  await expect(page.locator(".theme-toggle .lamp-head")).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
 });
 
 test("the theme is applied in <head> before the first paint (no flash)", async ({ request }) => {
