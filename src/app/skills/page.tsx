@@ -16,7 +16,7 @@ export default function SkillsPage() {
   return (
     <SectionShell
       title="Skills"
-      lead="Each bar is the years a role or project on the CV used the skill. Hover one to see where; press it to mark it everywhere."
+      lead="Every skill against every role on the CV. Hover a skill to see where it was used, or a company for its stack; press a skill to mark it everywhere."
     >
       <SkillMatrix />
     </SectionShell>

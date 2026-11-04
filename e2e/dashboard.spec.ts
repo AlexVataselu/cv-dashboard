@@ -339,38 +339,26 @@ test("prefers-reduced-motion: the chevron and the button press do not animate", 
   expect(await chev.evaluate((el) => getComputedStyle(el).transitionDuration)).not.toBe("0s");
 });
 
-test("skills matrix: each span starts and ends on its years of the shared axis", async ({ page }) => {
+test("skills matrix: each cell sits under its role's column head; hovering a role steps back the skills it did not use", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/skills");
-  const at = await page.evaluate(() => {
-    const years = [...document.querySelectorAll<HTMLElement>(".sm-years > span")];
-    // a centred label's middle is its year's line; the first and last labels sit on their own edge
-    const x = (y: string) => {
-      const r = years.find((e) => e.textContent === y)!.getBoundingClientRect();
-      return y === "2012" ? r.left : y === "2026" ? r.right : r.left + r.width / 2;
-    };
-    const span = (id: string) => document.querySelector(`.sm-row[data-skill="${id}"] .sm-span`)!.getBoundingClientRect();
-    const lane = (name: string) =>
-      [...document.querySelectorAll<HTMLElement>(".cs-lane")]
-        .find((l) => l.textContent!.startsWith(name))!
-        .querySelector(".cs-bar")!
-        .getBoundingClientRect();
-    const year = (y: number) => x("2012") + ((x("2026") - x("2012")) * (y - 2012)) / 14;
-    return {
-      labels: [x("2020"), year(2020)],
-      react: [span("react").left, year(2021)],
-      js: [span("javascript").left, span("javascript").right, x("2012"), x("2026")],
-      lhel: [lane("L.H.EL").left, year(2017)],
-    };
-  });
-  // the 2020 label sits on 2020's place between the ends; React starts at 2021
-  expect(Math.abs(at.labels[0] - at.labels[1])).toBeLessThanOrEqual(1.5);
-  expect(Math.abs(at.react[0] - at.react[1])).toBeLessThanOrEqual(1.5);
-  // JavaScript runs the whole axis, 2012 to 2026
-  expect(Math.abs(at.js[0] - at.js[2])).toBeLessThanOrEqual(1.5);
-  expect(Math.abs(at.js[1] - at.js[3])).toBeLessThanOrEqual(1.5);
-  // the career strip shares the axis: L.H.EL starts at 2017
-  expect(Math.abs(at.lhel[0] - at.lhel[1])).toBeLessThanOrEqual(1.5);
+  const centre = (sel: string) =>
+    page.locator(sel).first().evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      return r.left + r.width / 2;
+    });
+  for (const col of ["kemblimed", "lhel", "pentalog", "projects"]) {
+    const head = await centre(`.mx-col[data-col="${col}"]`);
+    const cell = await centre(`.sm-row[data-skill="typescript"] .mx-cell[data-col="${col}"]`);
+    expect(Math.abs(head - cell)).toBeLessThanOrEqual(1);
+  }
+  await page.locator('.mx-col[data-col="lhel"]').hover();
+  const opacity = (id: string) =>
+    page.locator(`.sm-row[data-skill="${id}"]`).evaluate((el) => Number(getComputedStyle(el).opacity));
+  await expect.poll(() => opacity("magento")).toBe(1);
+  await expect.poll(() => opacity("react")).toBeLessThan(0.5);
 });
 
 for (const width of [320, 412, 768, 1280]) {

@@ -130,7 +130,7 @@ test.describe("every CV fact is reachable by keyboard", () => {
   test("Skills: the group filter is a radio group; each group shows alone, every skill in it reachable", async ({ page }) => {
     await page.goto("/skills");
     await hydrated(page);
-    const card = page.getByRole("region", { name: "Skills across the career" });
+    const card = page.getByRole("region", { name: "Where each skill was used" });
     await card.getByRole("radio", { name: /^All/ }).focus();
     for (const g of ["Frontend", "State & data", "Backend", "Testing & quality", "Tooling"]) {
       await page.keyboard.press("ArrowRight");
@@ -149,19 +149,21 @@ test.describe("every CV fact is reachable by keyboard", () => {
     await hydrated(page);
     const rows = page.locator(".sm-row");
     await expect(page.locator(".sm-row[tabindex='0']")).toHaveCount(1);
+    // rows run longest-used first: JavaScript, HTML, CSS, TypeScript, React ...
     await rows.first().focus();
-    await expect(page.locator('[data-detail="react"]')).toBeVisible();
+    await expect(page.locator('[data-detail="javascript"]')).toBeVisible();
     await page.keyboard.press("ArrowDown");
     await expect(rows.nth(1)).toBeFocused();
-    await expect(page.locator('[data-detail="nextjs"]')).toBeVisible();
-    await expect(page.locator('[data-detail="react"]')).toBeHidden();
+    await expect(page.locator('[data-detail="html"]')).toBeVisible();
+    await expect(page.locator('[data-detail="javascript"]')).toBeHidden();
     await page.keyboard.press("End");
     await expect(rows.last()).toBeFocused();
     await page.keyboard.press("Home");
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("ArrowDown");
-    await expect(rows.nth(2)).toBeFocused();
-    // TypeScript is dated from L.H.EL (Superland): that role lights in the strip; Kemblimed does not.
+    await page.keyboard.press("ArrowDown");
+    await expect(rows.nth(3)).toBeFocused();
+    // TypeScript is dated from L.H.EL (Superland): that role lights in the header; Kemblimed does not.
     await expect(page.locator('[data-detail="typescript"]')).toContainText("since 2017");
     const lit = (name: string) =>
       page.locator(".cs-lane", { hasText: name }).first().evaluate((el) => Number(getComputedStyle(el).opacity));
@@ -169,15 +171,15 @@ test.describe("every CV fact is reachable by keyboard", () => {
     await expect.poll(() => lit("Kemblimed")).toBeLessThan(0.5);
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/\/skills\?skill=typescript$/);
-    await expect(rows.nth(2)).toHaveAttribute("aria-pressed", "true");
+    await expect(rows.nth(3)).toHaveAttribute("aria-pressed", "true");
     // One tab stop: Tab leaves the rows for the card of the skill in focus (its first link), even
     // when that skill is not the selected one; the card stays while focus travels into it.
     await page.keyboard.press("ArrowDown");
-    await expect(page.locator('[data-detail="javascript"]')).toBeVisible();
+    await expect(page.locator('[data-detail="react"]')).toBeVisible();
     await page.keyboard.press("Tab");
-    await expect(page.locator('[data-detail="javascript"] a').first()).toBeFocused();
+    await expect(page.locator('[data-detail="react"] a').first()).toBeFocused();
     await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/\?skill=javascript#/);
+    await expect(page).toHaveURL(/\?skill=react#/);
   });
 
   test("Projects: the Stremio gallery switches by arrow keys; each shot is captioned and loads only when chosen", async ({ page }) => {

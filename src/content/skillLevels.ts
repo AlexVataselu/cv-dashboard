@@ -21,7 +21,7 @@ export interface SkillLevel {
  * (2012 to 2013) was a web developer role, so HTML, CSS and JavaScript date from 2012, and every
  * web role since keeps them in use.
  */
-const IMPLIED_SINCE: Record<string, number> = {
+export const IMPLIED_SINCE: Record<string, number> = {
   html: 2012,
   css: 2012,
   javascript: 2012,

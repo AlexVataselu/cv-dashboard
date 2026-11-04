@@ -91,13 +91,14 @@ describe("Experience, skills of the open role", () => {
 });
 
 describe("Skills", () => {
-  it("draws every skill on the career's axis, by group, as pressable rows that drive the selection", async () => {
+  it("draws every skill against the career, by group, as pressable rows that drive the selection", async () => {
     const { container } = render(<SkillsPage />);
     const groups = screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
     expect(groups).toEqual(["Frontend", "State & data", "Backend", "Testing & quality", "Tooling", "First dated use, by year"]);
     expect(container.querySelectorAll(".sm-row")).toHaveLength(cv.skills.length);
     const row = screen.getByRole("button", { name: /^React ·/ });
-    expect(row.textContent).toBe("React · since 2021 · 5 yrs");
+    // its name, its dated years for a screen reader, and the short years shown
+    expect(row.textContent).toMatch(/^React · since 2021 · 5 yrs5 yrs/);
     expect(row.getAttribute("aria-pressed")).toBe("false");
     await userEvent.click(row);
     expect(useUiStore.getState().selectedSkill).toBe("react");
@@ -108,13 +109,27 @@ describe("Skills", () => {
     expect(row.getAttribute("aria-pressed")).toBe("false");
   });
 
-  it("a bar is only ever a dated span: jQuery is one outlined 2013 to 2017 span; Redux has none", () => {
+  it("marks only what the CV says: the roles that list a skill, the projects that use it, its years", () => {
     const { container } = render(<SkillsPage />);
-    const spans = (id: string) => [...container.querySelectorAll(`.sm-row[data-skill="${id}"] .sm-span`)];
-    expect(spans("jquery")).toHaveLength(1);
-    expect(spans("jquery")[0].classList.contains("sm-past")).toBe(true);
-    expect(spans("redux")).toHaveLength(0);
-    expect(spans("nextjs").length).toBe(2); // the 2021 to 2023 freelance work, then ReAMP from 2024
+    const row = (id: string) => container.querySelector(`.sm-row[data-skill="${id}"]`)!;
+    const on = (id: string) =>
+      [...row(id).querySelectorAll(".mx-cell[data-on]:not([data-implied])")].map((c) => c.getAttribute("data-col"));
+    const implied = (id: string) => [...row(id).querySelectorAll(".mx-cell[data-implied]")].map((c) => c.getAttribute("data-col"));
+    // jQuery: Zega Software only, an ended span (grey bar)
+    expect(on("jquery")).toEqual(["zega"]);
+    expect(row("jquery").querySelector(".mx-bar")!.classList.contains("mx-past")).toBe(true);
+    // Redux: no dated role or project, so no cell and no bar
+    expect(on("redux")).toEqual([]);
+    expect(row("redux").querySelector(".mx-bar")).toBeNull();
+    // Next.js: the 2021 to 2023 freelance work, and two personal projects
+    expect(on("nextjs")).toEqual(["freelance-2021", "projects"]);
+    expect(row("nextjs").querySelector(".mx-proj")!.textContent).toBe("2");
+    // JavaScript: listed for L.H.EL; implied by every web role since 2012, as its 14 years are
+    expect(on("javascript")).toEqual(["lhel"]);
+    expect(implied("javascript")).toEqual(["kemblimed", "zega", "tryangle", "freelance-2021", "pentalog", "freelance-2025"]);
+    // the longest-used first within a group
+    const frontend = [...container.querySelectorAll('[data-group="frontend"] .sm-row')].map((b) => b.getAttribute("data-skill"));
+    expect(frontend.slice(0, 4)).toEqual(["javascript", "html", "css", "typescript"]);
   });
 
   it("each skill's card lists every role and project that used it, linking with ?skill= kept", () => {
@@ -267,7 +282,7 @@ describe("year counts run to the CV's year, not the clock", () => {
     exp.unmount();
 
     const skills = render(<SkillsPage />);
-    expect(within(skills.container).getByText("31 of 39 skills have a dated first use")).toBeTruthy();
+    expect(skills.container.querySelector('.sm-row[data-skill="javascript"] .mx-years')!.textContent).toBe("14 yrs");
     expect(skills.container.textContent).not.toContain("2026:");
   });
 });
