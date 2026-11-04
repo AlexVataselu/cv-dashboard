@@ -140,8 +140,14 @@ describe("Projects", () => {
     ]);
     expect(within(cards[4]).getByRole("heading", { name: /Innobyte/ })).toBeTruthy();
     expect(within(cards[4]).getByText("Client project at TryAngle Labs")).toBeTruthy();
-    // no pictures yet: nothing from another person's CV
-    expect(cards[4].querySelector("img")).toBeNull();
+    // ElbilAppen's four phone screens, in a phone frame
+    expect(cards[4].querySelector(".gallery-phone")).toBeTruthy();
+    expect(within(cards[4]).getAllByRole("radio").map((t) => t.parentElement!.textContent)).toEqual([
+      "Trip planner",
+      "Stations map",
+      "Route",
+      "Vehicle",
+    ]);
     expect(within(cards[0]).getByRole("heading", { name: /Stremio Skip Intro/ })).toBeTruthy();
     expect(within(cards[1]).getByRole("heading", { name: /Powderino/ })).toBeTruthy();
     expect(within(cards[2]).getByRole("heading", { name: /ReAMP/ })).toBeTruthy();

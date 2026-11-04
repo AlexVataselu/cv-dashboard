@@ -195,5 +195,55 @@
       "alt": "Builder Studio's second step: base apps to start from, a list of user journeys, and the phone screens for the chosen journey",
       "caption": "Builder Studio, step 2: features grouped into user journeys, with the screens for each"
     }
+  ],
+  "innobyte": [
+    {
+      "image": "/work/innobyte-1",
+      "widths": [
+        320,
+        500
+      ],
+      "width": 500,
+      "height": 1100,
+      "label": "Trip planner",
+      "alt": "ElbilAppen's Plan Trip screen: London Bridge to Rome, a Tesla Model S as the vehicle, and start and end range sliders",
+      "caption": "Plan Trip: start, destination, the car, and the range to start and end with"
+    },
+    {
+      "image": "/work/innobyte-2",
+      "widths": [
+        320,
+        500
+      ],
+      "width": 500,
+      "height": 1100,
+      "label": "Stations map",
+      "alt": "ElbilAppen's stations map over England, charging stations clustered into numbered markers",
+      "caption": "The stations map, with charging stations clustered as you zoom out"
+    },
+    {
+      "image": "/work/innobyte-3",
+      "widths": [
+        320,
+        500
+      ],
+      "width": 500,
+      "height": 1100,
+      "label": "Route",
+      "alt": "A planned route from London to Rome across Europe: six charging stops with their charging times, 22 hr 25 min and 1866 km in total",
+      "caption": "A planned route: each charging stop with its charging time, then the total"
+    },
+    {
+      "image": "/work/innobyte-4",
+      "widths": [
+        320,
+        500
+      ],
+      "width": 500,
+      "height": 1100,
+      "label": "Vehicle",
+      "alt": "Vehicle details for a Tesla Model S Performance: real, EPA and WLTP range, usable battery and efficiency",
+      "caption": "Vehicle details: the range figures and battery the planner works from"
+    }
   ]
 }

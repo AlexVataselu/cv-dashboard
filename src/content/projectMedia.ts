@@ -36,7 +36,13 @@ export interface ProjectMedia {
 }
 
 type Processed = Omit<Shot, "frame" | "address" | "href">;
-const shots = shotsJson as { stremio: Processed[]; powderino: Processed[]; reamp: Processed[]; builderai: Processed[] };
+const shots = shotsJson as {
+  stremio: Processed[];
+  powderino: Processed[];
+  reamp: Processed[];
+  builderai: Processed[];
+  innobyte: Processed[];
+};
 
 const FORK = "https://github.com/AlexVataselu/stremio-web";
 
@@ -111,6 +117,12 @@ export const projectMedia: ProjectMedia[] = [
           ? "https://web.archive.org/web/20250201232535/https://www.builder.ai/"
           : "https://web.archive.org/web/20250124124515/https://www.builder.ai/products/builder-studio",
     })),
+    links: [],
+  },
+  {
+    // ElbilAppen's phone screens; Alex built the screens' UI and the map (TryAngle Labs, 2021).
+    projectId: "innobyte",
+    shots: shots.innobyte.map((s) => ({ ...s, frame: "phone" as const })),
     links: [],
   },
 ];

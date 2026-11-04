@@ -12,6 +12,7 @@
 //              Each becomes 320px and 640px wide, its own aspect kept.
 // - reamp/     desktop captures of ReAMP signed in, listed in REAMP; cut to 16:9 from the top, 640 and 1120px.
 // - builderai/ Builder.ai's public pages from the Internet Archive, listed in BUILDERAI.
+// - innobyte/  ElbilAppen phone screens from the Innobyte project, listed in INNOBYTE.
 // Output: public/work/<id>-<width>.{avif,webp} and src/content/shots.json (read by projectMedia.ts).
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -199,6 +200,57 @@ for (const [i, s] of BUILDERAI.entries()) {
     caption: s.caption,
   });
   console.log(`builderai: ${s.file} -> ${id}`);
+}
+
+/** ElbilAppen phone screens from the Innobyte project (TryAngle Labs, 2021); 500px wide at source. */
+const INNOBYTE = [
+  {
+    file: "elbil-screen-1.png",
+    label: "Trip planner",
+    alt: "ElbilAppen's Plan Trip screen: London Bridge to Rome, a Tesla Model S as the vehicle, and start and end range sliders",
+    caption: "Plan Trip: start, destination, the car, and the range to start and end with",
+  },
+  {
+    file: "elbil-screen-2.png",
+    label: "Stations map",
+    alt: "ElbilAppen's stations map over England, charging stations clustered into numbered markers",
+    caption: "The stations map, with charging stations clustered as you zoom out",
+  },
+  {
+    file: "elbil-screen-3.png",
+    label: "Route",
+    alt: "A planned route from London to Rome across Europe: six charging stops with their charging times, 22 hr 25 min and 1866 km in total",
+    caption: "A planned route: each charging stop with its charging time, then the total",
+  },
+  {
+    file: "elbil-screen-4.png",
+    label: "Vehicle",
+    alt: "Vehicle details for a Tesla Model S Performance: real, EPA and WLTP range, usable battery and efficiency",
+    caption: "Vehicle details: the range figures and battery the planner works from",
+  },
+];
+
+manifest.innobyte = [];
+for (const [i, s] of INNOBYTE.entries()) {
+  const src = join(shotsDir, "innobyte", s.file);
+  if (!existsSync(src)) {
+    console.warn(`missing ${src}: skipped`);
+    continue;
+  }
+  const id = `innobyte-${i + 1}`;
+  const meta = await sharp(src).metadata();
+  const widths = [320, meta.width];
+  for (const w of widths) await write(sharp(src).resize({ width: w }), id, w);
+  manifest.innobyte.push({
+    image: `/work/${id}`,
+    widths,
+    width: meta.width,
+    height: meta.height,
+    label: s.label,
+    alt: s.alt,
+    caption: s.caption,
+  });
+  console.log(`innobyte: ${s.file} -> ${id}`);
 }
 
 writeFileSync(join(root, "src", "content", "shots.json"), JSON.stringify(manifest, null, 2) + "\n");

@@ -319,10 +319,11 @@ export const cv: Cv = {
       roleId: "tryangle",
       label: "2021",
       start: 2021,
-      title: "Innobyte, an electric-vehicle charging app",
+      title: "Innobyte, ElbilAppen: an EV charging and trip-planning app",
       stack: ["React Native", "TypeScript"],
       skillIds: ["react-native", "typescript"],
-      description: "Built the app's screens and its charger map, for drivers finding a place to charge and planning a trip.",
+      description:
+        "Built the app's screens and its charging-station map: finding a station, and planning a trip with its charging stops.",
     },
   ],
   education: [
