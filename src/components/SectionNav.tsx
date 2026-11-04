@@ -13,7 +13,8 @@ export function sectionForPath(pathname: string | null): SectionId | undefined {
 }
 
 /**
- * The sections as tabs on the frame, over the sheet. The open one carries the cobalt underline.
+ * The sections as a row of keys along the top of the sheet, like a keyboard's: the open one is the
+ * key held down, sunk into the sheet with a gold edge.
  * It lives in the root layout, so it follows the path; `current` overrides that (tests).
  */
 export function SectionNav({ current }: { current?: SectionId }) {
@@ -35,9 +36,9 @@ export function SectionNav({ current }: { current?: SectionId }) {
               transitionTypes={[i < at ? "nav-back" : "nav-forward"]}
               className="tab"
             >
-              {s.label}
-              {/* The active tab's underline is one element with one view-transition name, so a
-                  section switch glides it from the old tab to the new one. */}
+              <span className="tab-label">{s.label}</span>
+              {/* The pressed key is one element with one view-transition name, so a section
+                  switch glides it from the old key to the new one. */}
               {s.id === active ? <span className="tab-ink" aria-hidden="true" /> : null}
             </Link>
           </li>

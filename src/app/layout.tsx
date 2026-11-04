@@ -3,6 +3,7 @@ import { ViewTransition } from "react";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import Script from "next/script";
 import { ProfileRail } from "@/components/ProfileRail";
+import { SectionNav } from "@/components/SectionNav";
 import { SkillParamSync } from "@/components/SkillParamSync";
 import { StatusBar } from "@/components/StatusBar";
 import { MotionBoot } from "@/components/MotionBoot";
@@ -77,14 +78,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {"void 0"}
         </Script>
         <SkillParamSync skills={cv.skills.map((s) => [s.id, s.name])} />
-        {/* The frame: the profile rail (with the section tabs) on one tint; the sheet beside it.
-            The rail, the sheet and the status bar stay mounted across tab switches; only <main> changes.
+        {/* The frame: the profile rail on one tint; the sheet beside it, with the section keys along
+            its top. The keys, the sheet and the status bar stay mounted across tab switches; only <main> changes.
             From 1024x640 up (with JS) the frame is exactly one screen tall: the page never scrolls, and
             a card whose content is longer than its slot scrolls inside itself. */}
         <div className="shell">
           <ProfileRail />
           <div className="workspace">
             <div className="sheet">
+              <SectionNav />
               {/* Section switches cross-fade and slide through the View Transitions API (no JS of our own). */}
               <ViewTransition default="panel">{children}</ViewTransition>
               <StatusBar />

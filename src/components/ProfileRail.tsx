@@ -1,5 +1,4 @@
 import { PaletteTrigger } from "@/components/PaletteTrigger";
-import { SectionNav } from "@/components/SectionNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ExternalIcon, FileIcon, GitHubIcon, LinkedInIcon, MailIcon, PinIcon } from "@/components/icons";
 import { cv } from "@/content/cv";
@@ -8,27 +7,27 @@ const link =
   "flex min-h-11 items-center gap-2.5 rounded-lg px-2.5 text-[14px] font-medium text-ink transition-colors hover:bg-active lg:min-h-10";
 
 /**
- * The profile rail: who, what, where and available at the top, the sections under it, and how to
- * reach him at its foot. It sits on the frame tint, held in place on wide screens while the sheet
- * beside it switches section. On a phone it folds into a compact header: the photo, the name, the
- * title and the contact buttons, then the section tabs over the sheet.
+ * The profile rail: the portrait, who, what, where and available at the top, and how to reach him
+ * at its foot. It sits on the frame tint, held in place on wide screens while the sheet beside it
+ * switches section. On a phone it folds into a compact header: the photo, the name, the title and
+ * the contact buttons.
  */
 export function ProfileRail() {
   return (
     <aside className="relative flex flex-col gap-4 px-4 pb-1 pt-4 md:px-6 md:pt-5 lg:sticky lg:top-0 lg:h-svh lg:gap-6 lg:overflow-y-auto lg:px-5 lg:py-6">
       <div className="flex items-center gap-4 lg:flex-col lg:items-start">
-        <picture className="block shrink-0">
+        <picture className="rail-photo block shrink-0">
           <source srcSet="/photo.avif" type="image/avif" />
           <source srcSet="/photo.webp" type="image/webp" />
           <img
             src="/photo.webp"
             alt={cv.name}
-            width={256}
-            height={256}
+            width={400}
+            height={400}
             loading="eager"
             fetchPriority="high"
             decoding="async"
-            className="size-14 rounded-full bg-active object-cover md:size-16 lg:size-20"
+            className="size-16 rounded-[10px] bg-active object-cover md:size-20 lg:aspect-square lg:size-auto lg:w-full lg:rounded-xl"
           />
         </picture>
         {/* Below desktop the backlight switch sits top right: its width is kept clear here. */}
@@ -48,12 +47,6 @@ export function ProfileRail() {
             </span>
           </p>
         </div>
-      </div>
-
-      {/* The sections: a list down the rail on a desktop; on a phone, the tab row just above the
-          sheet (last in the rail's order), so the contact buttons stay with the name. */}
-      <div className="rail-nav max-lg:order-last">
-        <SectionNav />
       </div>
 
       {/* How to reach him, at the foot of the rail on a desktop. */}

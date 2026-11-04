@@ -1912,49 +1912,148 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
 }
 
-/* ---------- the sections, in the rail ---------- */
-/* On a phone or tablet: the tab row over the sheet (the rail's last block). From 1024px: a list
-   down the rail, the current section on a neutral pill with a gold marker that glides between rows. */
+/* ---------- the sections: a row of keys along the top of the sheet ---------- */
+/* The keys are the sheet's own colour, split by hairlines like the keys of a piano. The open
+   section is the key held down: it sinks (a deeper fill, its label pressed 1px lower) and its
+   front edge lights gold. That held-down fill is one element with one view-transition name, so a
+   section switch glides it to the new key while the panel slides the same way. */
 @layer components {
-  .rail-nav .section-nav {
+  .sheet > .section-nav {
     padding: 0;
-  }
-  @media (max-width: 1023.98px) {
-    .rail-nav {
-      margin-top: -8px;
-    }
+    border-bottom: 1px solid var(--border);
   }
   @media (min-width: 1024px) {
-    .rail-nav .tabs {
-      flex-direction: column;
-      gap: 2px;
-      overflow: visible;
+    .sheet > .section-nav {
+      overflow: hidden;
+      border-radius: 15px 15px 0 0;
     }
-    .rail-nav .tab,
-    [data-js] .rail-nav .tab {
-      height: 40px;
-      padding: 0 10px 0 14px;
-      border-radius: 8px;
-      font-size: 14px;
-      transition:
-        color 150ms ease,
-        background-color 150ms ease;
+  }
+  @media (min-width: 380px) {
+    .sheet .tabs {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0;
     }
-    .rail-nav .tab:hover {
-      background: var(--raised);
+  }
+  .sheet .tabs > li + li {
+    border-left: 1px solid var(--rule);
+  }
+  .sheet .tab,
+  [data-js] .sheet .tab {
+    justify-content: center;
+    width: 100%;
+    height: 48px;
+    padding: 0 6px;
+    font-size: 14px;
+    transition:
+      color 160ms ease,
+      background-color 160ms ease;
+  }
+  /* a phone or tablet: the keys keep the page's side margin, so no label meets the screen edge */
+  @media (max-width: 1023.98px) {
+    .sheet > .section-nav {
+      padding: 0 12px;
     }
-    .rail-nav .tab[aria-current="page"] {
-      background: var(--active);
+    .sheet .tabs > li:first-child .tab,
+    .sheet .tabs > li:last-child .tab {
+      padding: 0 2px;
     }
-    .rail-nav .tab-ink,
-    [data-js] .rail-nav .tab-ink {
-      left: 0;
-      right: auto;
-      top: 10px;
-      bottom: 10px;
-      width: 3px;
-      height: auto;
-      background: var(--primary-fill);
+  }
+  @media (max-width: 767.98px) {
+    .sheet .tab,
+    [data-js] .sheet .tab {
+      padding: 0 2px;
+      font-size: 13px;
+    }
+  }
+  @media (min-width: 768px) {
+    .sheet .tab,
+    [data-js] .sheet .tab {
+      font-size: 15px;
+    }
+  }
+  /* the one-screen desktop: the keys give the cards back a little height */
+  @media (min-width: 1024px) and (min-height: 640px) {
+    [data-js] .sheet .tab {
+      height: 42px;
+    }
+  }
+  .tab-label {
+    position: relative;
+    z-index: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .tab-label {
+      transition: transform 120ms var(--ease-out);
+    }
+  }
+  .sheet .tab:hover {
+    background: var(--raised);
+  }
+  /* key down: the label sinks while the pointer holds it, before the section has even switched */
+  .sheet .tab:active {
+    background: var(--active);
+  }
+  .sheet .tab:active .tab-label {
+    transform: translateY(2px);
+  }
+  .sheet .tab[aria-current="page"] .tab-label {
+    transform: translateY(1px);
+  }
+  .sheet .tab-ink,
+  [data-js] .sheet .tab-ink {
+    inset: 0;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: var(--active);
+  }
+  .sheet .tab-ink::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--primary-fill);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    /* the key that has just been pressed settles: down, a little past, back to held */
+    .sheet .tab[aria-current="page"] .tab-label {
+      animation: key-settle 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+}
+@keyframes key-settle {
+  0% {
+    transform: translateY(3px);
+  }
+  55% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(1px);
+  }
+}
+
+/* ---------- the portrait: a square at the head of the rail ---------- */
+@layer components {
+  .rail-photo img {
+    border: 1px solid var(--border);
+  }
+  /* dark: the bright studio backdrop is dimmed a touch, so it does not glare out of the rail */
+  :root:not([data-theme="light"]) .rail-photo img {
+    filter: brightness(0.86) contrast(1.06);
+  }
+  @media (min-width: 1024px) {
+    .rail-photo {
+      width: 100%;
+    }
+  }
+  /* a short desktop screen: a smaller square, so the rail still fits without scrolling */
+  @media (min-width: 1024px) and (max-height: 820px) {
+    .rail-photo {
+      width: 168px;
     }
   }
 }
