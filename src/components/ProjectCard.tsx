@@ -80,6 +80,19 @@ export function ProjectCard({
           </p>
         ) : null}
         <p className="mt-4 text-[15px] leading-relaxed">{project.description}</p>
+        {project.highlights?.length ? (
+          <>
+            <h3 className="mt-4 text-[13px] font-medium text-muted">Details</h3>
+            <ul className="mt-1.5 grid gap-1.5 text-[14px] leading-snug">
+              {project.highlights.map((h) => (
+                <li key={h} className="flex items-start gap-2">
+                  <span className="mt-[7px] size-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+                  {h}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
         <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Stack">
           {project.stack.map((t) => (
             <li key={t} className="pill">

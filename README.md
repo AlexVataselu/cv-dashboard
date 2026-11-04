@@ -28,6 +28,9 @@ pnpm dev        # dev server on http://localhost:3000
   `data/build-stats.json`, so commit it when the size changes. First time: `pnpm exec playwright install chromium`
 - `pnpm lint` - ESLint
 - `pnpm typecheck` - `tsc --noEmit`
+- `pnpm cv:pdf` - builds `public/CV_AlexVataselu.pdf` from the CV's two canvas pages (`E:\WorkAV\cv\project`),
+  checks both fit A4, and copies it to `E:\WorkAV\cv`. Run it after every CV change and commit the PDF, so the
+  site always serves the latest CV.
 
 ## Lighthouse locally
 

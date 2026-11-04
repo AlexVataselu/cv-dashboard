@@ -253,7 +253,95 @@ for (const [i, s] of INNOBYTE.entries()) {
   console.log(`innobyte: ${s.file} -> ${id}`);
 }
 
+/**
+ * 16:9 frames, written no wider than their source: a tall page is cut from the top ("top"); a small
+ * piece such as a modal is centred on a backdrop of its own colour ("contain").
+ */
+async function frames(key, list) {
+  manifest[key] = [];
+  for (const [i, s] of list.entries()) {
+    const src = join(shotsDir, key, s.file);
+    if (!existsSync(src)) {
+      console.warn(`missing ${src}: skipped`);
+      continue;
+    }
+    const id = `${key}-${i + 1}`;
+    const meta = await sharp(src).metadata();
+    const top = Math.min(1120, meta.width);
+    const widths = top > 640 ? [640, top] : [top];
+    for (const w of widths) {
+      const h = Math.round((w * 9) / 16);
+      const img =
+        s.fit === "contain"
+          ? sharp(src).resize({ width: w, height: h, fit: "contain", background: s.background })
+          : sharp(src).resize({ width: w, height: h, fit: "cover", position: "top" });
+      await write(img, id, w);
+    }
+    const width = widths.at(-1);
+    manifest[key].push({
+      image: `/work/${id}`,
+      widths,
+      width,
+      height: Math.round((width * 9) / 16),
+      label: s.label,
+      alt: s.alt,
+      caption: s.caption,
+    });
+    console.log(`${key}: ${s.file} -> ${id}`);
+  }
+}
+
+/** Alex's own Figma page designs for LocalsOnly (2023); the live app needs its retired API. */
+await frames("localsonly", [
+  {
+    file: "1-home.png",
+    label: "Home",
+    alt: "LocalsOnly home page design: 'Way of the fox' hero over a mountain photo, with challenge badges below",
+    caption: "Figma design: the home page, with challenges and their badges",
+  },
+  {
+    file: "2-listing.png",
+    label: "Listing",
+    alt: "LocalsOnly listing design: filter chips, recommended experiences and a grid of all experiences with prices",
+    caption: "Figma design: experiences near you, recommended ones first",
+  },
+  {
+    file: "3-details.png",
+    label: "Details",
+    alt: "LocalsOnly experience page design: a photo gallery, the experience's facts, the booking panel and a route map",
+    caption: "Figma design: an experience's page, with photos, booking and the route on a map",
+  },
+  {
+    file: "4-filters.png",
+    label: "Filters",
+    fit: "contain",
+    background: "#232323",
+    alt: "LocalsOnly filters design: activity type, a price range slider, time of day, duration and specials",
+    caption: "Figma design: filters by activity, price, time of day and duration",
+  },
+  {
+    file: "5-home-dark.png",
+    label: "Home, dark",
+    alt: "A dark LocalsOnly home page design: 'The bear necessities' hero with badges, trust points and new experiences",
+    caption: "Figma design: an alternative dark home page",
+  },
+]);
+
+/** This dashboard, captured from alexvataselu.vercel.app on 2026-11-04. */
+await frames("cvdashboard", [
+  {
+    file: "overview.png",
+    label: "Overview",
+    alt: "The CV dashboard's Overview: profile rail, headline figures, the career timeline and results with their sources",
+    caption: "The Overview on a laptop: one screen, no scrolling",
+  },
+  {
+    file: "skills.png",
+    label: "Skills",
+    alt: "The CV dashboard's Skills view with TypeScript chosen: its bar on the career axis and the roles and projects that used it",
+    caption: "Skills: pick one and every role and project that used it lights up",
+  },
+]);
+
 writeFileSync(join(root, "src", "content", "shots.json"), JSON.stringify(manifest, null, 2) + "\n");
-console.log(
-  `wrote src/content/shots.json: ${manifest.stremio.length} stremio, ${manifest.powderino.length} powderino, ${manifest.reamp.length} reamp, ${manifest.builderai.length} builderai`,
-);
+console.log(`wrote src/content/shots.json: ${Object.entries(manifest).map(([k, v]) => `${v.length} ${k}`).join(", ")}`);

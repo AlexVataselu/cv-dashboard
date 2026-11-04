@@ -41,7 +41,6 @@ const skills: Skill[] = [
     ["vitest", "Vitest"],
     ["playwright", "Playwright"],
     ["tdd", "TDD"],
-    ["wcag", "WCAG 2.1"],
     ["axe-core", "axe-core"],
   ]),
   ...group("Tooling", [
@@ -102,7 +101,7 @@ export const cv: Cv = {
       company: "Freelance, self-employed",
       location: "Remote",
       stack: ["Vitest", "Playwright + axe-core", "WordPress (@wordpress/scripts)", "Figma"],
-      skillIds: ["vitest", "playwright", "axe-core", "figma", "wcag"],
+      skillIds: ["vitest", "playwright", "axe-core", "figma"],
       bullets: [
         "Owned each project end to end: brand identity and UI in Figma, then build, Vitest and Playwright + axe-core testing, and launch. One point of contact for design and code.",
         "Azuga365 (azuga365.ro): online archive of Azuga's royal and industrial history, with archival research, community interviews, and multimedia.",
@@ -126,14 +125,13 @@ export const cv: Cv = {
         "sonarqube",
         "github-actions",
         "sentry",
-        "wcag",
+        "git",
       ],
       bullets: [
-        "Built web and mobile interfaces for Builder.ai's software automation platform in a shared monorepo, where one component library served both surfaces and kept them aligned with the design system.",
+        "Built features for Builder.ai's internal app-building platform, including its UI generation workflows, in a Turborepo monorepo whose shared components, hooks and services served web and mobile.",
         "Cut onboarding from four weeks to two for the two junior engineers I mentored, through weekly code reviews, component API standards, and hands-on support.",
         "Caught security hotspots and code smells before production by adding SonarQube quality gates to every PR in the GitHub Actions pipeline.",
         "Set up Sentry across web and mobile, so production exceptions were caught and fixed within the same sprint.",
-        "Applied WCAG 2.1 across consumer-facing surfaces: semantic HTML, keyboard navigation, ARIA roles, and contrast compliance.",
       ],
     },
     {
@@ -161,11 +159,13 @@ export const cv: Cv = {
         "vercel",
         "github-actions",
         "figma",
+        "git",
       ],
       bullets: [
         "Built responsive web and mobile apps from Figma designs, using the Expo SDK to handle offline behaviour and platform differences on mobile.",
         "Cut design-to-production handoff from days to hours for repeat UI patterns by building the shared component library from scratch: strict prop interfaces, co-located tests, and design tokens matched to Figma.",
         "Moved releases from irregular manual pushes to consistent, predictable cycles by setting up Vercel and GitHub Actions CI/CD.",
+        "ElbilAppen (Innobyte, 2021): built the EV app's screens and charging-station map.",
       ],
     },
     {
@@ -199,7 +199,6 @@ export const cv: Cv = {
         "prisma",
         "postgresql",
         "php",
-        "wcag",
       ],
       bullets: [
         "RecuperareAcasa.ro: mobile-first physiotherapy home-visit booking on an Atomic Design system, with a multi-step intake form, Google Maps and Resend email.",
@@ -260,9 +259,17 @@ export const cv: Cv = {
       start: 2026,
       title: "Stremio Skip Intro & Recap, a desktop app feature (in progress)",
       stack: ["Node.js", "ffmpeg", "Chromaprint", "React", "Jest", "Stremio client fork"],
-      skillIds: ["nodejs", "react", "jest"],
+      skillIds: ["nodejs", "react", "jest", "tdd", "git"],
       description:
         "Finds the intro by matching audio fingerprints across a season, and the recap by matching subtitle lines against earlier episodes. Runs locally, with no third-party database. The same fork adds stream list filters: resolution chips and a torrent site dropdown.",
+      highlights: [
+        "Intro: ffmpeg reads each episode's audio and Chromaprint fingerprints are matched across the season, so intros of different lengths are found.",
+        "Recap: subtitle lines matched against earlier episodes.",
+        "The next episode is analysed ahead of time, so its Skip button is ready when it starts.",
+        "A Stremio-style Skip pill for each, in a fork of the Stremio web client.",
+        "Stream list filters in the same fork: resolution chips with counts and a torrent site dropdown.",
+        "Built test-first, with Jest.",
+      ],
     },
     {
       id: "powderino",
@@ -281,6 +288,13 @@ export const cv: Cv = {
       skillIds: ["react-native", "expo", "typescript", "tanstack-query", "vercel", "jest"],
       description:
         "Ranks 3,000+ ski resorts by fresh and incoming snow, alerts you when a starred resort gets a dump, and adds radar, wind and snow map layers and webcams.",
+      highlights: [
+        "Powder list: resorts ranked by fresh or incoming snow, with search, filters and starred resorts.",
+        "Resort pages: summit, base and snow depth, and a 10-day snowfall chart at the summit.",
+        "Snow quality, the avalanche bulletin, the season's snow depth and nearby webcams.",
+        "Weather, air quality by pollutant and the moon at the resort.",
+        "Snow and storm alerts with your own thresholds, a powder radius and quiet nights.",
+      ],
     },
     {
       id: "reamp",
@@ -296,9 +310,58 @@ export const cv: Cv = {
         "Spotify SDK",
         "YouTube API",
       ],
-      skillIds: ["nextjs", "react", "typescript", "prisma"],
+      skillIds: ["nextjs", "react", "typescript", "prisma", "react-testing-library", "git"],
       description:
         "Unifies Spotify and YouTube in one playback engine; playback logic is pure functions, testable in isolation and kept apart from React.",
+      highlights: [
+        "Playback logic in pure functions: deck refill, played history and artist-aware track picks, all testable without React.",
+        "Manager classes keep the Spotify and YouTube SDKs' imperative code out of React state.",
+        "NextAuth with Prisma sessions and automatic Spotify token refresh.",
+        "One search across Spotify and YouTube, and a drag-and-drop playlist.",
+        "Crossfade between the decks, with duration, auto threshold and minimum play time settings.",
+      ],
+    },
+    {
+      id: "cvdashboard",
+      label: "2026",
+      start: 2026,
+      title: "CV dashboard, this site",
+      stack: [
+        "Next.js 16",
+        "React 19",
+        "TypeScript",
+        "Tailwind CSS 4",
+        "Zustand",
+        "Vitest",
+        "React Testing Library",
+        "Playwright + axe-core",
+        "Vercel",
+        "GitHub Actions",
+      ],
+      skillIds: [
+        "nextjs",
+        "react",
+        "typescript",
+        "tailwind",
+        "zustand",
+        "vitest",
+        "react-testing-library",
+        "playwright",
+        "axe-core",
+        "tdd",
+        "git",
+        "vercel",
+        "github-actions",
+      ],
+      description:
+        "This CV as a static Next.js dashboard: one screen on a laptop, a page on a phone, and every skill linked to the roles and projects that used it.",
+      highlights: [
+        "Pick a skill and every role and project that used it lights up, kept in the URL so a link shares the view.",
+        "Under 150 KB of first-load JavaScript per page, measured on every build.",
+        "Unit tests with Vitest and React Testing Library; browser tests with Playwright and axe-core in light and dark themes.",
+        "Deployed on Vercel from GitHub; Lighthouse audits every production deploy.",
+        "Built test-first, from a written spec and plan.",
+      ],
     },
   ],
   workProjects: [
@@ -312,6 +375,13 @@ export const cv: Cv = {
       skillIds: ["react", "react-native", "typescript", "tailwind", "rest", "sonarqube"],
       description:
         "Built features for Builder.ai's internal platform that turns customer requirements into apps, including its UI generation workflows, in a Turborepo monorepo whose shared components, hooks and services served web and mobile.",
+      highlights: [
+        "Shared packages for components, hooks and services, used by both the web and mobile apps.",
+        "Styled Components or Tailwind CSS, depending on each app's architecture.",
+        "Frontend features wired to backend services through REST APIs.",
+        "SonarQube quality gates on every pull request.",
+        "Mentored two junior developers.",
+      ],
     },
     {
       // Alex's own account (2026-11-04): at TryAngle Labs in 2021 he built the screens' UI and the map.
@@ -324,6 +394,34 @@ export const cv: Cv = {
       skillIds: ["react-native", "typescript"],
       description:
         "Built the app's screens and its charging-station map: finding a station, and planning a trip with its charging stops.",
+    },
+    {
+      // The CV's LocalsOnly bullet, with the stack read from its repos (localsOnly, locals-only-api, 2023).
+      id: "localsonly",
+      roleId: "freelance-2021",
+      label: "2023",
+      start: 2023,
+      title: "LocalsOnly, a platform for local experiences",
+      stack: [
+        "Next.js 14",
+        "TypeScript",
+        "Styled Components",
+        "Apollo Client",
+        "GraphQL Codegen",
+        "Apollo Server",
+        "TypeGraphQL",
+        "Prisma",
+        "Figma",
+      ],
+      skillIds: ["nextjs", "react", "typescript", "graphql", "prisma", "figma", "git"],
+      description:
+        "Full-stack Next.js and GraphQL platform for local experiences. Cut first load by 40% and redundant API calls by 35% by pairing SSR for SEO with CSR for interactivity.",
+      highlights: [
+        "Designed in Figma first: the logo, home, listing, experience page, filters and badges.",
+        "Next.js front end on Apollo Client, with types generated from the schema by GraphQL Codegen.",
+        "GraphQL API on Apollo Server with TypeGraphQL and Prisma, modelling users, experiences and bookings.",
+        "Server-rendered pages for search engines, client-side rendering where people interact.",
+      ],
     },
   ],
   education: [

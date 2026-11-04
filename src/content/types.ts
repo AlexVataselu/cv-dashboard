@@ -31,6 +31,8 @@ export interface Project {
   stack: string[];
   skillIds: string[];
   description: string;
+  /** More detail than the printed CV has room for: shown on the dashboard's project card only. */
+  highlights?: string[];
 }
 
 /** A project done inside one of the roles (for an employer's client), shown with the personal ones. */

@@ -42,6 +42,8 @@ const shots = shotsJson as {
   reamp: Processed[];
   builderai: Processed[];
   innobyte: Processed[];
+  localsonly: Processed[];
+  cvdashboard: Processed[];
 };
 
 const FORK = "https://github.com/AlexVataselu/stremio-web";
@@ -124,6 +126,27 @@ export const projectMedia: ProjectMedia[] = [
     projectId: "innobyte",
     shots: shots.innobyte.map((s) => ({ ...s, frame: "phone" as const })),
     links: [],
+  },
+  {
+    // Alex's Figma page designs: the deployed app needs its GraphQL API, which is no longer running.
+    projectId: "localsonly",
+    shots: shots.localsonly.map((s) => ({ ...s, frame: "app" as const, address: "LocalsOnly · Figma design" })),
+    links: [
+      { label: "Front end", href: "https://github.com/AlexVataselu/localsOnly", address: "github.com/AlexVataselu/localsOnly" },
+      { label: "GraphQL API", href: "https://github.com/AlexVataselu/locals-only-api", address: "github.com/AlexVataselu/locals-only-api" },
+    ],
+  },
+  {
+    projectId: "cvdashboard",
+    shots: shots.cvdashboard.map((s) => ({
+      ...s,
+      frame: "browser" as const,
+      address: "alexvataselu.vercel.app",
+      href: "https://alexvataselu.vercel.app",
+    })),
+    links: [
+      { label: "Repository", href: "https://github.com/AlexVataselu/cv-dashboard", address: "github.com/AlexVataselu/cv-dashboard" },
+    ],
   },
 ];
 

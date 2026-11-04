@@ -29,7 +29,8 @@ const items = [...personal, ...work, ...siteItems];
 /** "Client project at Pentalog (Globant)" from the role the work was done in (its own years are its label). */
 const workContext = (roleId: string) => {
   const role = cv.roles.find((r) => r.id === roleId);
-  return role ? `Client project at ${companyShort(role)}` : undefined;
+  if (!role) return undefined;
+  return role.company.startsWith("Freelance") ? "Freelance project" : `Client project at ${companyShort(role)}`;
 };
 
 /**
@@ -108,7 +109,7 @@ export default function ProjectsPage() {
   return (
     <SectionShell
       title="Projects"
-      lead="Three things I build for myself, product work for Builder.ai and Innobyte, and six client sites I designed and built end to end."
+      lead="Four things I build for myself, product work for Builder.ai, Innobyte and LocalsOnly, and six client sites I designed and built end to end."
     >
       <PreviewStyles />
       <div className="panel-grid pr">

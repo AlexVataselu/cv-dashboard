@@ -16,7 +16,7 @@ describe("deriveSkillLevel", () => {
     expect(l.years).toBe(5);
   });
 
-  it.each(["graphql", "prisma", "postgresql", "firebase", "wcag"])(
+  it.each(["graphql", "prisma", "postgresql", "firebase", "git"])(
     "%s since 2021",
     (id) => expect(deriveSkillLevel(id, cv, YEAR).since).toBe(2021),
   );
@@ -46,14 +46,14 @@ describe("deriveSkillLevel", () => {
   });
 
   it("a skill still in use keeps since and years to the CV's year", () => {
-    for (const id of ["react", "react-native", "html", "wcag"]) {
+    for (const id of ["react", "react-native", "html", "git"]) {
       const l = deriveSkillLevel(id, cv, YEAR);
       expect(l.until, id).toBeNull();
       expect(formatLevel(l), id).toMatch(/^since \d{4} · \d+ yrs?$/);
     }
   });
 
-  it.each(["tailwind", "github-actions", "sentry", "sonarqube", "graphql", "postgresql", "firebase", "wcag"])(
+  it.each(["tailwind", "github-actions", "sentry", "sonarqube", "graphql", "postgresql", "firebase", "git"])(
     "%s, dated from 2021 on with no break over a year, reads since",
     (id) => {
       const l = deriveSkillLevel(id, cv, YEAR);
@@ -117,16 +117,21 @@ describe("deriveSkillLevel", () => {
     },
   );
 
-  it.each([
-    "redux",
-    "zustand",
-    "storybook",
-    "supabase",
-    "tdd",
-    "git",
-  ])("%s since null", (id) =>
+  // redux, storybook, supabase: no role or project on the CV shows them; zustand and tdd: only 2026 work.
+  it.each(["redux", "zustand", "storybook", "supabase", "tdd"])("%s since null", (id) =>
     expect(deriveSkillLevel(id, cv, YEAR).since).toBeNull(),
   );
+
+  it("react testing library is dated by ReAMP (since 2024)", () => {
+    const l = deriveSkillLevel("react-testing-library", cv, YEAR);
+    expect(l).toMatchObject({ since: 2024, until: null });
+    expect(l.usedIn).toEqual(expect.arrayContaining(["reamp", "cvdashboard"]));
+  });
+
+  it("zustand and tdd are linked to the 2026 work that uses them", () => {
+    expect(deriveSkillLevel("zustand", cv, YEAR).usedIn).toEqual(["cvdashboard"]);
+    expect(deriveSkillLevel("tdd", cv, YEAR).usedIn).toEqual(expect.arrayContaining(["stremio", "cvdashboard"]));
+  });
 
   it("rest is dated by the Builder.ai work at Pentalog", () => {
     const l = deriveSkillLevel("rest", cv, YEAR);

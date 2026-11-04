@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "cv:pdf": "node scripts/cv-pdf.mjs",
     "dev": "next dev",
     "prebuild": "node scripts/check-site-url.mjs",
     "build": "next build",
