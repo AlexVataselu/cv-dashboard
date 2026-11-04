@@ -54,12 +54,13 @@ export function ThemeToggle() {
     root().dataset.backlight = next === "light" ? "on" : "off";
 
     const transition = document.startViewTransition(() => setTheme(next));
+    let sweep: Animation | undefined;
     transition.ready
       .then(() => {
         const { point, dot, line, full } = crtFrames(x, y, w, h);
         if (next === "light") {
           // clip-path only (no filter): a filter on the snapshot would force it to be re-rendered.
-          root().animate(
+          sweep = root().animate(
             [
               { clipPath: point, offset: 0, easing: "ease-out" },
               { clipPath: dot, offset: 0.06, easing: "cubic-bezier(0.65, 0, 0.35, 1)" },
@@ -71,7 +72,7 @@ export function ThemeToggle() {
             { duration: ON_MS, fill: "both", pseudoElement: "::view-transition-new(root)" },
           );
         } else {
-          root().animate(
+          sweep = root().animate(
             [
               { clipPath: full, offset: 0, easing: "cubic-bezier(0.7, 0, 0.84, 0)" },
               { clipPath: line, opacity: 1, offset: 0.55, easing: "cubic-bezier(0.55, 0, 0.9, 0.35)" },
@@ -85,7 +86,13 @@ export function ThemeToggle() {
       .catch(() => {
         // A skipped transition still switched the theme.
       });
-    transition.finished.finally(() => delete root().dataset.backlight);
+    transition.finished.finally(() => {
+      // The sweep targets <html> through a pseudo-element, so with fill: "both" it would outlive
+      // the transition and grip the next one's snapshots (a finished "off" sweep holds opacity 0,
+      // which hid the dark page at the start of the next "on": a white flash). Drop it here.
+      sweep?.cancel();
+      delete root().dataset.backlight;
+    });
   };
 
   return (

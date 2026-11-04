@@ -55,6 +55,24 @@ test("switching the backlight on lights the panel from its middle, then leaves i
   await expect(page.locator("html")).not.toHaveAttribute("data-backlight", /.+/);
 });
 
+test("no backlight animation outlives its transition, so on after off never starts from a blank screen", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/");
+  const leftovers = () =>
+    page.evaluate(() => document.getAnimations().filter((a) => a.effect && "pseudoElement" in a.effect && a.effect.pseudoElement).length);
+  const done = () => expect(page.locator("html")).not.toHaveAttribute("data-backlight", /.+/, { timeout: 5000 });
+
+  for (const name of ["Backlight on", "Backlight off", "Backlight on"]) {
+    await page.getByRole("button", { name }).click();
+    await done();
+    // A finished transition leaves nothing behind on its pseudo-elements: a leftover from "off"
+    // (opacity 0) would hide the dark page at the start of the next "on" and flash white.
+    await expect.poll(leftovers).toBe(0);
+  }
+});
+
 test("the theme is applied in <head> before the first paint (no flash)", async ({ request }) => {
   const html = await (await request.get("/")).text();
   const head = html.slice(0, html.indexOf("</head>"));
