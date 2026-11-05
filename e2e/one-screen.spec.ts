@@ -71,7 +71,9 @@ test.describe("every CV fact is reachable by keyboard", () => {
     await expect(page.locator('.st-read[data-y="2021"]')).toBeVisible();
     await expect(page.locator('.st-read[data-y="2021"]')).toContainText("React");
     // The industries card links each live site.
-    for (const s of sites) await expect(page.locator(`.ov-ind a[href="${s.url}"]`)).toBeAttached();
+    // (the CV's three industries come from the freelance work: Kemblimed's 2012 site is not one of them)
+    for (const s of sites.filter((x) => x.roleId !== "kemblimed"))
+      await expect(page.locator(`.ov-ind a[href="${s.url}"]`)).toBeAttached();
     // The About card scrolls inside itself and takes focus, so the keyboard can scroll it.
     const about = page.getByRole("region", { name: "About, scrollable" });
     await about.focus();

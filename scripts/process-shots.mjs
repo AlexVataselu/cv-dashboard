@@ -350,61 +350,79 @@ async function frames(key, list) {
 }
 
 /**
- * LocalsOnly v2 (repo localOnlyV2), run locally against its Prisma Postgres database and browsed on
- * 2026-11-04 at 1440x810. (v1's MongoDB Atlas cluster no longer exists, so v1 cannot show data.)
+ * LocalsOnly v2 (repo localOnlyV2) as deployed on Vercel (local-only-v2.vercel.app), browsed on
+ * 2026-11-05 at 1440x810. (v1's MongoDB Atlas cluster no longer exists, so v1 cannot show data.)
  */
 await frames("localsonly", [
   {
     file: "1-home.png",
     label: "Home",
-    alt: "LocalsOnly's home page: 'The bear necessities' hero, the search bar, and challenge badges such as Foraging and Honey Hunter",
-    caption: "The home page: search, and challenges with badges to earn",
+    alt: "LocalsOnly's home page: 'The Bear Necessities' over a bear in hiking gear, the where and what search, and badges to earn such as Foraging and Honey Hunter",
+    caption: "The home page: outdoor and local experiences across Romania, and badges to earn",
   },
   {
-    file: "2-new-this-week.png",
-    label: "New this week",
-    alt: "LocalsOnly's 'New this week' row: experience cards with photos, tags, location, host, rating and price",
-    caption: "New this week: each card with its tags, host, rating and price",
-  },
-  {
-    file: "3-experiences.png",
+    file: "2-experiences.png",
     label: "Experiences",
-    alt: "The Experiences page: price and time filters, activity chips, and a grid of experiences from the database",
-    caption: "Experiences from the database, with price, time and activity filters",
+    alt: "The Experiences page: activity chips and cards for experiences such as Two days on the Făgăraș ridge, each with tags, place, host, rating and price in lei",
+    caption: "Experiences from the database, each with its tags, host, rating and price",
   },
   {
-    file: "4-filters.png",
+    file: "3-filters.png",
     label: "Filters",
-    alt: "The Filters panel: a price range slider, activity types, time of day, duration and specials, with 'Show all 18 results'",
+    alt: "The Filters panel: a price range slider with the average price, activity types, time of day, duration and specials, and 'Show all 10 results'",
     caption: "Filters by price, activity, time of day, duration and specials, with a live result count",
   },
   {
-    file: "5-experience.png",
+    file: "4-experience.png",
     label: "Experience",
-    alt: "The Wine & Cheese Evening experience page in Barcelona: rating, reviews and a photo gallery",
-    caption: "An experience's page: rating, reviews and its photo gallery",
+    alt: "The page for Two days on the Făgăraș ridge: its rating, place, Share and Save, and a photo gallery",
+    caption: "An experience's page: rating, place and its photos",
   },
   {
-    file: "6-guides.png",
-    label: "Guides",
-    alt: "LocalsOnly's 'Only local guides' row: guide cards with name, rating and hourly price",
-    caption: "Local guides, each with a rating and an hourly price",
+    file: "5-booking.png",
+    label: "Booking",
+    alt: "What we will do, what's included (stay, food, transport) and the booking box with a price per person, dates and guests",
+    caption: "What's included, and the booking box with dates and guests",
+  },
+  {
+    file: "6-host.png",
+    label: "Host",
+    alt: "The Host an experience page: describe it, set a price in lei, publish and edit any time, with Sign in with Google to start",
+    caption: "Hosting: sign in with Google and publish your own listing",
   },
 ]);
 
-/** This dashboard, captured from alexvataselu.vercel.app on 2026-11-04. */
+/** This dashboard at 1440x810, captured from its production build on 2026-11-05 (dark, then light). */
 await frames("cvdashboard", [
   {
-    file: "overview.png",
+    file: "1-overview.png",
     label: "Overview",
-    alt: "The CV dashboard's Overview: profile rail, headline figures, the career timeline and results with their sources",
-    caption: "The Overview on a laptop: one screen, no scrolling",
+    alt: "The CV dashboard's Overview: headline figures, the career ladder, results with their sources, skills in use by year, kinds of work, skills, About and industries, on one screen",
+    caption: "The Overview: everything on one laptop screen, no tabs, no scrolling",
   },
   {
-    file: "skills.png",
-    label: "Skills",
-    alt: "The CV dashboard's Skills view with TypeScript chosen: its bar on the career axis and the roles and projects that used it",
-    caption: "Skills: pick one and every role and project that used it lights up",
+    file: "2-experience-ladder.png",
+    label: "Career ladder",
+    alt: "Experience with React chosen: the career ladder keeps Pentalog, TryAngle Labs, the 2021 freelance work and three projects lit, and steps the other roles back",
+    caption: "The career ladder: pick a skill and every role and project that used it stays lit",
+  },
+  {
+    file: "3-skills-matrix.png",
+    label: "Skills matrix",
+    alt: "The Skills matrix with L.H.EL hovered: its column lit and the skills it did not use stepped back",
+    caption: "Skills against roles: hover a company to see its stack",
+  },
+  {
+    file: "4-projects.png",
+    label: "Projects",
+    alt: "The Projects view with Eved chosen: its details beside its archived 2013 home page",
+    caption: "Projects: each with its details and real screenshots",
+  },
+  {
+    file: "5-light.png",
+    label: "Backlight on",
+    alt: "The Overview in the light theme, after the Backlight switch is turned on",
+    caption: "Backlight on: the light theme, switched on like an old screen",
   },
 ]);
 

@@ -160,10 +160,16 @@ export const projectMedia: ProjectMedia[] = [
     links: [],
   },
   {
-    // v2 run locally against its database (its Vercel deployment cannot load data); v1's database is gone.
+    // v2 as deployed on Vercel, browsed 2026-11-05; v1's database is gone.
     projectId: "localsonly",
-    shots: shots.localsonly.map((s) => ({ ...s, frame: "app" as const, address: "LocalsOnly v2 · run locally" })),
+    shots: shots.localsonly.map((s) => ({
+      ...s,
+      frame: "browser" as const,
+      address: "local-only-v2.vercel.app",
+      href: "https://local-only-v2.vercel.app",
+    })),
     links: [
+      { label: "Live site (v2)", href: "https://local-only-v2.vercel.app", address: "local-only-v2.vercel.app" },
       { label: "v2 repository", href: "https://github.com/AlexVataselu/localOnlyV2", address: "github.com/AlexVataselu/localOnlyV2" },
       { label: "2023 front end", href: "https://github.com/AlexVataselu/localsOnly", address: "github.com/AlexVataselu/localsOnly" },
       { label: "2023 GraphQL API", href: "https://github.com/AlexVataselu/locals-only-api", address: "github.com/AlexVataselu/locals-only-api" },

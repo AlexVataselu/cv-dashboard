@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { sites } from "../src/content/sites";
 
 const ROUTES = [
   { path: "/", label: "Overview", h1: "Overview" },
@@ -321,7 +322,7 @@ test("Overview thumbnails load the 240px files, not the 640px ones", async ({ pa
   await page.goto("/");
   // the strip by the title (the industries view's pictures load only when it opens)
   const thumbs = page.locator('section[aria-labelledby="shipped"] img[alt^="Front page of"]');
-  await expect(thumbs).toHaveCount(6);
+  await expect(thumbs).toHaveCount(sites.length);
   for (const img of await thumbs.all()) {
     await img.scrollIntoViewIfNeeded();
     await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.currentSrc)).toMatch(/-240\.(avif|webp)$/);

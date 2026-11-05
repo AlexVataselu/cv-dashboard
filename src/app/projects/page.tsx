@@ -70,31 +70,52 @@ function SitePreview({ site }: { site: (typeof sites)[number] }) {
   const role = cv.roles.find((r) => r.id === site.roleId);
   return (
     <section aria-labelledby={`site-${site.id}`} className="card card-col">
+      {/* Laid out like a project card: the text beside the live page when the preview is wide. */}
       <div className="scroll-y @container">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          <h2 id={`site-${site.id}`} className="text-[20px] font-semibold leading-tight">
-            {site.name}
-          </h2>
-          {role ? (
-            <p className="tnum text-[14px] text-muted">
-              {companyShort(role)} · {period(role)}
-            </p>
-          ) : null}
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-6 @2xl:grid-cols-12 @2xl:gap-8">
+          <div className="min-w-0 @2xl:col-span-5">
+            {role ? (
+              <p className="tnum text-[14px] font-medium text-muted">
+                {companyShort(role)} · {period(role)}
+              </p>
+            ) : null}
+            <h2 id={`site-${site.id}`} className="mt-2 text-[20px] font-semibold leading-tight">
+              {site.name}
+            </h2>
+            <p className="mt-1 font-mono text-[13px] text-muted">{site.domain}</p>
+            <p className="mt-4 text-[15px] leading-relaxed">{site.note}</p>
+            <h3 className="mt-4 text-[13px] font-medium text-muted">Details</h3>
+            <ul className="mt-1.5 grid gap-1.5 text-[14px] leading-snug">
+              {site.details.map((d) => (
+                <li key={d} className="flex items-start gap-2">
+                  <span className="mt-[7px] size-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+                  {d}
+                </li>
+              ))}
+            </ul>
+            <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Stack">
+              {site.stack.map((t) => (
+                <li key={t} className="pill">
+                  {t}
+                </li>
+              ))}
+            </ul>
+            <a href={site.url} className="card-link mt-5">
+              Visit {site.domain}
+              <ExternalIcon />
+            </a>
+          </div>
+          <div className="min-w-0 @2xl:col-span-7">
+            <a href={site.url} className="block" tabIndex={-1} aria-hidden="true">
+              <BrowserFrame
+                image={site.image}
+                address={site.domain}
+                alt={`Front page of ${site.domain}`}
+                sizes="(min-width: 1024px) 640px, 92vw"
+              />
+            </a>
+          </div>
         </div>
-        <p className="mt-1 text-[15px]">{site.note}</p>
-        <p className="mt-1 text-[14px] text-muted">Design in Figma, then the build, the tests and the launch.</p>
-        <a href={site.url} className="card-link mt-3">
-          Visit {site.domain}
-          <ExternalIcon />
-        </a>
-        <a href={site.url} className="mt-4 block max-w-[720px]" tabIndex={-1} aria-hidden="true">
-          <BrowserFrame
-            image={site.image}
-            address={site.domain}
-            alt={`Front page of ${site.domain}`}
-            sizes="(min-width: 1024px) 720px, 92vw"
-          />
-        </a>
       </div>
     </section>
   );
@@ -109,7 +130,7 @@ export default function ProjectsPage() {
   return (
     <SectionShell
       title="Projects"
-      lead="Four things I build for myself, product work for Builder.ai, Innobyte, LocalsOnly and Eved, and six client sites I designed and built end to end."
+      lead="Four things I build for myself, product work for Builder.ai, Innobyte, LocalsOnly and Eved, and seven client sites I designed and built."
     >
       <PreviewStyles />
       <div className="panel-grid pr">

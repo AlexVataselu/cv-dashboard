@@ -1687,10 +1687,10 @@ html[data-backlight="off"]::view-transition-old(root) {
       width: 58px;
     }
   }
-  /* six thumbnails and their gaps fit a 320px screen's 288px of content */
+  /* seven thumbnails and their gaps fit a 320px screen's 288px of content */
   @media (max-width: 639.98px) {
     .site-thumb {
-      width: 40px;
+      width: 34px;
     }
   }
   .site-tip {
@@ -2700,6 +2700,8 @@ html[data-backlight="off"]::view-transition-old(root) {
   .cl {
     display: grid;
     grid-template-columns: 70px 30px minmax(0, 1fr);
+    /* one row, as tall as the card allows (an auto row would grow to the chapters' content) */
+    grid-template-rows: minmax(0, 1fr);
     padding: 8px 0;
     flex: 1;
     min-height: 0;
