@@ -201,8 +201,8 @@ test("linked views: a hovered or focused role lights its results and skills; a c
   await page.locator('.tl-row[data-link="pentalog"]').hover();
   await expect.poll(() => bg('.result[data-roles="pentalog"]')).not.toBe(plain);
   // React was used at Pentalog: its chip lights too; Jest (no Pentalog) does not.
-  await expect.poll(() => page.locator('[data-skill="react"]').evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe("none");
-  expect(await page.locator('[data-skill="jest"]').evaluate((el) => getComputedStyle(el).boxShadow)).toBe("none");
+  await expect.poll(() => page.locator('.cloud [data-skill="react"]').evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe("none");
+  expect(await page.locator('.cloud [data-skill="jest"]').evaluate((el) => getComputedStyle(el).boxShadow)).toBe("none");
   // Keyboard focus lights the same way.
   await page.mouse.move(0, 0);
   await page.locator('.tl-row[data-link="tryangle"]').focus();
@@ -234,7 +234,7 @@ test("L.H.EL (Superland): hovering its row lights Magento, PrestaShop, JavaScrip
   await page.goto("/experience");
   await hydrated(page);
   await page.locator('a[data-open-role="lhel"]').click();
-  const panel = page.locator('.rs-panel[data-role="lhel"]');
+  const panel = page.locator('.cl-ch[data-ch="lhel"] .cl-skills');
   await expect(panel).toBeVisible();
   await expect(panel.locator(".skill-name")).toHaveText(["Magento", "PrestaShop", "JavaScript", "TypeScript", "HTML", "CSS"]);
   for (const b of cv.roles.find((r) => r.id === "lhel")!.bullets) await expect(page.locator("#role-lhel")).toContainText(b);
@@ -245,14 +245,14 @@ test("L.H.EL (Superland): hovering its row lights Magento, PrestaShop, JavaScrip
   await hydrated(page);
   await expect(page.locator("#role-zega")).toHaveJSProperty("open", true);
   await expect(page.locator('a[data-open-role="zega"]')).toHaveAttribute("aria-expanded", "true");
-  await expect(page.locator('.rs-panel[data-role="zega"]')).toBeVisible();
+  await expect(page.locator('.cl-ch[data-ch="zega"] .tl-row')).toHaveAttribute("aria-expanded", "true");
 });
 
 test("prefers-reduced-motion: no motion layer, no bar growth, instant section switches", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await hydrated(page);
-  expect(await page.locator(".tl-bar").first().evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
+  expect(await page.locator(".cl-span").first().evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
   await page.waitForTimeout(3000);
   await expect(page.locator("html")).not.toHaveAttribute("data-motion");
   // Figures are the real values, never counted.
@@ -280,7 +280,7 @@ test("with motion allowed: the motion layer loads after idle, outside the first-
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-motion", "", { timeout: 6000 });
   await expect.poll(() => lazy.length, { message: "the motion layer arrived as its own chunk" }).toBe(1);
-  expect(await page.locator(".tl-bar").first().evaluate((el) => getComputedStyle(el).animationName)).toBe("grow-x");
+  expect(await page.locator(".cl-span").first().evaluate((el) => getComputedStyle(el).animationName)).toBe("grow-y");
   // The figures end on their real values.
   await expect(page.locator(".kpi-value").first()).toHaveText(cv.glance[0].value);
   const html = await (await request.get("/")).text();

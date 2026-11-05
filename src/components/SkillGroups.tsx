@@ -65,7 +65,10 @@ export function SkillGroups({ className }: { className?: string }) {
             const items = cv.skills.filter((s) => s.group === g);
             return items.map((s, i) => {
               const lvl = levels[s.id];
-              const used = (lvl?.usedIn ?? []).map((id) => usage[id].name).join(", ");
+              const used = [
+                ...(lvl?.usedIn ?? []).map((id) => usage[id].name),
+                ...(lvl?.estimatedIn ?? []).map((id) => `${usage[id].name} (estimated)`),
+              ].join(", ");
               return (
                 <li key={s.id} data-group={slug(g)} data-flip="" className="contents-li">
                   {i === 0 ? <span className="cloud-group">{g}</span> : null}
@@ -73,7 +76,7 @@ export function SkillGroups({ className }: { className?: string }) {
                     skillId={s.id}
                     name={s.name}
                     levelText={formatLevel(lvl)}
-                    roles={(lvl?.usedIn ?? []).filter((id) => roleIds.has(id))}
+                    roles={[...(lvl?.usedIn ?? []), ...(lvl?.estimatedIn ?? [])].filter((id) => roleIds.has(id))}
                     used={used}
                   />
                 </li>

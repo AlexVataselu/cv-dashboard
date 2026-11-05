@@ -40,7 +40,8 @@ test("keyboard only: skip link, nav, role toggles and the command palette", asyn
   await page.goto("/experience");
   const role = page.locator("details").nth(1);
   await expect(role).toHaveJSProperty("open", false);
-  await tabUntil(page, (el) => el.tagName === "SUMMARY" && el.parentElement === document.querySelectorAll("details")[1]);
+  // (past the career ladder's chapters and skill chips first)
+  await tabUntil(page, (el) => el.tagName === "SUMMARY" && el.parentElement === document.querySelectorAll("details")[1], 160);
   await page.keyboard.press("Enter");
   await expect(role).toHaveJSProperty("open", true);
   await page.keyboard.press("Space");

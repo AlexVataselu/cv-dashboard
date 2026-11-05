@@ -119,7 +119,9 @@ export function SkillMatrix() {
                       const implied = roles
                         .filter((r) => s.id in IMPLIED_SINCE && r.start >= IMPLIED_SINCE[s.id] && !used.includes(r.id))
                         .map((r) => r.id);
-                      const on = [...used, ...implied, ...(inProjects > 0 ? [PROJECTS] : [])];
+                      // roles that most likely used it, by Alex's estimate: dashed, never in its years
+                      const estimated = (l?.estimatedIn ?? []).filter((id) => !used.includes(id) && !implied.includes(id));
+                      const on = [...used, ...implied, ...estimated, ...(inProjects > 0 ? [PROJECTS] : [])];
                       const shown =
                         l?.years != null
                           ? `${l.years} ${l.years === 1 ? "yr" : "yrs"}`
@@ -162,8 +164,9 @@ export function SkillMatrix() {
                                 className="mx-cell"
                                 data-col={r.id}
                                 data-kind={kindOf(r.id)}
-                                data-on={used.includes(r.id) || implied.includes(r.id) ? "" : undefined}
+                                data-on={used.includes(r.id) || implied.includes(r.id) || estimated.includes(r.id) ? "" : undefined}
                                 data-implied={implied.includes(r.id) ? "" : undefined}
+                                data-est={estimated.includes(r.id) ? "" : undefined}
                                 aria-hidden="true"
                               />
                             ))}
@@ -194,6 +197,10 @@ export function SkillMatrix() {
           <li data-kind="backend">
             <span className="mx-swatch mx-swatch-implied" aria-hidden="true" />
             Implied by the role
+          </li>
+          <li>
+            <span className="mx-swatch mx-swatch-est" aria-hidden="true" />
+            Estimated
           </li>
           <li>
             <span className="mx-swatch mx-swatch-proj tnum" aria-hidden="true">
@@ -237,6 +244,7 @@ export function SkillMatrix() {
           const used = (l?.usedIn ?? []).map((id) => usage[id]);
           const roleCount = used.filter((u) => u.kind === "role").length;
           const projectCount = used.length - roleCount;
+          const estimated = (l?.estimatedIn ?? []).map((id) => cv.roles.find((r) => r.id === id)!);
           return (
             <div key={s.id} className="sd" data-detail={s.id}>
               <p className="text-[12px] font-medium text-muted">{s.group}</p>
@@ -246,6 +254,9 @@ export function SkillMatrix() {
                 {used.length === 0
                   ? "Listed on the CV without a role or project."
                   : `Used in ${roleCount} ${roleCount === 1 ? "role" : "roles"} and ${projectCount} ${projectCount === 1 ? "project" : "projects"}.`}
+                {estimated.length > 0
+                  ? ` Most likely also at ${estimated.map((r) => companyShort(r)).join(" and ")} (estimated, not counted in its years).`
+                  : ""}
               </p>
               {used.length > 0 ? (
                 <ul className="scroll-y mt-2 grid content-start gap-1">
@@ -262,6 +273,19 @@ export function SkillMatrix() {
                       </li>
                     );
                   })}
+                </ul>
+              ) : null}
+              {estimated.length > 0 ? (
+                <ul className="mt-1 grid content-start gap-1">
+                  {estimated.map((r) => (
+                    <li key={r.id} data-kind={kindOf(r.id)}>
+                      <Link href={`/experience#role-${r.id}`} prefetch={false} className="sd-link sd-est">
+                        <span className="key size-2.5!" aria-hidden="true" />
+                        <span className="min-w-0 flex-1 truncate">{companyShort(r)}</span>
+                        <span className="tnum text-[13px] text-muted">{period(r)} · estimated</span>
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               ) : null}
               <p className="mt-auto border-t border-rule pt-2 text-[13px] text-muted">

@@ -108,7 +108,21 @@ describe("deriveSkillLevel", () => {
     expect(deriveSkillLevel(id, cv, YEAR).usedIn).toContain("lhel"),
   );
 
-  it.each(["jest", "nodejs", "tanstack-query"])(
+  it("tanstack-query dates from LocalsOnly, in the 2021 freelance work", () => {
+    const l = deriveSkillLevel("tanstack-query", cv, YEAR);
+    expect(l.since).toBe(2021);
+    expect(l.usedIn).toContain("freelance-2021");
+  });
+
+  it("an estimated role links a skill but never counts in its years", () => {
+    const l = deriveSkillLevel("redux", cv, YEAR);
+    expect(l.estimatedIn).toEqual(["tryangle"]);
+    expect(l.since).toBeNull();
+    expect(l.years).toBeNull();
+    expect(l.usedIn).not.toContain("tryangle");
+  });
+
+  it.each(["jest", "nodejs"])(
     "%s has only current-year evidence",
     (id) => {
       const l = deriveSkillLevel(id, cv, YEAR);

@@ -102,6 +102,8 @@ export const cv: Cv = {
       location: "Remote",
       stack: ["Vitest", "Playwright + axe-core", "WordPress (@wordpress/scripts)", "Figma"],
       skillIds: ["vitest", "playwright", "axe-core", "figma"],
+      // the current work: built test-first, with small client stores and hosted back ends
+      estimatedSkillIds: ["tdd", "zustand", "supabase"],
       bullets: [
         "Owned each project end to end: brand identity and UI in Figma, then build, Vitest and Playwright + axe-core testing, and launch. One point of contact for design and code.",
         "Azuga365 (azuga365.ro): online archive of Azuga's royal and industrial history, with archival research, community interviews, and multimedia.",
@@ -127,6 +129,8 @@ export const cv: Cv = {
         "sentry",
         "git",
       ],
+      // shared component packages in a Turborepo monorepo, behind SonarQube quality gates
+      estimatedSkillIds: ["storybook", "react-testing-library"],
       bullets: [
         "Built features for Builder.ai's internal app-building platform, including its UI generation workflows, in a Turborepo monorepo whose shared components, hooks and services served web and mobile.",
         "Cut onboarding from four weeks to two for the two junior engineers I mentored, through weekly code reviews, component API standards, and hands-on support.",
@@ -161,6 +165,8 @@ export const cv: Cv = {
         "figma",
         "git",
       ],
+      // a React and React Native product team: its app state and its unit tests
+      estimatedSkillIds: ["redux", "jest"],
       bullets: [
         "Built responsive web and mobile apps from Figma designs, using the Expo SDK to handle offline behaviour and platform differences on mobile.",
         "Cut design-to-production handoff from days to hours for repeat UI patterns by building the shared component library from scratch: strict prop interfaces, co-located tests, and design tokens matched to Figma.",
@@ -199,7 +205,11 @@ export const cv: Cv = {
         "prisma",
         "postgresql",
         "php",
+        // in LocalsOnly's stack, product work done in these freelance years
+        "tanstack-query",
       ],
+      // Node.js: the Apollo Server and TypeGraphQL API in this role's stack runs on it.
+      estimatedSkillIds: ["nodejs"],
       bullets: [
         "RecuperareAcasa.ro: mobile-first physiotherapy home-visit booking on an Atomic Design system, with a multi-step intake form, Google Maps and Resend email.",
         "LocalsOnly: full-stack Next.js and GraphQL platform for local experiences. Cut first load by 40% and redundant API calls by 35% by pairing SSR for SEO with CSR for interactivity.",

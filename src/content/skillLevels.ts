@@ -14,6 +14,8 @@ export interface SkillLevel {
   years: number | null;
   /** role/project ids, newest first */
   usedIn: string[];
+  /** roles that most likely used it, by estimate (not counted in its years), newest first */
+  estimatedIn: string[];
 }
 
 /**
@@ -53,7 +55,11 @@ export function deriveSkillLevel(
   if (skillId in IMPLIED_SINCE) intervals.push({ start: IMPLIED_SINCE[skillId], end: currentYear });
 
   const usedIn = evidence.map((e) => e.id);
-  const undated = { skillId, since: null, until: null, spans: [], years: null, usedIn };
+  const estimatedIn = data.roles
+    .filter((r) => r.estimatedSkillIds?.includes(skillId) && !usedIn.includes(r.id))
+    .sort((a, b) => b.start - a.start)
+    .map((r) => r.id);
+  const undated = { skillId, since: null, until: null, spans: [], years: null, usedIn, estimatedIn };
   if (intervals.length === 0) return undated;
 
   const earliest = Math.min(...intervals.map((i) => i.start));
@@ -71,10 +77,10 @@ export function deriveSkillLevel(
   // A skill first dated in the last five years always reads "since": a break there (TryAngle Labs
   // to a 2026 project) says nothing about having dropped it.
   if (earliest >= recentFrom || (latest > recentFrom && !gapped)) {
-    return { skillId, since: earliest, until: null, spans, years: currentYear - earliest, usedIn };
+    return { skillId, since: earliest, until: null, spans, years: currentYear - earliest, usedIn, estimatedIn };
   }
   const covered = spans.reduce((sum, x) => sum + (x.end - x.start), 0);
-  return { skillId, since: earliest, until: latest, spans, years: covered, usedIn };
+  return { skillId, since: earliest, until: latest, spans, years: covered, usedIn, estimatedIn };
 }
 
 export function deriveAllSkillLevels(

@@ -1,9 +1,8 @@
-import { CareerTimeline } from "@/components/CareerTimeline";
+import { CareerLadder } from "@/components/CareerLadder";
 import { FilterNotice } from "@/components/FilterNotice";
 import { LinkedStyles } from "@/components/LinkedStyles";
 import { RoleCard } from "@/components/RoleCard";
 import { RoleNav } from "@/components/RoleNav";
-import { RoleSkills } from "@/components/RoleSkills";
 import { SectionShell } from "@/components/SectionShell";
 import { cv } from "@/content/cv";
 import { AS_OF, roleYears } from "@/content/career";
@@ -16,10 +15,10 @@ export const metadata = pageMetadata({
 });
 
 /*
-  The timeline is the navigator (7 columns), as tall as its rows: a role's row opens it in the side
-  card (5 columns), the list of roles as <details>, newest first, one open at a time. Under the
-  timeline, the open role's skills, each pressable to mark where else it was used. On one screen
-  the side card scrolls inside itself and the opened role is brought into view there.
+  The career ladder is the navigator (7 columns): each role a chapter with its skills, and a
+  chapter opens its role in the side card (5 columns), the list of roles as <details>, newest
+  first, one open at a time. A skill chip marks every role and project that used it. On one screen
+  the ladder fills the height and the side card scrolls inside itself.
 */
 export default function ExperiencePage() {
   const now = AS_OF;
@@ -30,8 +29,7 @@ export default function ExperiencePage() {
     >
       <LinkedStyles />
       <RoleNav className="panel-grid ex linked">
-        <CareerTimeline className="ex-tl span-7" />
-        <RoleSkills className="ex-skills span-7" />
+        <CareerLadder variant="experience" className="ex-tl span-7" />
         <section aria-labelledby="roles" className="ex-roles card card-col span-5 p-0!">
           <div className="flex flex-wrap items-center justify-between gap-x-4 px-4 pt-4 pb-2">
             <h2 id="roles" className="card-title">

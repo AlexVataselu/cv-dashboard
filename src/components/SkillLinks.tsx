@@ -28,7 +28,7 @@ export function SkillLinks() {
           if (el.dataset.item === "role" || el.dataset.item === "project") n[el.dataset.item]++;
         } else delete el.dataset.highlight;
       }
-      if (!announce || !live || !document.querySelector(".tl")) return;
+      if (!announce || !live || !document.querySelector(".tl, .cl")) return;
       const name = skillName(id);
       live.textContent = name
         ? `${name}: marked on ${n.role} ${n.role === 1 ? "role" : "roles"} and ${n.project} ${n.project === 1 ? "project" : "projects"} in the timeline.`

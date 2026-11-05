@@ -73,14 +73,44 @@ describe("Experience", () => {
   });
 });
 
-describe("Experience, skills of the open role", () => {
-  it("has a panel per role; L.H.EL (Superland) lists Magento, PrestaShop, JavaScript, TypeScript, HTML and CSS", () => {
+describe("Experience, the career ladder", () => {
+  it("has a chapter per role, newest first, each with its skills; L.H.EL lists Magento, PrestaShop, JavaScript, TypeScript, HTML and CSS", () => {
     const { container } = render(<ExperiencePage />);
     expect(container.querySelector(".ex")!.getAttribute("data-current")).toBe("freelance-2025");
-    const lhel = container.querySelector('.rs-panel[data-role="lhel"]')!;
-    const names = [...lhel.querySelectorAll(".skill-name")].map((n) => n.textContent);
-    expect(names).toEqual(["Magento", "PrestaShop", "JavaScript", "TypeScript", "HTML", "CSS"]);
-    expect(container.querySelectorAll(".rs-panel")).toHaveLength(cv.roles.length + 1);
+    const chapters = [...container.querySelectorAll(".cl-ch")].map((c) => c.getAttribute("data-ch"));
+    expect(chapters).toEqual(["freelance-2025", "projects", "pentalog", "tryangle", "freelance-2021", "lhel", "zega", "kemblimed"]);
+    const chips = (id: string) =>
+      [...container.querySelectorAll(`.cl-ch[data-ch="${id}"] .cl-chip`)].map((c) => [
+        c.querySelector(".skill-name")!.textContent,
+        c.getAttribute("data-how") ?? "listed",
+      ]);
+    expect(chips("lhel")).toEqual([
+      ["Magento", "listed"],
+      ["PrestaShop", "listed"],
+      ["JavaScript", "listed"],
+      ["TypeScript", "listed"],
+      ["HTML", "listed"],
+      ["CSS", "listed"],
+    ]);
+    // estimated skills are marked as such, after the listed ones
+    expect(chips("tryangle").slice(-2)).toEqual([
+      ["Redux", "estimated"],
+      ["Jest", "estimated"],
+    ]);
+    // the first role names no skills: the ones its web work implies
+    expect(chips("kemblimed")).toEqual([
+      ["HTML", "implied"],
+      ["CSS", "implied"],
+      ["JavaScript", "implied"],
+    ]);
+  });
+
+  it("links every skill on the CV to at least one role, listed or estimated", () => {
+    for (const s of cv.skills) {
+      const roles = cv.roles.filter((r) => r.skillIds.includes(s.id) || r.estimatedSkillIds?.includes(s.id));
+      const implied = ["html", "css", "javascript"].includes(s.id);
+      expect(roles.length > 0 || implied, s.id).toBe(true);
+    }
   });
 
   it("lists every role's two or three bullets and the earlier role's line", () => {
@@ -113,13 +143,15 @@ describe("Skills", () => {
     const { container } = render(<SkillsPage />);
     const row = (id: string) => container.querySelector(`.sm-row[data-skill="${id}"]`)!;
     const on = (id: string) =>
-      [...row(id).querySelectorAll(".mx-cell[data-on]:not([data-implied])")].map((c) => c.getAttribute("data-col"));
+      [...row(id).querySelectorAll(".mx-cell[data-on]:not([data-implied], [data-est])")].map((c) => c.getAttribute("data-col"));
+    const est = (id: string) => [...row(id).querySelectorAll(".mx-cell[data-est]")].map((c) => c.getAttribute("data-col"));
     const implied = (id: string) => [...row(id).querySelectorAll(".mx-cell[data-implied]")].map((c) => c.getAttribute("data-col"));
     // jQuery: Zega Software only, an ended span (grey bar)
     expect(on("jquery")).toEqual(["zega"]);
     expect(row("jquery").querySelector(".mx-bar")!.classList.contains("mx-past")).toBe(true);
-    // Redux: no dated role or project, so no cell and no bar
+    // Redux: no dated role or project, so no bar; an estimated (dashed) cell at TryAngle Labs
     expect(on("redux")).toEqual([]);
+    expect(est("redux")).toEqual(["tryangle"]);
     expect(row("redux").querySelector(".mx-bar")).toBeNull();
     // Next.js: the 2021 to 2023 freelance work, and two personal projects
     expect(on("nextjs")).toEqual(["freelance-2021", "projects"]);
@@ -283,8 +315,8 @@ describe("year counts run to the CV's year, not the clock", () => {
     expect(within(home.container).getByRole("button", { name: /^React ·/ }).textContent).toBe(
       `React · since 2021 · ${cv.glance[1].value} yrs`,
     );
-    // Only 2026 evidence: no year count, as the spec says.
-    for (const name of ["Jest", "Node.js", "TanStack Query"]) {
+    // Only 2026 evidence (their roles are estimates, never counted): no year count, as the spec says.
+    for (const name of ["Jest", "Node.js"]) {
       expect(within(home.container).getByRole("button", { name }).textContent).toBe(name);
     }
     home.unmount();

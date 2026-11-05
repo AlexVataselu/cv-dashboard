@@ -1,5 +1,5 @@
 import { BrowserFrame } from "@/components/BrowserFrame";
-import { CareerTimeline } from "@/components/CareerTimeline";
+import { CareerLadder } from "@/components/CareerLadder";
 import { ImpactList } from "@/components/ImpactList";
 import { KpiStrip } from "@/components/KpiStrip";
 import { IndustriesCard, KindsCard, StackCard } from "@/components/OverviewCards";
@@ -66,7 +66,7 @@ export default function Home() {
       <LinkedStyles />
       <div className="panel-grid ov linked">
         <KpiStrip className="ov-kpis" />
-        <CareerTimeline compact className="ov-tl" />
+        <CareerLadder variant="overview" className="ov-tl" />
         <StackCard className="ov-stack" />
         <KindsCard className="ov-kinds" />
         <ImpactList className="ov-res" />

@@ -20,6 +20,11 @@ export interface Role {
   location?: string;
   stack: string[];
   skillIds: string[];
+  /**
+   * Skills on the CV that no role names but that this role most likely used: Alex's estimate
+   * (2026-11-05), shown as estimated wherever it appears and never counted in a skill's years.
+   */
+  estimatedSkillIds?: string[];
   bullets: string[];
 }
 

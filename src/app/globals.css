@@ -1032,22 +1032,13 @@ html[data-backlight="off"]::view-transition-old(root) {
     [data-js] .panel-grid {
       grid-template-rows: minmax(0, 1fr);
     }
-    /* Experience: the navigator is as tall as its rows, not the screen (no stretched rows); the
-       open role's skills take what height is left under it */
+    /* Experience: the career ladder fills the height on the left, the roles beside it */
     [data-js] .ex {
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
     }
-    [data-js] .ex > .ex-tl {
-      grid-row: 1;
-    }
-    [data-js] .ex > .ex-skills {
-      grid-row: 2;
-    }
+    [data-js] .ex > .ex-tl,
     [data-js] .ex > .ex-roles {
-      grid-row: 1 / span 2;
-    }
-    [data-js] .ex .tl :is(.tl-label, .tl-track) {
-      min-height: clamp(36px, 4.4vh, 44px);
+      grid-row: 1;
     }
     [data-js] .ed {
       grid-template-rows: minmax(0, 1fr);
@@ -1059,31 +1050,9 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
   /* a short laptop screen */
   @media (min-width: 1024px) and (min-height: 640px) and (max-height: 819.98px) {
-    /* Experience on a short screen: one line per role (name, then dates), as on the Overview */
-    [data-js] .ex .tl {
-      --label: 212px;
-      column-gap: 12px;
-    }
-    [data-js] .ex .tl-label {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    [data-js] .ex .tl-label > :last-child {
-      white-space: nowrap;
-    }
-    [data-js] .ex .tl-extra {
+    /* Experience on a short screen: each chapter's title gives way to its skills */
+    [data-js] .cl-experience .cl-title {
       display: none;
-    }
-    /* Experience on a short screen: the timeline alone on the left, at its own height; the open
-       role's skills are still in its stack line and its bullets */
-    [data-js] .ex > .ex-skills {
-      display: none;
-    }
-    [data-js] .ex > .ex-tl {
-      grid-row: 1 / span 2;
-      align-self: start;
     }
   }
 
@@ -2703,5 +2672,343 @@ html[data-backlight="off"]::view-transition-old(root) {
     [data-js] .ov .tl-legend {
       display: none !important; /* over the flex utility */
     }
+  }
+}
+
+/* ---------- the career ladder: the years on a rail, each role a chapter with its skills ---------- */
+@layer components {
+  .cl-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 14px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .cl-key > li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cl-key-est {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    border: 1.5px dashed var(--muted);
+    border-radius: 4px;
+  }
+  .cl {
+    display: grid;
+    grid-template-columns: 70px 30px minmax(0, 1fr);
+    padding: 8px 0;
+    flex: 1;
+    min-height: 0;
+  }
+  /* the rail: a year mark every two years, each role a span as long as it lasted */
+  .cl-rail {
+    position: relative;
+    grid-column: 1;
+  }
+  .cl-tick {
+    position: absolute;
+    left: 0;
+    transform: translateY(-50%);
+    font-size: 10.5px;
+    line-height: 1;
+    color: var(--muted);
+  }
+  .cl-tick::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 34px;
+    width: 36px;
+    border-top: 1px solid var(--grid);
+  }
+  .cl-span {
+    position: absolute;
+    right: calc(4px + var(--lane, 0) * 15px);
+    width: 11px;
+    min-height: 6px;
+    border-radius: 3px;
+    background: var(--hue);
+    transform-origin: bottom center;
+    transition:
+      opacity 180ms ease,
+      filter 180ms ease;
+  }
+  .cl-span[data-proj] {
+    background: transparent;
+    border: 1.5px dashed var(--muted);
+  }
+  .cl-lines {
+    grid-column: 2;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .cl-line {
+    fill: none;
+    stroke: var(--hue, var(--muted));
+    stroke-width: 1.5;
+    opacity: 0.5;
+    transition:
+      opacity 180ms ease,
+      stroke-width 180ms ease;
+  }
+  /* the chapters: as many rows as roles, each as tall as the others, so the lines meet their middles */
+  .cl-chapters {
+    grid-column: 3;
+    display: grid;
+    gap: 5px;
+    min-height: 0;
+  }
+  .cl-ch {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    min-width: 0;
+    min-height: 0;
+    padding: 6px 10px 6px 12px;
+    border-radius: 8px;
+    border-left: 3px solid var(--hue, var(--muted));
+    background: var(--raised);
+    transition:
+      opacity 180ms ease,
+      background-color 150ms ease;
+  }
+  .cl-ch:not([data-kind]) {
+    border-left-style: dashed;
+  }
+  .cl-ch:hover {
+    background: var(--active);
+  }
+  .cl-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 8px;
+    min-width: 0;
+    color: var(--ink);
+    border-radius: 6px;
+  }
+  /* the whole chapter is the link; its skill chips sit above it */
+  .cl-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+  }
+  .cl-co {
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .cl-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .cl-yrs {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .cl-skills {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+  }
+  .cl-skills:empty {
+    display: none;
+  }
+  /* a skill as a small pill (the chip's row style is for the skill lists) */
+  .cl .cl-chip {
+    display: inline-flex;
+    align-items: center;
+    width: auto;
+    min-height: 0;
+    height: 21px;
+    padding: 0 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+  }
+  .cl .cl-chip .skill-name {
+    font-size: 11.5px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .cl .cl-chip:hover {
+    border-color: color-mix(in srgb, var(--primary) 55%, var(--border));
+    background: var(--surface);
+  }
+  .cl .cl-chip[aria-pressed="true"] {
+    border-color: var(--primary-fill);
+    background: color-mix(in srgb, var(--primary-fill) 18%, var(--surface));
+    box-shadow: none;
+  }
+  /* estimated (or implied by the role): dashed, as on the key */
+  .cl .cl-chip[data-how] {
+    border-style: dashed;
+    border-color: var(--control);
+    background: transparent;
+  }
+  .cl .cl-chip[data-how] .skill-name {
+    color: var(--muted);
+  }
+  .cl-more {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  /* a personal project in the projects chapter: its name, marked when a chosen skill is in it */
+  .cl .tl-proj {
+    display: inline-flex;
+    align-items: center;
+    height: auto;
+    min-width: 0;
+    padding: 1px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--ink);
+    animation: none;
+    transform: none;
+  }
+  .cl .tl-proj[data-highlight="true"] {
+    border-color: var(--primary-fill);
+    background: color-mix(in srgb, var(--primary-fill) 16%, var(--surface));
+  }
+
+  /* a chosen skill: the chapters, spans and lines that used it stay lit; the rest step back */
+  .cl-ch:has(> .tl-row[data-highlight="true"]) {
+    box-shadow: inset 0 0 0 1px var(--hue);
+  }
+  .cl:has([data-highlight="true"]) .cl-ch:not(:has([data-highlight="true"])) {
+    opacity: 0.35;
+  }
+  .cl:has([data-highlight="true"]) :is(.cl-span, .cl-line):not([data-highlight="true"]) {
+    opacity: 0.18;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* the spans grow up the rail at first paint and on every section switch (CSS, no JS) */
+    .cl-span {
+      animation: grow-y 700ms var(--ease-out) both;
+      animation-delay: calc(var(--i, 0) * 50ms + 60ms);
+    }
+  }
+  @keyframes grow-y {
+    from {
+      transform: scaleY(0);
+    }
+  }
+
+  /* the Overview: company and years on one line, four chips; the title is on Experience */
+  .cl-overview .cl-title {
+    display: none;
+  }
+  .cl-overview .cl-chapters {
+    gap: 3px;
+  }
+  .cl-overview .cl-ch {
+    gap: 2px;
+    padding-block: 2px;
+  }
+  .cl-overview .cl-chip {
+    height: 18px;
+  }
+  .cl-overview .cl-co {
+    font-size: 13.5px;
+  }
+  .ov-tl .cl-key-est-item {
+    display: none;
+  }
+  @media (min-width: 1280px) and (min-height: 640px) and (max-height: 859.98px) {
+    [data-js] .cl-overview .cl-skills {
+      display: none;
+    }
+  }
+  /* below desktop the page flows: every chapter as tall as the tallest, so the lines still meet them */
+  @media (max-width: 1023.98px) {
+    .cl {
+      grid-template-columns: 50px 20px minmax(0, 1fr);
+    }
+    .cl-tick::after {
+      display: none;
+    }
+    .cl-chapters {
+      grid-template-rows: none;
+      grid-auto-rows: 1fr;
+    }
+    .cl-title {
+      display: none;
+    }
+  }
+}
+/* the career ladder on shorter or narrower desktops: smaller chips, and on Experience a column
+   more for the ladder, so every chapter's skills fit their row */
+@layer components {
+  @media (min-width: 1024px) and (min-height: 640px) and (max-height: 939.98px) {
+    [data-js] .cl .cl-chip {
+      height: 18px;
+      padding: 0 7px;
+    }
+    [data-js] .cl .cl-chip .skill-name {
+      font-size: 11px;
+    }
+    [data-js] .cl-chapters {
+      gap: 3px;
+    }
+    [data-js] .cl-ch {
+      gap: 2px;
+      padding-block: 2px;
+    }
+    [data-js] .cl {
+      padding-block: 4px;
+    }
+  }
+  @media (min-width: 1024px) and (max-width: 1439.98px) and (min-height: 640px) {
+    [data-js] .ex > .ex-tl {
+      grid-column: 1 / span 8;
+    }
+    [data-js] .ex > .ex-roles {
+      grid-column: 9 / -1;
+    }
+  }
+}
+/* the Skills matrix: a role that most likely used a skill, by estimate (dashed, never counted) */
+@layer components {
+  .mx-cell[data-est]::before {
+    width: 14px;
+    height: 14px;
+    background: transparent;
+    border: 2px dashed var(--hue);
+    opacity: 0.85;
+  }
+  .mx-swatch-est {
+    background: transparent;
+    border: 2px dashed var(--muted);
+  }
+  .sd-est .key {
+    background: transparent;
+    border: 2px dashed var(--hue);
+  }
+}
+/* the chip's visually hidden "(estimated)" keeps a real size (the chip's own text is set on its name) */
+@layer components {
+  .cl-chip .sr-only {
+    font-size: 12px;
   }
 }

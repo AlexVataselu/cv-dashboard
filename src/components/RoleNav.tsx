@@ -26,7 +26,7 @@ export function RoleNav({ children, className }: { children: ReactNode; classNam
 
   useEffect(() => {
     const paint = (id: string | null) => {
-      // The skills card under the timeline shows the open role's panel (CSS, see RoleSkills).
+      // The open role is named on the root (data-current), for styles that follow it.
       if (ref.current) ref.current.dataset.current = id ?? "";
       for (const a of ref.current?.querySelectorAll<HTMLElement>("[data-open-role]") ?? []) {
         const on = a.dataset.openRole === id;
