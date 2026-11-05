@@ -196,6 +196,56 @@
       "caption": "Builder Studio, step 2: features grouped into user journeys, with the screens for each"
     }
   ],
+  "eved": [
+    {
+      "image": "/work/eved-1",
+      "widths": [
+        640,
+        960
+      ],
+      "width": 960,
+      "height": 540,
+      "label": "Home, 2013",
+      "alt": "Eved's home page in May 2013: 'Welcome to Eved, Your Meeting and Event Marketplace', with Learn More and Sign Up Free buttons and a webinar series for destination management companies",
+      "caption": "eved.com home page, 20 May 2013 (Internet Archive)"
+    },
+    {
+      "image": "/work/eved-2",
+      "widths": [
+        640,
+        960
+      ],
+      "width": 960,
+      "height": 540,
+      "label": "How it works",
+      "alt": "Eved's How It Works page in May 2013: a diagram linking corporations, meeting and incentive companies, destination management companies, hotels, event venues and wholesale suppliers",
+      "caption": "How It Works: the marketplace between event buyers and suppliers, 20 May 2013 (Internet Archive)"
+    },
+    {
+      "image": "/work/eved-3",
+      "widths": [
+        640,
+        980
+      ],
+      "width": 980,
+      "height": 551,
+      "label": "For buyers",
+      "alt": "Eved's page for meeting and event buyers in March 2014: a source-to-pay procurement solution in three steps, Source, Contract and Pay",
+      "caption": "For buyers: source, contract and pay, 6 March 2014 (Internet Archive)"
+    },
+    {
+      "image": "/work/eved-4",
+      "widths": [
+        640,
+        980
+      ],
+      "width": 980,
+      "height": 551,
+      "label": "For planners",
+      "alt": "Eved's page for buyer/sellers in March 2014: e360, a back-office system for planners, in four steps, Source, Propose, Contract and Pay",
+      "caption": "For buyer/sellers (planners): e360, source to pay, 6 March 2014 (Internet Archive)"
+    }
+  ],
   "innobyte": [
     {
       "image": "/work/innobyte-1",

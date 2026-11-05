@@ -142,10 +142,10 @@ describe("Skills", () => {
 });
 
 describe("Projects", () => {
-  it("lists the four personal projects, then the product work (Builder.ai, Innobyte, LocalsOnly), with their labels", () => {
+  it("lists the four personal projects, then the product work (Builder.ai, Innobyte, LocalsOnly, Eved), with their labels", () => {
     render(<ProjectsPage />);
     const cards = screen.getAllByRole("article");
-    expect(cards).toHaveLength(7);
+    expect(cards).toHaveLength(8);
     expect(cards.map((c) => c.querySelector("p")!.textContent)).toEqual([
       "2026",
       "2026",
@@ -154,8 +154,9 @@ describe("Projects", () => {
       "2024–2025",
       "2021",
       "2023, v2 2026",
+      "2013–2014",
     ]);
-    const [stremio, powderino, reamp, dashboard, builder, innobyte, localsonly] = cards;
+    const [stremio, powderino, reamp, dashboard, builder, innobyte, localsonly, eved] = cards;
     expect(within(stremio).getByRole("heading", { name: /Stremio Skip Intro/ })).toBeTruthy();
     expect(within(powderino).getByRole("heading", { name: /Powderino/ })).toBeTruthy();
     expect(within(reamp).getByRole("heading", { name: /ReAMP/ })).toBeTruthy();
@@ -185,6 +186,20 @@ describe("Projects", () => {
     expect(within(localsonly).getByRole("heading", { name: /LocalsOnly/ })).toBeTruthy();
     expect(within(localsonly).getByText("Freelance project")).toBeTruthy();
     expect(within(localsonly).getAllByRole("radio")).toHaveLength(6);
+
+    // Eved, at Zega Software: its 2013-2014 public pages from the Internet Archive, each dated, and
+    // the card keeps Alex's part apart from what the product was
+    expect(within(eved).getByRole("heading", { name: /Eved/ })).toBeTruthy();
+    expect(within(eved).getByText("Client project at Zega Software")).toBeTruthy();
+    expect(within(eved).getAllByRole("radio").map((t) => t.parentElement!.textContent)).toEqual([
+      "Home, 2013",
+      "How it works",
+      "For buyers",
+      "For planners",
+    ]);
+    expect(within(eved).getAllByText(/Internet Archive/, { selector: "p" }).length).toBeGreaterThan(0);
+    expect(eved.textContent).toContain("My part:");
+    expect(eved.textContent).not.toMatch(/EvedPay/);
 
     // every project with more to say than the CV has room for shows it under Details
     for (const card of [stremio, powderino, reamp, dashboard, builder, localsonly]) {
@@ -246,7 +261,7 @@ describe("skill highlighting", () => {
     act(() => useUiStore.getState().selectSkill("expo"));
     const flag = (root: HTMLElement, sel: string) =>
       Array.from(root.querySelectorAll(sel)).map((e) => e.getAttribute("data-highlight"));
-    expect(flag(projects.container, "article")).toEqual([null, "true", null, null, null, null, null]);
+    expect(flag(projects.container, "article")).toEqual([null, "true", null, null, null, null, null, null]);
     expect(flag(experience.container, "details")).toEqual([null, null, "true", null, null, null, null]);
   });
 });

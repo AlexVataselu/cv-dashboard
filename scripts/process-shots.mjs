@@ -13,6 +13,7 @@
 // - reamp/     desktop captures of ReAMP signed in, listed in REAMP; cut to 16:9 from the top, 640 and 1120px.
 // - builderai/ Builder.ai's public pages from the Internet Archive, listed in BUILDERAI.
 // - innobyte/  ElbilAppen phone screens from the Innobyte project, listed in INNOBYTE.
+// - eved/      Eved's public pages from the Internet Archive (2013-2014), listed in EVED; see its README.
 // Output: public/work/<id>-<width>.{avif,webp} and src/content/shots.json (read by projectMedia.ts).
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -200,6 +201,63 @@ for (const [i, s] of BUILDERAI.entries()) {
     caption: s.caption,
   });
   console.log(`builderai: ${s.file} -> ${id}`);
+}
+
+/**
+ * Eved's public pages as the Internet Archive kept them in 2013 and 2014, the years Alex worked on its
+ * backend at Zega Software (the product sat behind a login: no app screens were archived). Captured
+ * 2026-11-05 at 1280x800 from the archive's toolbar-free view; cut to 16:9 from the top.
+ */
+const EVED = [
+  {
+    file: "1-home-2013-05-20.png",
+    label: "Home, 2013",
+    alt: "Eved's home page in May 2013: 'Welcome to Eved, Your Meeting and Event Marketplace', with Learn More and Sign Up Free buttons and a webinar series for destination management companies",
+    caption: "eved.com home page, 20 May 2013 (Internet Archive)",
+  },
+  {
+    file: "2-how-it-works-2013-05-20.png",
+    label: "How it works",
+    alt: "Eved's How It Works page in May 2013: a diagram linking corporations, meeting and incentive companies, destination management companies, hotels, event venues and wholesale suppliers",
+    caption: "How It Works: the marketplace between event buyers and suppliers, 20 May 2013 (Internet Archive)",
+  },
+  {
+    file: "3-buyers-2014-03-06.png",
+    label: "For buyers",
+    alt: "Eved's page for meeting and event buyers in March 2014: a source-to-pay procurement solution in three steps, Source, Contract and Pay",
+    caption: "For buyers: source, contract and pay, 6 March 2014 (Internet Archive)",
+  },
+  {
+    file: "4-buyer-sellers-2014-03-06.png",
+    label: "For planners",
+    alt: "Eved's page for buyer/sellers in March 2014: e360, a back-office system for planners, in four steps, Source, Propose, Contract and Pay",
+    caption: "For buyer/sellers (planners): e360, source to pay, 6 March 2014 (Internet Archive)",
+  },
+];
+
+manifest.eved = [];
+for (const [i, s] of EVED.entries()) {
+  const src = join(shotsDir, "eved", s.file);
+  if (!existsSync(src)) {
+    console.warn(`missing ${src}: skipped`);
+    continue;
+  }
+  const id = `eved-${i + 1}`;
+  // the content column of each page, 16:9 from its top (2013: a 960px site; 2014: 980px)
+  const crop = i < 2 ? { left: 160, top: 0, width: 960, height: 540 } : { left: 150, top: 0, width: 980, height: 551 };
+  const base = sharp(src).extract(crop);
+  const widths = [640, crop.width];
+  for (const w of widths) await write(base.clone().resize({ width: w }), id, w);
+  manifest.eved.push({
+    image: `/work/${id}`,
+    widths,
+    width: crop.width,
+    height: Math.round((crop.height / crop.width) * crop.width),
+    label: s.label,
+    alt: s.alt,
+    caption: s.caption,
+  });
+  console.log(`eved: ${s.file} -> ${id}`);
 }
 
 /** ElbilAppen phone screens from the Innobyte project (TryAngle Labs, 2021); 500px wide at source. */

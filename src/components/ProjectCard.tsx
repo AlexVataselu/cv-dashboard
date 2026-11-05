@@ -126,6 +126,12 @@ export function ProjectCard({
             tools I worked on were never public.
           </p>
         ) : null}
+        {project.id === "eved" ? (
+          <p className="text-[13px] text-muted">
+            These are Eved&rsquo;s public pages from 2013 and 2014, as the Internet Archive kept them. The application
+            itself sat behind a login and was never archived, so none of its screens can be shown.
+          </p>
+        ) : null}
       </div>
       {project.id === "stremio" ? (
         <div className="min-w-0 @2xl:col-span-12">

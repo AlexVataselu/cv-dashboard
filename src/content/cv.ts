@@ -230,7 +230,7 @@ export const cv: Cv = {
       stack: ["ASP.NET MVC 2", "C#", "jQuery", "PHP", "MySQL"],
       skillIds: ["aspnet-mvc", "csharp", "jquery", "php", "mysql"],
       bullets: [
-        "Event booking platform in ASP.NET MVC 2, C# and jQuery.",
+        "Eved (2013–2014), an online event commerce and procurement platform: backend development in ASP.NET MVC 2, C# and jQuery.",
         "Built other websites and web applications on the same stack with JavaScript, plus PHP and MySQL work.",
         "My first production backend experience.",
       ],
@@ -426,6 +426,26 @@ export const cv: Cv = {
         "v2 (2025–2026): one Next.js 16 app with its own API routes, Prisma on PostgreSQL and NextAuth with Google sign-in.",
         "Experiences filtered by price, activity, time of day, duration and specials, with a live result count.",
         "Experience pages with ratings, reviews and photo galleries; local guides with hourly prices; challenges with badges.",
+      ],
+    },
+    {
+      // Alex's own account (2026-11-05): backend work on Eved at Zega Software for about a year,
+      // 2013–2014; he does not remember the exact modules, so none are claimed. The product facts
+      // are from Eved's own pages as archived in 2013–2014 (later features such as EvedPay are not).
+      id: "eved",
+      roleId: "zega",
+      label: "2013–2014",
+      start: 2013,
+      title: "Eved, an online meeting and event marketplace",
+      stack: ["C#", "ASP.NET MVC 2", "jQuery"],
+      skillIds: ["csharp", "aspnet-mvc", "jquery"],
+      description:
+        "Backend development across several modules of Eved, an online event commerce and procurement platform connecting event organisers, corporate buyers and event suppliers, in C# and ASP.NET MVC 2.",
+      highlights: [
+        "My part: backend work on the platform's business logic across several of its modules, for about a year at Zega Software.",
+        "The product: a marketplace where corporations, meeting and incentive companies, destination management companies, hotels, venues and suppliers met and transacted online.",
+        "Its workflow, as its 2014 pages put it: source from supplier catalogues, propose, contract and pay, in one platform.",
+        "Launched in 2010 by its founder and CEO, Talia Mashiach.",
       ],
     },
   ],

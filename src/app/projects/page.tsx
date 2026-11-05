@@ -54,7 +54,7 @@ function Pick({ id, name, meta, skillIds, first }: (typeof items)[number] & { fi
       <input type="radio" name="project" id={`pick-${id}`} value={id} defaultChecked={first} aria-controls={`preview-${id}`} />
       <span className="min-w-0">
         <span className="pick-name block truncate text-[14px] font-medium">{name}</span>
-        <span className="block truncate text-[13px] text-muted">{meta}</span>
+        <span className="tnum block truncate text-[13px] text-muted">{meta}</span>
       </span>
       {skillIds.length ? (
         <span className="flex h-6 max-w-[9rem] min-w-0 items-center">
@@ -109,7 +109,7 @@ export default function ProjectsPage() {
   return (
     <SectionShell
       title="Projects"
-      lead="Four things I build for myself, product work for Builder.ai, Innobyte and LocalsOnly, and six client sites I designed and built end to end."
+      lead="Four things I build for myself, product work for Builder.ai, Innobyte, LocalsOnly and Eved, and six client sites I designed and built end to end."
     >
       <PreviewStyles />
       <div className="panel-grid pr">

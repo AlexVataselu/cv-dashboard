@@ -41,12 +41,27 @@ const shots = shotsJson as {
   powderino: Processed[];
   reamp: Processed[];
   builderai: Processed[];
+  eved: Processed[];
   innobyte: Processed[];
   localsonly: Processed[];
   cvdashboard: Processed[];
 };
 
 const FORK = "https://github.com/AlexVataselu/stremio-web";
+
+/** Where each Eved shot was archived (see the shots folder's eved/README.md). */
+const EVED_SOURCES = [
+  { address: "eved.com · archived 20 May 2013", href: "https://web.archive.org/web/20130520105307/http://www.eved.com:80/" },
+  { address: "eved.com/how_it_works · archived 20 May 2013", href: "https://web.archive.org/web/20130520093953/http://www.eved.com:80/how_it_works/" },
+  {
+    address: "eved.com/…-for-buyers · archived 6 Mar 2014",
+    href: "https://web.archive.org/web/20140306194223/http://www.eved.com:80/event-commerce-solutions-for-buyers",
+  },
+  {
+    address: "eved.com/…-for-buyers-and-sellers · archived 6 Mar 2014",
+    href: "https://web.archive.org/web/20140306193707/http://www.eved.com:80/event-commerce-solutions-for-buyers-and-sellers",
+  },
+];
 
 export const projectMedia: ProjectMedia[] = [
   {
@@ -120,6 +135,23 @@ export const projectMedia: ProjectMedia[] = [
           : "https://web.archive.org/web/20250124124515/https://www.builder.ai/products/builder-studio",
     })),
     links: [],
+  },
+  {
+    // Eved's public pages, 2013-2014, from the Internet Archive (the app itself sat behind a login).
+    projectId: "eved",
+    shots: shots.eved.map((s, i) => ({
+      ...s,
+      frame: "browser" as const,
+      address: EVED_SOURCES[i].address,
+      href: EVED_SOURCES[i].href,
+    })),
+    links: [
+      {
+        label: "Eved's 2013 management page (founding)",
+        href: "https://web.archive.org/web/20130520091208/http://www.eved.com:80/about_eved/management_team.shtml",
+        address: "web.archive.org · eved.com, May 2013",
+      },
+    ],
   },
   {
     // ElbilAppen's phone screens; Alex built the screens' UI and the map (TryAngle Labs, 2021).
