@@ -1,7 +1,15 @@
+import Link from "next/link";
 import { PaletteTrigger } from "@/components/PaletteTrigger";
 import { SectionNav } from "@/components/SectionNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { ExternalIcon, FileIcon, GitHubIcon, LinkedInIcon, MailIcon, PinIcon } from "@/components/icons";
+import {
+  ExternalIcon,
+  FileIcon,
+  GitHubIcon,
+  LinkedInIcon,
+  MailIcon,
+  PinIcon,
+} from "@/components/icons";
 import { cv } from "@/content/cv";
 
 const link =
@@ -17,24 +25,35 @@ export function ProfileRail() {
   return (
     <aside className="relative flex flex-col gap-4 px-4 pb-1 pt-4 md:px-6 md:pt-5 lg:sticky lg:top-0 lg:h-svh lg:gap-6 lg:px-5 lg:py-6">
       <div className="rail-head flex items-center gap-4 lg:flex-col lg:items-start">
-        <picture className="rail-photo block shrink-0">
-          <source srcSet="/photo.avif" type="image/avif" />
-          <source srcSet="/photo.webp" type="image/webp" />
-          <img
-            src="/photo.webp"
-            alt={cv.name}
-            width={400}
-            height={400}
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
-            className="size-16 rounded-[10px] bg-active object-cover md:size-20 lg:aspect-square lg:size-auto lg:w-full lg:rounded-xl"
-          />
-        </picture>
+        {/* The portrait leads home: a press on it opens the Overview, from any section. */}
+        <Link
+          href="/"
+          prefetch={false}
+          transitionTypes={["nav-back"]}
+          className="rail-photo block shrink-0"
+          aria-label={`${cv.name}: go to the Overview`}
+        >
+          <picture className="block">
+            <source srcSet="/photo.avif" type="image/avif" />
+            <source srcSet="/photo.webp" type="image/webp" />
+            <img
+              src="/photo.webp"
+              alt={cv.name}
+              width={400}
+              height={400}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="size-16 rounded-[10px] bg-active object-cover md:size-20 lg:aspect-square lg:size-auto lg:w-full lg:rounded-xl"
+            />
+          </picture>
+        </Link>
         {/* Below desktop the backlight switch sits top right: its width is kept clear here. */}
         {/* From desktop the name, title and location are set to the portrait's width. */}
         <div className="rail-id grid min-w-0 gap-0.5 max-lg:pr-[7.5rem]">
-          <p className="rail-name font-semibold leading-tight max-lg:text-[20px]">{cv.name}</p>
+          <p className="rail-name font-semibold leading-tight max-lg:text-[20px]">
+            {cv.name}
+          </p>
           <p className="rail-title text-muted max-lg:text-[14px]">{cv.title}</p>
           {/* Hidden on phones, as the spec's compact header has it; its ș would also pull the
               text face's latin-ext file onto the critical path. */}
@@ -53,21 +72,36 @@ export function ProfileRail() {
 
       {/* How to reach him, at the foot of the rail on a desktop. */}
       <div className="grid gap-2 md:flex md:items-center lg:mt-auto lg:grid">
-        <a href={`mailto:${cv.email}`} className="btn btn-primary w-full md:w-auto lg:w-full">
+        <a
+          href={`mailto:${cv.email}`}
+          className="btn btn-primary w-full md:w-auto lg:w-full"
+        >
           <MailIcon />
           Email me
         </a>
-        <nav aria-label="Profile links" className="grid grid-cols-3 gap-1 md:flex lg:grid lg:grid-cols-1 lg:gap-0.5">
-          <a href={cv.links.pdf} className={`${link} justify-center md:justify-start`}>
+        <nav
+          aria-label="Profile links"
+          className="grid grid-cols-3 gap-1 md:flex lg:grid lg:grid-cols-1 lg:gap-0.5"
+        >
+          <a
+            href={cv.links.pdf}
+            className={`${link} justify-center md:justify-start`}
+          >
             <FileIcon />
             CV PDF
           </a>
-          <a href={cv.links.linkedin} className={`${link} justify-center md:justify-start`}>
+          <a
+            href={cv.links.linkedin}
+            className={`${link} justify-center md:justify-start`}
+          >
             <LinkedInIcon />
             <span className="lg:flex-1">LinkedIn</span>
             <ExternalIcon className="icon hidden text-muted lg:block" />
           </a>
-          <a href={cv.links.github} className={`${link} justify-center md:justify-start`}>
+          <a
+            href={cv.links.github}
+            className={`${link} justify-center md:justify-start`}
+          >
             <GitHubIcon />
             <span className="lg:flex-1">GitHub</span>
             <ExternalIcon className="icon hidden text-muted lg:block" />

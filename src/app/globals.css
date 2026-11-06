@@ -3055,3 +3055,18 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
   }
 }
+/* the portrait is the way home: a quiet lift on hover, the focus ring on its rounded edge */
+@layer components {
+  a.rail-photo {
+    border-radius: 12px;
+  }
+  a.rail-photo img {
+    transition: filter 160ms ease;
+  }
+  a.rail-photo:hover img {
+    filter: brightness(1.06);
+  }
+  :root:not([data-theme="light"]) a.rail-photo:hover img {
+    filter: brightness(0.95) contrast(1.06);
+  }
+}
