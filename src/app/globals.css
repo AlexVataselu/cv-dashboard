@@ -429,124 +429,8 @@ summary:focus-visible,
     view-transition-name: tab-ink;
   }
 
-  /* ---------- the career timeline: a CSS grid, drawn at build time ---------- */
-  .tl {
-    --label: 168px;
-    position: relative;
-    display: grid;
-    grid-template-columns: var(--label) minmax(0, 1fr);
-    column-gap: 16px;
-  }
-  @media (max-width: 520px) {
-    .tl {
-      --label: 124px;
-      column-gap: 10px;
-    }
-  }
-  .tl-label {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 44px;
-    line-height: 1.25;
-    min-width: 0;
-  }
-  .tl-label > :first-child {
-    font-size: 14px;
-    font-weight: 500;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .tl-label > :last-child {
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .tl-track {
-    position: relative;
-    min-height: 44px;
-  }
-
-  .tl-lines {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-  .tl-lines > span {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: var(--grid);
-  }
-  .tl-bar {
-    position: absolute;
-    top: 50%;
-    height: 24px;
-    margin-top: -12px;
-    display: flex;
-    align-items: center;
-    padding: 0 8px;
-    border-radius: 4px;
-    background: var(--hue);
-    color: var(--hue-on);
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    /* the bar is its own size container: its words show only when they fit (below) */
-    container: tl-bar / inline-size;
-  }
   /* "4 yrs" is 27px wide at 12px; a bar whose inside is narrower drops its words (its row label
      carries the dates), so no bar ever shows clipped text such as "2 y", at any width */
-  @container tl-bar (width < 28px) {
-    .tl-bar-text {
-      display: none;
-    }
-  }
-  .tl-span {
-    position: absolute;
-    top: 50%;
-    height: 8px;
-    margin-top: -4px;
-    border-radius: 999px;
-    background: var(--primary);
-  }
-  .tl-axis {
-    position: relative;
-    height: 22px;
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .tl-axis > span {
-    position: absolute;
-    top: 4px;
-    transform: translateX(-50%);
-    white-space: nowrap;
-  }
-  /* every year label is centred on its line; the first and last sit in the column gap and the card's padding */
-  .tl-years {
-    container-type: inline-size;
-  }
-  @container (max-width: 640px) {
-    /* every other year from the first: 2012, 2014 ... 2026 on the CV's span */
-    .tl-axis > span:nth-child(2n) {
-      display: none;
-    }
-  }
-  @container (max-width: 480px) {
-    /* only the first year, every fourth from it, and the last: 2012, 2016, 2020, 2026 */
-    .tl-axis > span:not(:first-child, :last-child, :nth-child(4n + 1)) {
-      display: none;
-    }
-    /* the two years before the last would crowd it: 2024 sits against 2026 */
-    .tl-axis > span:nth-last-child(-n + 3):not(:last-child) {
-      display: none;
-    }
-    .tl-label > :first-child {
-      font-size: 13px;
-    }
-  }
 
   /* ---------- skill rows ---------- */
   .skill-chip {
@@ -762,12 +646,12 @@ summary:focus-visible,
 }
 /* on: the switch is lit, a flat amber fill like the one action */
 :root[data-theme="light"] .theme-toggle {
-  border-color: transparent;
-  background: var(--primary-fill);
-  color: var(--primary-fill-ink);
+  border-color: var(--primary-fill);
+  background: color-mix(in srgb, var(--primary-fill) 22%, var(--surface));
+  color: var(--ink);
 }
 :root[data-theme="light"] .theme-toggle:hover {
-  background: var(--primary-fill-hover);
+  background: color-mix(in srgb, var(--primary-fill) 34%, var(--surface));
 }
 /* While the backlight is off, the glint sweeps across three times soon after the page opens,
    with a rest between passes, then stops; hovering or focusing the switch plays it once more.
@@ -805,8 +689,8 @@ summary:focus-visible,
     box-shadow:
       0 0 0 1px rgb(255 255 255 / 0.9),
       0 0 34px 2px rgb(255 255 255 / 0.95),
-      0 0 90px 10px rgb(150 185 255 / 0.32),
-      0 30px 80px -30px rgb(60 100 200 / 0.28);
+      0 0 90px 10px color-mix(in srgb, var(--primary-fill) 30%, transparent),
+      0 30px 80px -30px color-mix(in srgb, var(--primary) 26%, transparent);
   }
   :root:not([data-theme="light"]) .sheet {
     box-shadow: 0 0 0 1px rgb(255 255 255 / 0.02);
@@ -1045,9 +929,6 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
   }
 
-  .seg.ov-switch {
-    display: none;
-  }
   /* a short laptop screen */
   @media (min-width: 1024px) and (min-height: 640px) and (max-height: 819.98px) {
     /* Experience on a short screen: each chapter's title gives way to its skills */
@@ -1099,89 +980,18 @@ html[data-backlight="off"]::view-transition-old(root) {
     color: inherit;
     text-decoration: none;
   }
-  .tl-row .tl-label {
-    padding-left: 6px;
-  }
-  a.tl-row:hover .tl-label > :first-child {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .tl-compact .tl-label,
-  .tl-compact .tl-track {
-    min-height: 28px;
-  }
+
   /* one line per role (name, then dates) where the card is wide enough; stacked on a phone */
-  @media (min-width: 640px) {
-    .tl-compact {
-      --label: 212px;
-      column-gap: 12px;
-    }
-    .tl-compact .tl-label {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .tl-compact .tl-label > :last-child {
-      white-space: nowrap;
-    }
-  }
-  @media (max-width: 639.98px) {
-    .tl-compact .tl-label,
-    .tl-compact .tl-track {
-      min-height: 40px;
-    }
-  }
-  .tl-compact .tl-bar {
-    height: 20px;
-    margin-top: -10px;
-  }
+
   .tl-row[data-open="true"] {
     background: var(--hue-tint);
   }
-  .tl-row[data-open="true"] .tl-label > :first-child {
-    font-weight: 600;
-  }
+
   /* a selected skill marks the roles and projects that used it: a ring, and a dot after the name */
-  .tl-row[data-highlight="true"] .tl-bar,
   .tl-proj[data-highlight="true"] {
     box-shadow:
       0 0 0 2px var(--surface),
       0 0 0 4px var(--ink);
-  }
-  .tl-row[data-highlight="true"] .tl-label > :first-child::after {
-    content: " \2022";
-    color: var(--primary);
-  }
-  .tl-projects {
-    position: absolute;
-    inset: 5px 0;
-    display: grid;
-    align-content: center;
-    gap: 3px;
-  }
-  .tl-proj {
-    position: relative;
-    display: block;
-    height: 6px;
-    min-width: 10px;
-    border-radius: 3px;
-    background: var(--primary);
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    /* the bars grow from the left at first paint and on every section switch (CSS, no JS) */
-    .tl-bar,
-    .tl-span,
-    .tl-proj {
-      transform-origin: left center;
-      animation: grow-x 700ms var(--ease-out) both;
-      animation-delay: calc(var(--i, 0) * 45ms + 60ms);
-    }
-  }
-  @keyframes grow-x {
-    from {
-      transform: scaleX(0);
-    }
   }
 
   /* ---------- results ---------- */
@@ -1252,11 +1062,16 @@ html[data-backlight="off"]::view-transition-old(root) {
     pointer-events: none;
   }
   /* each group shows alone when its filter is on (CSS :has, no JS) */
-  .filtered:has(input[value="frontend"]:checked) [data-group]:not([data-group="frontend"]),
-  .filtered:has(input[value="state-data"]:checked) [data-group]:not([data-group="state-data"]),
-  .filtered:has(input[value="backend"]:checked) [data-group]:not([data-group="backend"]),
-  .filtered:has(input[value="testing-quality"]:checked) [data-group]:not([data-group="testing-quality"]),
-  .filtered:has(input[value="tooling"]:checked) [data-group]:not([data-group="tooling"]) {
+  .filtered:has(input[value="frontend"]:checked)
+    [data-group]:not([data-group="frontend"]),
+  .filtered:has(input[value="state-data"]:checked)
+    [data-group]:not([data-group="state-data"]),
+  .filtered:has(input[value="backend"]:checked)
+    [data-group]:not([data-group="backend"]),
+  .filtered:has(input[value="testing-quality"]:checked)
+    [data-group]:not([data-group="testing-quality"]),
+  .filtered:has(input[value="tooling"]:checked)
+    [data-group]:not([data-group="tooling"]) {
     display: none;
   }
 
@@ -1321,14 +1136,6 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
   .cloud-group:not(:first-child) {
     margin-left: 6px;
-  }
-  .sk-groups {
-    columns: 2 300px;
-    column-gap: 20px;
-  }
-  .sk-group {
-    break-inside: avoid;
-    padding-bottom: 14px;
   }
 
   /* ---------- the Skills matrix: every skill against every role ---------- */
@@ -1677,45 +1484,7 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
   }
 
-  /* the client-site strip by the Overview's title: thumbnails with a tip on hover or focus */
-  .site-thumb {
-    position: relative;
-    width: 72px;
-  }
-  @media (max-width: 1399.98px) {
-    .site-thumb {
-      width: 58px;
-    }
-  }
   /* seven thumbnails and their gaps fit a 320px screen's 288px of content */
-  @media (max-width: 639.98px) {
-    .site-thumb {
-      width: 34px;
-    }
-  }
-  .site-tip {
-    display: none;
-    position: absolute;
-    z-index: 30;
-    top: calc(100% + 8px);
-    right: 0;
-    width: 260px;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--surface);
-    box-shadow: 0 8px 24px rgb(0 0 0 / 0.14);
-    font-size: 13px;
-    line-height: 1.4;
-    color: var(--muted);
-  }
-  .site-thumb:hover .site-tip,
-  .site-thumb:focus-within .site-tip {
-    display: block;
-  }
-  [data-tips-off] .site-tip {
-    display: none !important;
-  }
 
   /* ---------- a selectable list with a preview (projects) ---------- */
   .pick-list {
@@ -1736,8 +1505,9 @@ html[data-backlight="off"]::view-transition-old(root) {
     background: var(--raised);
   }
   .pick:has(:checked) {
-    background: var(--hue-product-tint);
-    box-shadow: inset 3px 0 0 var(--primary);
+    background: color-mix(in srgb, var(--primary-fill) 14%, transparent);
+    box-shadow: inset 0 0 0 1px
+      color-mix(in srgb, var(--primary-fill) 55%, transparent);
   }
   .pick:has(:focus-visible) {
     outline: 2px solid var(--focus);
@@ -1811,18 +1581,6 @@ html[data-backlight="off"]::view-transition-old(root) {
     border-color: var(--control);
   }
 
-  /* ---------- the experience side card ---------- */
-  .rs-panel {
-    display: none;
-  }
-  /* the open role's skills keep their years on the chip: there is room, and it is the point */
-  .rs-chips .skill-level {
-    position: static;
-    width: auto;
-    height: auto;
-    clip-path: none;
-    margin-left: 8px;
-  }
   [data-js] .roles-list.scroll-y {
     margin-right: 0;
     padding-right: 0;
@@ -2070,11 +1828,19 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
     .keys-col .tabs > li::before {
       top: calc(var(--r) * -1);
-      mask: radial-gradient(circle at 0 0, transparent calc(var(--r) - 0.5px), #000 var(--r));
+      mask: radial-gradient(
+        circle at 0 0,
+        transparent calc(var(--r) - 0.5px),
+        #000 var(--r)
+      );
     }
     .keys-col .tabs > li::after {
       bottom: calc(var(--r) * -1);
-      mask: radial-gradient(circle at 0 100%, transparent calc(var(--r) - 0.5px), #000 var(--r));
+      mask: radial-gradient(
+        circle at 0 100%,
+        transparent calc(var(--r) - 0.5px),
+        #000 var(--r)
+      );
     }
     .keys .tab,
     [data-js] .keys .tab {
@@ -2248,10 +2014,6 @@ html[data-backlight="off"]::view-transition-old(root) {
       --key-h: 34px;
       --key-gap: 6px;
     }
-    /* the Overview on a short screen: the kinds list keeps to the kinds and their years */
-    [data-js] .kl-roles {
-      display: none;
-    }
   }
   @media (min-width: 1024px) and (min-height: 700px) and (max-height: 739.98px) {
     [data-js] .keys-col {
@@ -2289,82 +2051,43 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
 }
 
-/* ---------- the Overview: everything in view, on one grid ---------- */
+/* ---------- the Overview: the results first, then the career, then the skills ---------- */
+/* From 1024px the Overview is a page that scrolls inside the panel when it must: every card at its
+   natural height, nothing clipped. The career ladder keeps a fixed height (its chapters share it). */
 @layer components {
-  @media (min-width: 1280px) and (min-height: 640px) {
+  @media (min-width: 1024px) and (min-height: 640px) {
     [data-js] .ov {
-      grid-template-rows: auto minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(0, 1fr);
+      flex: none;
+      grid-template-rows: none;
+      align-content: start;
     }
     [data-js] .ov > .ov-kpis {
-      grid-row: 1;
-    }
-    [data-js] .ov > .ov-tl {
-      grid-column: 1 / span 6;
-      grid-row: 2 / span 2;
+      grid-area: 1 / 1 / 2 / -1;
     }
     [data-js] .ov > .ov-res {
-      grid-column: 7 / span 3;
-      grid-row: 2 / span 2;
+      grid-area: 2 / 1 / 3 / -1;
+    }
+    [data-js] .ov > .ov-tl {
+      grid-area: 3 / 1 / 5 / 8;
+      height: clamp(440px, 56vh, 600px);
     }
     [data-js] .ov > .ov-stack {
-      grid-column: 10 / -1;
-      grid-row: 2;
-    }
-    [data-js] .ov > .ov-kinds {
-      grid-column: 10 / -1;
-      grid-row: 3;
-    }
-    [data-js] .ov > .ov-skills {
-      grid-column: 1 / span 6;
-      grid-row: 4;
+      grid-area: 3 / 8 / 4 / -1;
     }
     [data-js] .ov > .ov-about {
-      grid-column: 7 / span 3;
-      grid-row: 4;
+      grid-area: 4 / 8 / 5 / -1;
     }
-    [data-js] .ov > .ov-ind {
-      grid-column: 10 / -1;
-      grid-row: 4;
+    [data-js] .ov > .ov-skills {
+      grid-area: 5 / 1 / 6 / -1;
     }
-    /* the timeline fills its card: its rows share the height */
-    [data-js] .ov .tl-compact {
-      flex: 1;
-      grid-template-rows: repeat(9, minmax(24px, 1fr)) auto;
+    /* nothing scrolls inside a card here: the page scrolls instead */
+    [data-js] .ov .scroll-y {
+      flex: none;
+      overflow: visible;
     }
-    [data-js] .ov .tl-compact :is(.tl-label, .tl-track) {
-      min-height: 24px;
-    }
-    /* the narrow cards: a result's figure over its line */
-    [data-js] .ov-res .result {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 0;
-      padding: 4px 8px;
-    }
-    [data-js] .ov-res .card-head {
-      margin-bottom: 4px;
-    }
-    [data-js] .ov-res .result > p:first-child {
-      font-size: 15px;
-      line-height: 1.25;
-    }
-    [data-js] .ov-res .result > div > p:first-child {
-      font-size: 13px;
-      line-height: 1.3;
-    }
-    [data-js] .ov-res .result > div > p:last-child {
-      margin-top: 1px;
-      font-size: 12px;
-      line-height: 1.3;
-    }
-    /* the kinds card carries the kinds' key: the timeline here does not repeat it */
-    [data-js] .ov .tl-legend {
-      display: none !important; /* over the flex utility */
-    }
-    [data-js] .ov .card {
-      padding: 14px 16px;
-    }
-    [data-js] .ov .card-head {
-      margin-bottom: 8px;
+    [data-js] .ov-stack .st-plot {
+      flex: none;
+      height: 150px;
     }
     /* the skills' group filter is the Skills screen's job: here the chips get the room */
     [data-js] .ov-skills .seg {
@@ -2374,38 +2097,28 @@ html[data-backlight="off"]::view-transition-old(root) {
       margin-top: -4px;
     }
   }
-  /* a short laptop screen: nothing hides; the cards are shorter and a long list scrolls inside its card */
-  @media (min-width: 1280px) and (min-height: 640px) and (max-height: 859.98px) {
-    [data-js] .ov {
-      grid-template-rows: auto minmax(0, 1.1fr) minmax(0, 0.95fr) minmax(0, 1.1fr);
+
+  /* the results, the hero: the CV's own in one column, the measured ones in two beside it */
+  .res-cols {
+    display: grid;
+    gap: 8px 28px;
+  }
+  .res-measured {
+    display: grid;
+  }
+  @media (min-width: 1024px) {
+    .res-cols {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     }
-    /* the skills card: the chips get the room; the hint under them gives way */
-    [data-js] .ov-skills .readout {
-      display: none;
-    }
-    [data-js] .ov .tl-compact {
-      grid-template-rows: repeat(9, minmax(15px, 1fr)) auto;
-    }
-    [data-js] .ov .tl-compact :is(.tl-label, .tl-track) {
-      min-height: 15px;
-    }
-    [data-js] .ov .tl-compact .tl-label {
-      font-size: 12.5px;
-    }
-    /* the charts give up height first: the kinds in two columns, the chart's bars shorter */
-    [data-js] .ov .kl {
+    .res-measured {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: 10px;
+      column-gap: 20px;
     }
-    [data-js] .ov .st-plot {
-      min-height: 40px;
-      margin-top: 10px;
+    .res-measured > .result:nth-child(2) {
+      border-top: 0;
     }
-    [data-js] .ov .card {
-      padding: 12px 14px;
-    }
-    [data-js] .ov .card-head {
-      margin-bottom: 4px;
+    .ov-res .result > p:first-child {
+      font-size: 22px;
     }
   }
 
@@ -2483,7 +2196,9 @@ html[data-backlight="off"]::view-transition-old(root) {
   .st-col:is(:hover, :focus-visible) .st-n {
     opacity: 1;
   }
-  .st:has(.st-col:is(:hover, :focus-visible)) .st-col:not(:is(:hover, :focus-visible)) .st-n {
+  .st:has(.st-col:is(:hover, :focus-visible))
+    .st-col:not(:is(:hover, :focus-visible))
+    .st-n {
     opacity: 0;
   }
   .st-y {
@@ -2537,144 +2252,7 @@ html[data-backlight="off"]::view-transition-old(root) {
   .st-read b {
     color: var(--ink);
   }
-
-  /* ----- kinds of work: a 100% bar, the year strip, the kinds ----- */
-  .kb {
-    display: flex;
-    gap: 2px;
-    height: 22px;
-    border-radius: 5px;
-    overflow: hidden;
-  }
-  .kb > li {
-    flex-basis: 0;
-    min-width: 0;
-    display: grid;
-    place-items: center;
-    background: var(--hue);
-    color: var(--hue-on);
-    font-size: 11px;
-    font-weight: 700;
-  }
-  .ky {
-    display: grid;
-    grid-template-columns: repeat(15, minmax(0, 1fr));
-    gap: 2px;
-  }
-  .ky-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    height: 18px;
-  }
-  .ky-cell > span {
-    flex: 1;
-    border-radius: 2px;
-    background: var(--hue);
-  }
-  .ky-cell:empty {
-    border-radius: 2px;
-    background: var(--raised);
-  }
-  .ky-y {
-    display: block;
-    height: 13px;
-    margin-top: 2px;
-    text-align: center;
-    white-space: nowrap;
-    font-size: 10.5px;
-    color: var(--muted);
-  }
-  .kl {
-    display: grid;
-    gap: 3px;
-    font-size: 12px;
-  }
-  .kl-roles {
-    min-width: 0;
-    flex: 1;
-  }
-  .kl > li {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    min-width: 0;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .kb > li,
-    .ky-cell > span {
-      animation: ov-in 360ms var(--key-ease) both;
-    }
-  }
-  @keyframes ov-in {
-    from {
-      opacity: 0;
-      transform: translateY(4px);
-    }
-  }
-
-  /* ----- industries, with the live sites ----- */
-  .ind-row {
-    padding: 6px 0;
-  }
-  .ind-row + .ind-row {
-    border-top: 1px solid var(--rule);
-  }
-  .ind-sites {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-  }
-  .ind-site {
-    display: block;
-    border-radius: 5px;
-    outline-offset: 2px;
-    transition: opacity 150ms ease;
-  }
-  .ind-site:hover {
-    opacity: 0.85;
-  }
 }
-/* the Overview on a narrow desktop (1024 to 1279px wide): two columns at their natural height,
-   everything open; the panel scrolls (the one-screen grid needs 1280px to stay readable) */
-@layer components {
-  @media (min-width: 1024px) and (max-width: 1279.98px) and (min-height: 640px) {
-    [data-js] .ov {
-      flex: none;
-      grid-template-rows: none;
-      align-content: start;
-    }
-    [data-js] .ov .scroll-y {
-      flex: none;
-      overflow: visible;
-    }
-    [data-js] .ov > .ov-tl {
-      grid-area: 2 / 1 / 3 / 8;
-    }
-    [data-js] .ov > .ov-res {
-      grid-area: 2 / 8 / 3 / -1;
-    }
-    [data-js] .ov > .ov-stack {
-      grid-area: 3 / 1 / 4 / 8;
-    }
-    [data-js] .ov > .ov-kinds {
-      grid-area: 3 / 8 / 4 / -1;
-    }
-    [data-js] .ov > .ov-skills {
-      grid-area: 4 / 1 / 5 / 8;
-    }
-    [data-js] .ov > .ov-about {
-      grid-area: 4 / 8 / 5 / -1;
-    }
-    [data-js] .ov > .ov-ind {
-      grid-area: 5 / 1 / 6 / -1;
-    }
-    [data-js] .ov .tl-legend {
-      display: none !important; /* over the flex utility */
-    }
-  }
-}
-
 /* ---------- the career ladder: the years on a rail, each role a chapter with its skills ---------- */
 @layer components {
   .cl-key {
@@ -2900,7 +2478,8 @@ html[data-backlight="off"]::view-transition-old(root) {
   .cl:has([data-highlight="true"]) .cl-ch:not(:has([data-highlight="true"])) {
     opacity: 0.35;
   }
-  .cl:has([data-highlight="true"]) :is(.cl-span, .cl-line):not([data-highlight="true"]) {
+  .cl:has([data-highlight="true"])
+    :is(.cl-span, .cl-line):not([data-highlight="true"]) {
     opacity: 0.18;
   }
 
@@ -3041,20 +2620,6 @@ html[data-backlight="off"]::view-transition-old(root) {
     background: var(--muted);
   }
 }
-/* the Overview's narrow Results column: the CV's five results stay in view above the fold */
-@layer components {
-  @media (min-width: 1280px) and (min-height: 640px) {
-    [data-js] .ov-res .card-head .meta {
-      display: none;
-    }
-    [data-js] .ov-res .result-group {
-      padding-top: 6px;
-    }
-    [data-js] .ov-res .result-group:first-child {
-      padding-top: 0;
-    }
-  }
-}
 /* the portrait is the way home: a quiet lift on hover, the focus ring on its rounded edge */
 @layer components {
   a.rail-photo {
@@ -3068,5 +2633,74 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
   :root:not([data-theme="light"]) a.rail-photo:hover img {
     filter: brightness(0.95) contrast(1.06);
+  }
+}
+/* a role a skill is implied in (the matrix's outlined cells): a hollow key */
+@layer components {
+  .sd-implied .key {
+    background: transparent;
+    border: 2px solid var(--hue);
+  }
+}
+/* the not-found page's way on: one row per section */
+@layer components {
+  .nf-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    padding: 0 10px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    transition: background-color 150ms ease;
+  }
+  .nf-link:hover {
+    background: var(--raised);
+  }
+}
+/* the search button says its shortcut */
+@layer components {
+  .palette-kbd {
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+  }
+  .btn:hover .palette-kbd {
+    color: var(--ink);
+  }
+}
+/* a phone: roomier keys and targets (the tab labels clear their dividers; chips and filters are
+   at least 32px tall, with space between them) */
+@layer components {
+  @media (max-width: 767.98px) {
+    .keys .tab,
+    [data-js] .keys .tab {
+      padding: 0 6px;
+    }
+    .cl .cl-chip {
+      height: 30px;
+      padding: 0 10px;
+    }
+    .cl-skills {
+      gap: 6px;
+    }
+    .seg label {
+      min-height: 36px;
+    }
+  }
+}
+/* Education: the path's steps at their natural spacing, not spread over the whole card */
+@layer components {
+  @media (min-width: 1024px) and (min-height: 640px) {
+    [data-js] .ed .ed-step:not(:last-child) {
+      flex: none;
+    }
+    [data-js] .ed > :is(.card, .card-col) {
+      align-self: start;
+    }
   }
 }

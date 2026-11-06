@@ -121,7 +121,7 @@ export function CareerLadder({ variant, className }: { variant: "overview" | "ex
         </li>
       </ul>
 
-      <SkillPicker className={`cl cl-${variant}`}>
+      <SkillPicker className={`cl cl-${variant}`} roving rovingSelector=".cl-chip">
         {/* the years, with each role as a span as long as it lasted */}
         <div className="cl-rail" aria-hidden="true">
           {ticks.map((t) => (

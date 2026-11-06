@@ -13,18 +13,22 @@ import { useUiStore } from "@/state/uiStore";
  *   writes its name, its years and where it was used there; leaving shows the selected skill again.
  * - With `data-active` on the root (the Skills matrix), the root names the skill in focus: the one
  *   hovered or focused, else the selected one, else "none". CSS shows that skill's card from it.
- * - With `roving` (the Skills matrix), the rows are one tab stop: arrow keys, Home and End move
+ * - With `roving` (the Skills matrix, `.sm-row`; the career ladder, `.cl-chip`), the buttons are one
+ *   tab stop: arrow keys (left and right as well as up and down), Home and End move
  *   between the rows that are showing (a group filter can hide some), as in a listbox.
  */
 export function SkillPicker({
   children,
   className,
   roving = false,
+  rovingSelector = ".sm-row",
   "data-active": active,
 }: {
   children: ReactNode;
   className?: string;
   roving?: boolean;
+  /** the buttons that share the one tab stop */
+  rovingSelector?: string;
   "data-active"?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -46,13 +50,13 @@ export function SkillPicker({
       out.append(b, used ? `. Used in ${used}.` : ". On the CV, with no dated role or project.");
     };
     const selected = () => [...chips()].find((b) => b.dataset.skill === useUiStore.getState().selectedSkill);
-    const rows = () => [...root.querySelectorAll<HTMLButtonElement>(".sm-row")].filter((b) => b.offsetParent !== null);
+    const rows = () => [...root.querySelectorAll<HTMLButtonElement>(rovingSelector)].filter((b) => b.offsetParent !== null);
     // The one row in the tab order: the selected one when it shows, else the first showing.
     const stop = () => {
       if (!roving) return;
       const shown = rows();
       const pick = shown.find((b) => b.getAttribute("aria-pressed") === "true") ?? shown[0];
-      for (const b of root.querySelectorAll<HTMLButtonElement>(".sm-row")) b.tabIndex = b === pick ? 0 : -1;
+      for (const b of root.querySelectorAll<HTMLButtonElement>(rovingSelector)) b.tabIndex = b === pick ? 0 : -1;
     };
     const paint = (id: string | null) => {
       for (const b of chips()) {
@@ -98,7 +102,7 @@ export function SkillPicker({
       root.removeEventListener("focusout", leave);
       root.removeEventListener("change", changed);
     };
-  }, [roving]);
+  }, [roving, rovingSelector]);
 
   const onClick = (e: MouseEvent<HTMLDivElement>) => {
     const chip = (e.target as Element).closest<HTMLButtonElement>("button[data-skill]");
@@ -110,12 +114,12 @@ export function SkillPicker({
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (!roving) return;
-    const row = (e.target as Element).closest<HTMLButtonElement>(".sm-row");
+    const row = (e.target as Element).closest<HTMLButtonElement>(rovingSelector);
     if (!row) return;
-    const shown = [...ref.current!.querySelectorAll<HTMLButtonElement>(".sm-row")].filter((b) => b.offsetParent !== null);
+    const shown = [...ref.current!.querySelectorAll<HTMLButtonElement>(rovingSelector)].filter((b) => b.offsetParent !== null);
     const i = shown.indexOf(row);
     const k = e.key;
-    const next = k === "ArrowDown" ? shown[i + 1] : k === "ArrowUp" ? shown[i - 1] : k === "Home" ? shown[0] : k === "End" ? shown.at(-1) : undefined;
+    const next = k === "ArrowDown" || k === "ArrowRight" ? shown[i + 1] : k === "ArrowUp" || k === "ArrowLeft" ? shown[i - 1] : k === "Home" ? shown[0] : k === "End" ? shown.at(-1) : undefined;
     if (!next) return;
     e.preventDefault();
     for (const b of shown) b.tabIndex = b === next ? 0 : -1;

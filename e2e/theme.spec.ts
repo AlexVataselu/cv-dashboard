@@ -39,7 +39,7 @@ test("switching the backlight on lights the panel from its middle, then leaves i
   await page.goto("/");
   const sheet = page.locator(".sheet");
   const glowOf = () => sheet.evaluate((el) => getComputedStyle(el).boxShadow);
-  expect(await glowOf()).not.toContain("150, 185, 255");
+  const before = await glowOf();
 
   await page.getByRole("button", { name: "Backlight OFF" }).click();
   // During the sweep the page is marked, and the light starts from the middle of the panel.
@@ -50,7 +50,8 @@ test("switching the backlight on lights the panel from its middle, then leaves i
   expect(await page.evaluate(() => document.documentElement.style.getPropertyValue("--bl-x"))).toBe(`${mid}px`);
   await expect(page.locator("html")).not.toHaveAttribute("data-backlight", /.+/);
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  expect(await glowOf()).toContain("150, 185, 255");
+  await expect.poll(glowOf).not.toBe(before);
+  expect(await glowOf()).toMatch(/0\.94\d* 0\.70\d* 0\.23\d*/);
 
   await page.getByRole("button", { name: "Backlight ON" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");

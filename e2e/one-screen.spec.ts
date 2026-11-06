@@ -12,7 +12,7 @@ for (const [width, height] of [
   [1366, 768],
   [1280, 720],
 ]) {
-  test(`one screen at ${width}x${height}: no document scroll, and no section outgrows its panel`, async ({ page }) => {
+  test(`one screen at ${width}x${height}: no document scroll, and no section but the Overview outgrows its panel`, async ({ page }) => {
     await page.setViewportSize({ width, height });
     for (const path of ROUTES) {
       await page.goto(path);
@@ -27,7 +27,8 @@ for (const [width, height] of [
       });
       expect(m.doc, `${path} document scroll`).toBeLessThanOrEqual(0);
       expect(m.docX, `${path} horizontal scroll`).toBeLessThanOrEqual(0);
-      expect(m.main, `${path} panel overflow`).toBeLessThanOrEqual(1);
+      // the Overview is a page that scrolls inside the panel; the other sections fit it
+      if (path !== "/") expect(m.main, `${path} panel overflow`).toBeLessThanOrEqual(1);
       expect(m.status, `${path} status bar on screen`).toBeLessThanOrEqual(height);
     }
   });
@@ -55,30 +56,29 @@ test.describe("without JavaScript", () => {
 test.describe("every CV fact is reachable by keyboard", () => {
   test.use({ viewport: { width: 1280, height: 720 } });
 
-  test("Overview: every card is in view at once, no tabs; a year in focus reads what it held", async ({ page }) => {
+  test("Overview: the figures and results lead, no card clips its content, and every role is on the ladder", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
     await hydrated(page);
-    // Nothing waits behind a switch or a tab: the figures, the timeline, results, both charts,
-    // skills, About and the industries all show on one screen.
+    // The first screen: the four figures and the results.
     for (const g of cv.glance) await expect(page.locator(".kpi-label", { hasText: g.label })).toBeInViewport();
-    for (const sel of [".ov-tl", ".ov-res", ".ov-stack", ".ov-kinds", ".ov-skills", ".ov-about", ".ov-ind"])
-      await expect(page.locator(sel)).toBeInViewport({ ratio: 0.99 });
-    for (const r of cv.roles) await expect(page.locator(".ov-tl")).toContainText(r.company.split(/,| · /)[0].trim());
     for (const i of cv.impact) await expect(page.getByText(i.label)).toBeInViewport();
+    // The page scrolls inside the panel rather than clipping a card.
+    for (const sel of [".ov-res", ".ov-tl", ".ov-stack", ".ov-skills", ".ov-about"]) {
+      const card = page.locator(sel);
+      await card.scrollIntoViewIfNeeded();
+      await expect(card).toBeInViewport();
+      const clip = await card.evaluate((el) => el.scrollHeight - el.clientHeight);
+      expect(clip, `${sel} clips its content`).toBeLessThanOrEqual(1);
+    }
+    for (const r of cv.roles) await expect(page.locator(".ov-tl")).toContainText(r.company.split(/,| · /)[0].trim());
     // The skills-by-year chart: a year in focus reads what it held and what was new.
     await page.locator('.st-col[data-y="2021"]').focus();
     await expect(page.locator('.st-read[data-y="2021"]')).toBeVisible();
     await expect(page.locator('.st-read[data-y="2021"]')).toContainText("React");
-    // The industries card links each live site.
-    // (the CV's three industries come from the freelance work: Kemblimed's 2012 site is not one of them)
-    for (const s of sites.filter((x) => x.roleId !== "kemblimed"))
-      await expect(page.locator(`.ov-ind a[href="${s.url}"]`)).toBeAttached();
-    // The About card scrolls inside itself and takes focus, so the keyboard can scroll it.
-    const about = page.getByRole("region", { name: "About, scrollable" });
-    await about.focus();
-    await page.keyboard.press("End");
-    await expect(page.getByText(cv.education[1].degree, { exact: false })).toBeInViewport();
+    // About shows whole, education included.
+    await page.locator(".ov-about").scrollIntoViewIfNeeded();
+    await expect(page.locator(".ov-about")).toContainText(cv.about.slice(0, 40));
   });
 
   test("Experience: each timeline row opens its role in the side card, with its bullets in view", async ({ page }) => {

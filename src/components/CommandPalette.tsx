@@ -28,7 +28,7 @@ function PaletteDialog() {
   const listId = useId();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"done" | "failed" | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -68,11 +68,12 @@ function PaletteDialog() {
         keywords: "copy email contact",
         run: () => {
           const clip = typeof navigator !== "undefined" ? navigator.clipboard : undefined;
-          if (!clip) return;
+          // Say so when the browser blocks the clipboard, rather than doing nothing.
+          if (!clip) return setCopied("failed");
           void clip
             .writeText(cv.email)
-            .then(() => setCopied(true))
-            .catch(() => {});
+            .then(() => setCopied("done"))
+            .catch(() => setCopied("failed"));
         },
       },
     ];
@@ -89,7 +90,7 @@ function PaletteDialog() {
 
   useEffect(() => {
     if (!copied) return;
-    const t = setTimeout(() => setCopied(false), 1500);
+    const t = setTimeout(() => setCopied(null), copied === "failed" ? 4000 : 1500);
     return () => clearTimeout(t);
   }, [copied]);
 
@@ -192,7 +193,11 @@ function PaletteDialog() {
             >
               <span>{item.label}</span>
               <span className="min-w-16 text-right text-[13px] text-muted">
-                {item.id === "copy-email" && copied ? "Copied" : item.hint}
+                {item.id === "copy-email" && copied === "done"
+                  ? "Copied"
+                  : item.id === "copy-email" && copied === "failed"
+                    ? `Copy blocked: ${cv.email}`
+                    : item.hint}
               </span>
             </li>
           ))}

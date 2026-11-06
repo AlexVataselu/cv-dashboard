@@ -126,8 +126,8 @@ export function SkillMatrix() {
                         l?.years != null
                           ? `${l.years} ${l.years === 1 ? "yr" : "yrs"}`
                           : inProjects > 0
-                            ? String(AS_OF)
-                            : "–";
+                            ? `${AS_OF} only`
+                            : "not dated";
                       return (
                         <li key={s.id}>
                           <button
@@ -245,6 +245,13 @@ export function SkillMatrix() {
           const roleCount = used.filter((u) => u.kind === "role").length;
           const projectCount = used.length - roleCount;
           const estimated = (l?.estimatedIn ?? []).map((id) => cv.roles.find((r) => r.id === id)!);
+          // HTML, CSS and JavaScript: the roles their years are implied from (as the matrix marks them)
+          const implied =
+            s.id in IMPLIED_SINCE
+              ? [...cv.roles]
+                  .filter((r) => r.start >= IMPLIED_SINCE[s.id] && !(l?.usedIn ?? []).includes(r.id))
+                  .sort((a, b) => b.start - a.start)
+              : [];
           return (
             <div key={s.id} className="sd" data-detail={s.id}>
               <p className="text-[12px] font-medium text-muted">{s.group}</p>
@@ -254,6 +261,9 @@ export function SkillMatrix() {
                 {used.length === 0
                   ? "Listed on the CV without a role or project."
                   : `Used in ${roleCount} ${roleCount === 1 ? "role" : "roles"} and ${projectCount} ${projectCount === 1 ? "project" : "projects"}.`}
+                {implied.length > 0
+                  ? ` Implied in ${implied.length} more ${implied.length === 1 ? "role" : "roles"}: every web role since ${IMPLIED_SINCE[s.id]}, which its years count from.`
+                  : ""}
                 {estimated.length > 0
                   ? ` Most likely also at ${estimated.map((r) => companyShort(r)).join(" and ")} (estimated, not counted in its years).`
                   : ""}
@@ -273,6 +283,19 @@ export function SkillMatrix() {
                       </li>
                     );
                   })}
+                </ul>
+              ) : null}
+              {implied.length > 0 ? (
+                <ul className="scroll-y mt-1 grid content-start gap-1">
+                  {implied.map((r) => (
+                    <li key={r.id} data-kind={kindOf(r.id)}>
+                      <Link href={`/experience#role-${r.id}`} prefetch={false} className="sd-link sd-implied">
+                        <span className="key size-2.5!" aria-hidden="true" />
+                        <span className="min-w-0 flex-1 truncate">{companyShort(r)}</span>
+                        <span className="tnum text-[13px] text-muted">{period(r)} · implied</span>
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               ) : null}
               {estimated.length > 0 ? (

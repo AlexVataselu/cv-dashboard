@@ -13,7 +13,7 @@ export function SkipIntroDiagram() {
     </span>
   );
   return (
-    <figure className="rounded-[10px] border border-border p-4 md:p-5" aria-labelledby="skip-diagram">
+    <figure className="border-t border-rule pt-4" aria-labelledby="skip-diagram">
       <figcaption id="skip-diagram" className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
         <span className="text-[14px] font-semibold">How it works</span>
         <span className="pill pill-positive">Runs locally, no third-party database</span>

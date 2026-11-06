@@ -43,13 +43,16 @@ export function PaletteTrigger() {
       <button
         ref={ref}
         type="button"
-        aria-label="Search: Open command palette"
+        aria-label="Search, Ctrl K: Open command palette"
         title="Search (Ctrl K)"
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
-        className="btn hidden min-h-10 min-w-11 px-0 text-muted hover:text-ink lg:inline-flex"
+        className="btn hidden min-h-10 min-w-11 gap-1.5 px-2.5 text-muted hover:text-ink lg:inline-flex"
       >
         <SearchIcon className="icon size-[18px]" />
+        <kbd className="palette-kbd" aria-hidden="true">
+          Ctrl K
+        </kbd>
       </button>
       {loaded ? <CommandPalette /> : null}
     </>

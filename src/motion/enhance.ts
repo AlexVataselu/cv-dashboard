@@ -117,5 +117,6 @@ export function boot() {
   installFlip();
   installExpand();
   installPreview();
-  countUp(document);
+  // No count-up here: on first load the real figures have already painted, and counting them up
+  // again after the page is idle read as a glitch ("13 years"). Section switches still count up.
 }
