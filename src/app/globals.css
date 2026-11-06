@@ -3108,3 +3108,160 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
   }
 }
+
+/* ---------- Projects: a visual index beside the chosen project, picture first ---------- */
+@layer components {
+  /* the list: each item with its first screenshot */
+  .pick {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 0 12px;
+    padding: 6px 8px;
+  }
+  .pick-thumb {
+    display: block;
+    width: 64px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 5px;
+    background: var(--raised);
+    box-shadow: inset 0 0 0 1px var(--border);
+    transition: transform 160ms var(--ease-out);
+  }
+  .pick-thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+  .pick:hover .pick-thumb {
+    transform: scale(1.04);
+  }
+  .pick:has(:checked) .pick-thumb {
+    box-shadow: 0 0 0 2px var(--primary-fill);
+  }
+  /* a narrower list under 1440px: smaller thumbnails, so the names keep their room */
+  @media (min-width: 1024px) and (max-width: 1439.98px) {
+    .pick {
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 0 10px;
+    }
+    .pick-thumb {
+      width: 48px;
+    }
+  }
+  /* the chosen project's card keeps the list's height, its content from the top */
+  [data-js] .preview > .card {
+    flex: 1;
+  }
+  @media (min-width: 1280px) {
+    .pr > .pr-list {
+      grid-column: span 3;
+    }
+    .pr > .pr-previews {
+      grid-column: span 9;
+    }
+  }
+
+  /* the preview: a header line, then the picture large beside a short column, then the details */
+  .pj-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 6px 16px;
+    padding-bottom: 14px;
+  }
+  .pj-meta {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .pj-title {
+    margin-top: 2px;
+    font-size: 22px;
+    font-weight: 650;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .pj-what {
+    display: block;
+    margin-top: 2px;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--muted);
+  }
+  .pj-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .pj-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: 12px;
+    min-width: 0;
+  }
+  .pj-aside {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: 16px;
+    min-width: 0;
+  }
+  .pj-lead {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .pj-more {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+  .pj-h3 {
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .pj-details {
+    display: grid;
+    gap: 8px 28px;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .pj-details > li {
+    position: relative;
+    padding-left: 14px;
+  }
+  .pj-details > li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+  }
+  @container (min-width: 40rem) {
+    .pj-what {
+      display: inline;
+      margin-top: 0;
+    }
+    .pj-body {
+      grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+      gap: 28px;
+    }
+    .pj-details {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    /* the diagram inside the card: no frame of its own */
+    .pj-more figure {
+      border-top: 0;
+      padding-top: 0;
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import type { Shot } from "@/content/projectMedia";
 import { BrowserFrame } from "@/components/BrowserFrame";
 
-const SIZES = "(min-width: 1440px) 460px, (min-width: 1024px) 40vw, (min-width: 640px) 92vw, 80vw";
+const SIZES = "(min-width: 1440px) 560px, (min-width: 1024px) 45vw, (min-width: 640px) 92vw, 80vw";
 
 function Frame({ shot, eager }: { shot: Shot; eager: boolean }) {
   if (shot.frame === "phone") {

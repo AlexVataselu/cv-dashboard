@@ -178,7 +178,8 @@ describe("Projects", () => {
     render(<ProjectsPage />);
     const cards = screen.getAllByRole("article");
     expect(cards).toHaveLength(8);
-    expect(cards.map((c) => c.querySelector("p")!.textContent)).toEqual([
+    // the header line: the years, then (for product work) who it was done for
+    expect(cards.map((c) => c.querySelector("p")!.textContent!.split(" · ")[0])).toEqual([
       "2026",
       "2026",
       "Since 2024",

@@ -1,6 +1,6 @@
 import { BrowserFrame } from "@/components/BrowserFrame";
 import { FilterNotice } from "@/components/FilterNotice";
-import { ProjectCard } from "@/components/ProjectCard";
+import { Details, ProjectCard } from "@/components/ProjectCard";
 import { SectionShell } from "@/components/SectionShell";
 import { SkillBadge } from "@/components/SkillBadge";
 import { ExternalIcon } from "@/components/icons";
@@ -20,10 +20,12 @@ const toItem = (p: { id: string; title: string; label: string; skillIds: string[
   name: p.title.split(", ")[0],
   meta: p.label,
   skillIds: p.skillIds,
+  // the first screenshot, 240px wide, 16:9 from the top (scripts/make-thumbs.mjs)
+  thumb: `/work/thumb-${p.id}`,
 });
 const personal = cv.projects.map(toItem);
 const work = cv.workProjects.map(toItem);
-const siteItems = sites.map((s) => ({ id: s.id, name: s.name, meta: s.domain, skillIds: [] as string[] }));
+const siteItems = sites.map((s) => ({ id: s.id, name: s.name, meta: s.domain, skillIds: [] as string[], thumb: s.image }));
 const items = [...personal, ...work, ...siteItems];
 
 /** "Client project at Pentalog (Globant)" from the role the work was done in (its own years are its label). */
@@ -48,81 +50,85 @@ function PreviewStyles() {
   );
 }
 
-function Pick({ id, name, meta, skillIds, first }: (typeof items)[number] & { first: boolean }) {
+function Pick({ id, name, meta, skillIds, thumb, first }: (typeof items)[number] & { first: boolean }) {
   return (
     <label className="pick" data-skills={skillIds.join(" ") || undefined} data-item={skillIds.length ? "project" : undefined}>
       <input type="radio" name="project" id={`pick-${id}`} value={id} defaultChecked={first} aria-controls={`preview-${id}`} />
+      {/* its first screenshot, small: the list shows the work, not only its names */}
+      <picture className="pick-thumb">
+        <source type="image/avif" srcSet={`${thumb}-240.avif 240w`} sizes="64px" />
+        <source type="image/webp" srcSet={`${thumb}-240.webp 240w`} sizes="64px" />
+        <img src={`${thumb}-240.webp`} alt="" width={240} height={135} loading="lazy" decoding="async" />
+      </picture>
       <span className="min-w-0">
-        <span className="pick-name block truncate text-[14px] font-medium">{name}</span>
-        <span className="tnum block truncate text-[13px] text-muted">{meta}</span>
-      </span>
-      {skillIds.length ? (
-        <span className="flex h-6 max-w-[9rem] min-w-0 items-center">
-          <SkillBadge skillIds={skillIds} />
+        <span className="pick-name block text-[14px] font-medium leading-snug">{name}</span>
+        {/* the "Uses …" badge shares the year's line, which never wraps: marking a skill moves nothing */}
+        <span className="flex h-6 min-w-0 items-center gap-2 overflow-hidden whitespace-nowrap">
+          <span className="tnum shrink-0 text-[13px] text-muted">{meta}</span>
+          {skillIds.length ? <SkillBadge skillIds={skillIds} /> : null}
         </span>
-      ) : null}
+      </span>
     </label>
   );
 }
 
-/* A client site as a large preview: its live front page, what it is, and the role it came from. */
+/* A client site, laid out like a project card: picture first, its live front page large. */
 function SitePreview({ site }: { site: (typeof sites)[number] }) {
   const role = cv.roles.find((r) => r.id === site.roleId);
   return (
     <section aria-labelledby={`site-${site.id}`} className="card card-col">
-      {/* Laid out like a project card: the text beside the live page when the preview is wide. */}
       <div className="scroll-y @container">
-        <div className="grid grid-cols-[minmax(0,1fr)] gap-6 @2xl:grid-cols-12 @2xl:gap-8">
-          <div className="min-w-0 @2xl:col-span-5">
+        <header className="pj-head">
+          <div className="min-w-0">
             {role ? (
-              <p className="tnum text-[14px] font-medium text-muted">
-                {companyShort(role)} · {period(role)}
+              <p className="pj-meta tnum">
+                {period(role)} · {companyShort(role)}
               </p>
             ) : null}
-            <h2 id={`site-${site.id}`} className="mt-2 text-[20px] font-semibold leading-tight">
+            <h2 id={`site-${site.id}`} className="pj-title">
               {site.name}
+              <span className="pj-what"> {site.domain}</span>
             </h2>
-            <p className="mt-1 font-mono text-[13px] text-muted">{site.domain}</p>
-            <p className="mt-4 text-[15px] leading-relaxed">{site.note}</p>
-            <h3 className="mt-4 text-[13px] font-medium text-muted">Details</h3>
-            <ul className="mt-1.5 grid gap-1.5 text-[14px] leading-snug">
-              {site.details.map((d) => (
-                <li key={d} className="flex items-start gap-2">
-                  <span className="mt-[7px] size-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
-                  {d}
-                </li>
-              ))}
-            </ul>
-            <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Stack">
+          </div>
+        </header>
+        <div className="pj-body">
+          <div className="pj-stage">
+            <a href={site.url} className="block" tabIndex={-1} aria-hidden="true">
+              <BrowserFrame
+                image={site.image}
+                address={site.domain}
+                alt={`Front page of ${site.domain}`}
+                sizes="(min-width: 1440px) 560px, (min-width: 1024px) 45vw, 92vw"
+              />
+            </a>
+          </div>
+          <div className="pj-aside">
+            <p className="pj-lead">{site.note}</p>
+            <ul className="flex flex-wrap gap-1.5" aria-label="Stack">
               {site.stack.map((t) => (
                 <li key={t} className="pill">
                   {t}
                 </li>
               ))}
             </ul>
-            <a href={site.url} className="card-link mt-5">
+            <a href={site.url} className="card-link">
               Visit {site.domain}
               <ExternalIcon />
             </a>
           </div>
-          <div className="min-w-0 @2xl:col-span-7">
-            <a href={site.url} className="block" tabIndex={-1} aria-hidden="true">
-              <BrowserFrame
-                image={site.image}
-                address={site.domain}
-                alt={`Front page of ${site.domain}`}
-                sizes="(min-width: 1024px) 640px, 92vw"
-              />
-            </a>
-          </div>
         </div>
+        <section className="pj-more" aria-label={`${site.name}: details`}>
+          <h3 className="pj-h3">Details</h3>
+          <Details items={site.details} />
+        </section>
       </div>
     </section>
   );
 }
 
 /*
-  One screen: the list (4 columns) beside the preview of the chosen item (8). The list is a radio
+  One screen: the list, each item with its first screenshot as a thumbnail (3 columns; 4 under
+  1280px), beside the preview of the chosen item, picture first (9; 8). The list is a radio
   group: arrow keys move through it and a screen reader reads each choice. The preview switches by
   CSS; the motion layer, when loaded, slides the new one in.
 */
@@ -134,7 +140,7 @@ export default function ProjectsPage() {
     >
       <PreviewStyles />
       <div className="panel-grid pr">
-        <section aria-labelledby="pick-title" className="pick-wrap card card-col span-4">
+        <section aria-labelledby="pick-title" className="pick-wrap card card-col span-4 pr-list">
           <div className="card-head mb-0!">
             <h2 id="pick-title" className="card-title">
               Choose a project
@@ -166,7 +172,7 @@ export default function ProjectsPage() {
           </div>
         </section>
 
-        <div className="previews card-col span-8">
+        <div className="previews card-col span-8 pr-previews">
           {/* The first project's screenshot is above the fold on desktop: it loads eagerly, the rest lazily. */}
           {cv.projects.map((p, i) => (
             <div key={p.id} id={`preview-${p.id}`} className="preview">
