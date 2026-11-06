@@ -14,12 +14,9 @@ export const metadata = pageMetadata({
 });
 
 /*
-  The Overview, as a page that scrolls inside the panel when it must (it no longer squeezes every
-  card into one screen and clips them):
-  1. the four headline figures;
-  2. the results, as the hero: the CV's own beside the ones measured on the work;
-  3. the career ladder, with the skills in use by year and About beside it;
-  4. the skills.
+  The Overview, on one screen from 1024x640: the four figures over the career ladder, the results
+  and, in the last column, skills in use by year, the skills and About. Only the cards that hold
+  more than their slot scroll, each inside itself.
   The whole grid is a `.linked` area: a role hovered or focused on the ladder (or a result) lights
   its results and skills.
 */
