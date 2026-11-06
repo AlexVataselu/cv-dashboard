@@ -79,6 +79,7 @@ export function StackCard({ className }: { className?: string }) {
               key={y}
               className="st-col"
               data-y={y}
+              data-years={y}
               data-now={y >= since ? "" : undefined}
               tabIndex={0}
               aria-label={`${y}: ${counts[i]} skills in use${newIn(y).length ? `; new: ${newIn(y).map((s) => s.name).join(", ")}` : ""}`}
@@ -98,7 +99,7 @@ export function StackCard({ className }: { className?: string }) {
           <b className="tnum">{AS_OF}</b>: {counts.at(-1)} in use; hover a year for what was new
         </p>
         {YEARS.map((y, i) => (
-          <p key={y} className="st-read" data-y={y}>
+          <p key={y} className="st-read" data-y={y} data-years={y}>
             <b className="tnum">{y}</b>: {counts[i]} in use
             {newIn(y).length ? (
               <>
@@ -137,7 +138,7 @@ export function KindsCard({ className }: { className?: string }) {
         {YEARS.map((y, i) => {
           const ks = kindsIn(y);
           return (
-            <li key={y} aria-label={`${y}: ${ks.map((k) => KIND_LABEL[k]).join(" and ") || "none"}`}>
+            <li key={y} data-y={y} data-years={y} aria-label={`${y}: ${ks.map((k) => KIND_LABEL[k]).join(" and ") || "none"}`}>
               <span className="ky-cell">
                 {ks.map((k) => (
                   <span key={k} data-kind={k} />
@@ -175,13 +176,15 @@ export function KindsCard({ className }: { className?: string }) {
  * The three industries, each with the roles behind it and the live client sites shipped in it (real
  * screenshots, each a link). Fintech has no public site on the CV: it says so.
  */
+export const INDUSTRIES: { name: string; roleIds: string[]; siteIds: string[] }[] = [
+  { name: "Healthcare", roleIds: ["freelance-2021"], siteIds: ["recuperareacasa", "eyeexcellence", "orlrasnov"] },
+  { name: "Fintech", roleIds: ["freelance-2021"], siteIds: [] },
+  { name: "Cultural heritage", roleIds: ["freelance-2021", "freelance-2025"], siteIds: ["arhivelelitoralului", "azuga365", "litoralinlucru"] },
+];
+
 export function IndustriesCard({ className }: { className?: string }) {
   const role = (id: string) => cv.roles.find((r) => r.id === id)!;
-  const industries: { name: string; roleIds: string[]; siteIds: string[] }[] = [
-    { name: "Healthcare", roleIds: ["freelance-2021"], siteIds: ["recuperareacasa", "eyeexcellence", "orlrasnov"] },
-    { name: "Fintech", roleIds: ["freelance-2021"], siteIds: [] },
-    { name: "Cultural heritage", roleIds: ["freelance-2021", "freelance-2025"], siteIds: ["arhivelelitoralului", "azuga365", "litoralinlucru"] },
-  ];
+  const industries = INDUSTRIES;
   return (
     <section aria-labelledby="ind-title" className={`card card-col ${className ?? ""}`}>
       <div className="card-head mb-1!">
@@ -205,7 +208,15 @@ export function IndustriesCard({ className }: { className?: string }) {
                   const s = sites.find((x) => x.id === id)!;
                   return (
                     <li key={id}>
-                      <a href={s.url} className="ind-site" data-link={s.roleId} title={`${s.name}, ${s.domain}`}>
+                      <a
+                        href={s.url}
+                        className="ind-site"
+                        data-link={s.roleId}
+                        data-name={s.name}
+                        data-domain={s.domain}
+                        data-note={s.note}
+                        data-period={period(role(s.roleId))}
+                      >
                         <BrowserFrame image={s.image} address={s.domain} alt={`${s.name}, ${s.domain}`} sizes="80px" thumb />
                       </a>
                     </li>

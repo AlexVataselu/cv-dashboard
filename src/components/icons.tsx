@@ -70,6 +70,16 @@ export const ChevronDownIcon = (p: SVGProps<SVGSVGElement>) => (
     <path d="m4,6,4,4,4-4" />
   </Icon>
 );
+export const PlayIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M5,3.5v9l7.5-4.5z" fill="currentColor" />
+  </Icon>
+);
+export const StopIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <rect x="4" y="4" width="8" height="8" rx="1" fill="currentColor" />
+  </Icon>
+);
 export const ArrowRightIcon = (p: SVGProps<SVGSVGElement>) => (
   <Icon {...p}>
     <path d="M3,8h10M9,4l4,4-4,4" />

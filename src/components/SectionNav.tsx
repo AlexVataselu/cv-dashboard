@@ -35,6 +35,8 @@ export function SectionNav({ current }: { current?: SectionId }) {
               // The panel slides the way the tabs run: forward to a tab on the right, back to one on the left.
               transitionTypes={[i < at ? "nav-back" : "nav-forward"]}
               className="tab"
+              // the number keys switch sections (src/motion/interact.ts)
+              aria-keyshortcuts={String(i + 1)}
             >
               <span className="tab-label">{s.label}</span>
               {/* The pressed key is one element with one view-transition name, so a section

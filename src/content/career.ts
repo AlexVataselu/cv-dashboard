@@ -80,3 +80,13 @@ export function careerTotals(now: number = AS_OF) {
   const productTeams = cv.roles.filter((r) => kindOf(r.id) === "product").length;
   return { years, overlap: roleYearSum - years, productTeams };
 }
+
+/**
+ * The years a span was held in, by the rule the kinds strip uses: from its start up to (not
+ * including) its end, and the CV's year itself for what is still running.
+ */
+export function yearsHeld(start: number, end: number, ongoing: boolean): number[] {
+  const out: number[] = [];
+  for (let y = start; y <= AS_OF; y++) if (y < end || (ongoing && y === AS_OF)) out.push(y);
+  return out;
+}

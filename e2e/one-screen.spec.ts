@@ -75,10 +75,13 @@ test.describe("every CV fact is reachable by keyboard", () => {
     // Results and About scroll inside their cards and take focus, so the keyboard can scroll them.
     const results = page.getByRole("region", { name: "Results, scrollable" });
     await results.focus();
-    await page.keyboard.press("End");
     await expect(page.getByText(cv.impact.at(-1)!.label)).toBeAttached();
     const last = results.locator(".result").last();
-    await expect(last).toBeInViewport();
+    // focus opens each measured result's how-and-when line, so the list grows as End scrolls it
+    await expect(async () => {
+      await page.keyboard.press("End");
+      await expect(last).toBeInViewport({ timeout: 400 });
+    }).toPass();
     const about = page.getByRole("region", { name: "About, scrollable" });
     await about.focus();
     await page.keyboard.press("End");
@@ -296,4 +299,68 @@ test("with motion allowed: the motion layer loads after idle, outside the first-
     // "translate(0px, 0px)" is a literal of the motion layer (src/motion/enhance.ts) only.
     expect(js, `${src} must not carry the motion layer`).not.toContain("translate(0px, 0px)");
   }
+});
+
+test.describe("the Overview's interactions", () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test("a year in focus lights what was held that year and the figures as of it; Play walks the years", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("data-interact", "");
+    const main = page.locator("#main");
+    await page.locator('.st-col[data-y="2016"]').hover();
+    await expect(main).toHaveAttribute("data-year", "2016");
+    await expect(page.locator(".cl-ch.is-year")).toHaveCount(1);
+    await expect(page.locator(".cl-ch.is-year")).toHaveAttribute("data-ch", "zega");
+    await expect(page.locator(".kpi-value").first()).toHaveText("4");
+    await expect(page.locator(".kpi-detail").first()).toHaveText("as of 2016");
+    await page.mouse.move(2, 2);
+    await expect(main).not.toHaveAttribute("data-year", /.+/);
+    await expect(page.locator(".kpi-value").first()).toHaveText(cv.glance[0].value);
+
+    const play = page.locator(".cl-play");
+    await expect(play).toHaveAccessibleName(/Play the career/);
+    await play.click();
+    await expect(play).toHaveAttribute("aria-pressed", "true");
+    await expect(main).toHaveAttribute("data-year", "2013");
+    await play.click();
+    await expect(play).toHaveAttribute("aria-pressed", "false");
+    await expect(main).not.toHaveAttribute("data-year", /.+/);
+  });
+
+  test("a chosen skill draws its thread through the chapters that used it", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("data-interact", "");
+    await page.locator('.ov-skills button[data-skill="react"]').click();
+    const lit = await page.locator(".ov-tl .cl-ch:has([data-highlight='true'])").count();
+    expect(lit).toBeGreaterThan(1);
+    await expect(page.locator(".ov-tl .cl-thread circle")).toHaveCount(lit);
+    await page.locator('.ov-skills button[data-skill="react"]').click();
+    await expect(page.locator(".ov-tl .cl-thread circle")).toHaveCount(0);
+  });
+
+  test("a live site's picture opens a larger peek; Escape closes it", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("data-interact", "");
+    const site = page.locator("a.ind-site").first();
+    await site.focus();
+    const peek = page.locator("#site-peek");
+    await expect(peek).toBeVisible();
+    await expect(site).toHaveAttribute("aria-describedby", "site-peek");
+    await expect(peek).toContainText(sites.find((s) => s.id === "recuperareacasa")!.domain);
+    await page.keyboard.press("Escape");
+    await expect(peek).toBeHidden();
+  });
+
+  test("number keys switch sections, but not while typing in the palette", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("data-interact", "");
+    await page.keyboard.press("3");
+    await expect(page).toHaveURL(/\/skills\/?$/);
+    await page.keyboard.press("1");
+    await expect(page).toHaveURL(/\/$/);
+    await page.keyboard.press("Control+k");
+    await page.keyboard.type("2");
+    await expect(page).toHaveURL(/\/$/);
+  });
 });

@@ -1,10 +1,11 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { cv } from "@/content/cv";
-import { AS_OF, FIRST_YEAR, KINDS, KIND_LABEL, careerTotals, companyShort, kindOf, overlapSpan, period, roleEnd, roleYears } from "@/content/career";
+import { AS_OF, FIRST_YEAR, KINDS, KIND_LABEL, careerTotals, companyShort, kindOf, overlapSpan, period, roleEnd, roleYears, yearsHeld } from "@/content/career";
 import { IMPLIED_SINCE, deriveAllSkillLevels, usageIndex } from "@/content/skillLevels";
 import type { Role } from "@/content/types";
 import { SkillPicker } from "@/components/SkillPicker";
+import { PlayIcon, StopIcon } from "@/components/icons";
 
 const yrs = (n: number) => `${n} ${n === 1 ? "yr" : "yrs"}`;
 const SPAN = AS_OF - FIRST_YEAR;
@@ -68,9 +69,12 @@ export function CareerLadder({ variant, className }: { variant: "overview" | "ex
 
   // the chapters, newest first; the personal projects run alongside the roles since their first year
   const chapters = [
-    ...roles.map((r) => ({ id: r.id, start: r.start, end: roleEnd(r, AS_OF), kind: kindOf(r.id) as string })),
-    { id: "projects", start: projStart, end: AS_OF, kind: "projects" },
+    ...roles.map((r) => ({ id: r.id, start: r.start, end: roleEnd(r, AS_OF), now: r.end === "now", kind: kindOf(r.id) as string })),
+    { id: "projects", start: projStart, end: AS_OF, now: true, kind: "projects" },
   ].sort((a, b) => b.end - a.end || b.start - a.start);
+  // the years each chapter was held in: a year in focus (hovered on the rail, the chart or the kinds
+  // strip, or played) lights the chapters that hold it (src/motion/interact.ts)
+  const held = (c: (typeof chapters)[number]) => yearsHeld(c.start, c.end, c.now).join(" ");
   const lane = lanes(chapters);
   const max = variant === "overview" ? 3 : Infinity;
   // Each chapter's share of the height: on Experience a role with many skills (two rows of chips)
@@ -101,9 +105,21 @@ export function CareerLadder({ variant, className }: { variant: "overview" | "ex
         {css}
       </style>
       <div className="card-head mb-1!">
-        <h2 id={`cl-title-${variant}`} className="card-title">
-          Career, {FIRST_YEAR} to now
-        </h2>
+        <div className="flex min-w-0 items-center gap-2">
+          <h2 id={`cl-title-${variant}`} className="card-title">
+            Career, {FIRST_YEAR} to now
+          </h2>
+          {/* Plays the career a year at a time: the chapters, the chart, the kinds strip and the
+              figures follow the year. Needs JS, so it shows only with it. */}
+          {variant === "overview" ? (
+            <button type="button" className="cl-play" aria-pressed="false" data-from={FIRST_YEAR} data-to={AS_OF}>
+              <PlayIcon className="icon cl-play-on size-3.5" />
+              <StopIcon className="icon cl-play-off size-3.5" />
+              <span className="cl-play-label">Play</span>
+              <span className="sr-only"> the career, {FIRST_YEAR} to {AS_OF}</span>
+            </button>
+          ) : null}
+        </div>
         <p className="meta tnum">
           {yrs(total)} in dated roles{shared ? `, ${shared.start}–${shared.end} two at once` : ""}
         </p>
@@ -123,7 +139,8 @@ export function CareerLadder({ variant, className }: { variant: "overview" | "ex
 
       <SkillPicker className={`cl cl-${variant}`} roving rovingSelector=".cl-chip">
         {/* the years, with each role as a span as long as it lasted */}
-        <div className="cl-rail" aria-hidden="true">
+        <div className="cl-rail" aria-hidden="true" data-from={FIRST_YEAR} data-to={AS_OF}>
+          <span className="cl-at" />
           {ticks.map((t) => (
             <span key={t} className="cl-tick tnum" style={{ top: `${y(t)}%` }}>
               {t}
@@ -134,6 +151,7 @@ export function CareerLadder({ variant, className }: { variant: "overview" | "ex
               key={c.id}
               className="cl-span"
               data-ch={c.id}
+              data-years={held(c)}
               data-kind={c.kind === "projects" ? undefined : c.kind}
               data-proj={c.kind === "projects" ? "" : undefined}
               data-skills={skillsOf(c.id).map((s) => s.id).join(" ")}
@@ -158,6 +176,7 @@ export function CareerLadder({ variant, className }: { variant: "overview" | "ex
                 key={c.id}
                 className="cl-line"
                 data-ch={c.id}
+                data-years={held(c)}
                 data-kind={c.kind === "projects" ? undefined : c.kind}
                 data-skills={skillsOf(c.id).map((s) => s.id).join(" ")}
                 d={`M0 ${a} C 55 ${a}, 45 ${b}, 100 ${b}`}
@@ -167,8 +186,10 @@ export function CareerLadder({ variant, className }: { variant: "overview" | "ex
           })}
         </svg>
 
+        {/* a selected skill's thread through the chapters that used it (drawn by src/motion/interact.ts) */}
+        <svg className="cl-thread" aria-hidden="true" />
         <ol className="cl-chapters" style={{ gridTemplateRows: weights.map((w) => `minmax(0, ${w}fr)`).join(" ") }}>
-          {chapters.map((c) => {
+          {chapters.map((c, n) => {
             const r = cv.roles.find((x) => x.id === c.id);
             const chips = skillsOf(c.id);
             const shown = chips.slice(0, max);
@@ -183,7 +204,14 @@ export function CareerLadder({ variant, className }: { variant: "overview" | "ex
               "data-item": r ? "role" : undefined,
             };
             return (
-              <li key={c.id} className="cl-ch" data-ch={c.id} data-kind={r ? kindOf(r.id) : undefined}>
+              <li
+                key={c.id}
+                className="cl-ch"
+                data-ch={c.id}
+                data-kind={r ? kindOf(r.id) : undefined}
+                data-years={held(c)}
+                style={{ "--n": n } as CSSProperties}
+              >
                 {r ? (
                   variant === "overview" ? (
                     <Link href={`/experience#role-${r.id}`} prefetch={false} {...linkProps}>

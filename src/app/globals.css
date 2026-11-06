@@ -2879,3 +2879,232 @@ html[data-backlight="off"]::view-transition-old(root) {
     --dvh: calc(1dvh / 2);
   }
 }
+
+/* ======================================================================
+   Interactivity (src/motion/interact.ts) and the Overview's motion
+   ====================================================================== */
+@layer components {
+  /* ---- Play: walks the career a year at a time (needs JS, so it shows only with the layer) ---- */
+  .cl-play {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    height: 26px;
+    padding: 0 10px 0 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 600;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      transform 120ms var(--ease-out);
+  }
+  [data-interact] .cl-play {
+    display: inline-flex;
+  }
+  .cl-play:hover {
+    border-color: var(--primary-fill);
+  }
+  .cl-play:active {
+    transform: translateY(1px);
+  }
+  .cl-play[aria-pressed="true"] {
+    border-color: var(--primary-fill);
+    background: color-mix(in srgb, var(--primary-fill) 18%, var(--surface));
+  }
+  .cl-play-off,
+  .cl-play[aria-pressed="true"] .cl-play-on {
+    display: none;
+  }
+  .cl-play[aria-pressed="true"] .cl-play-off {
+    display: block;
+  }
+  .cl-play .icon {
+    color: var(--primary-fill);
+  }
+
+  /* ---- a year in focus: what was held that year stays lit, the rest steps back ---- */
+  .cl {
+    position: relative;
+  }
+  .cl-rail {
+    cursor: ns-resize;
+  }
+  .cl-at {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: -30px;
+    border-top: 2px solid var(--primary-fill);
+    pointer-events: none;
+    transition: top 260ms var(--ease-out);
+  }
+  .cl-at::before {
+    content: attr(data-y);
+    position: absolute;
+    left: 0;
+    top: -9px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--primary-fill);
+    color: var(--primary-fill-ink);
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+  }
+  #main[data-year] .cl-at {
+    display: block;
+  }
+  #main[data-year] .cl-tick {
+    opacity: 0.35;
+  }
+  #main[data-year] :is(.cl-ch, .cl-span, .cl-line):not(.is-year) {
+    opacity: 0.28;
+  }
+  #main[data-year] .cl-ch.is-year {
+    background: var(--active);
+    box-shadow: inset 0 0 0 1px var(--hue, var(--muted));
+  }
+  #main[data-year] .cl-line.is-year {
+    opacity: 1;
+    stroke-width: 2.5;
+  }
+  .st-col.is-year .st-bar {
+    background: color-mix(in srgb, var(--muted) 70%, var(--ink));
+  }
+  .st-col[data-now].is-year .st-bar {
+    background: var(--primary-fill-hover);
+  }
+  .st-col.is-year .st-n {
+    opacity: 1;
+  }
+  .st-read.is-year {
+    display: block;
+  }
+  .st:has(.st-read.is-year) .st-read[data-y="idle"] {
+    display: none;
+  }
+  .ky > li[data-y] {
+    border-radius: 3px;
+  }
+  .ky > li.is-year .ky-cell {
+    outline: 2px solid var(--ink);
+    outline-offset: 1px;
+  }
+  .ky > li.is-year .ky-y {
+    color: var(--ink);
+  }
+  #main[data-year] .kpi-detail {
+    color: var(--primary);
+  }
+
+  /* ---- a selected skill's thread through the chapters that used it ---- */
+  .cl-thread {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .cl-thread-line {
+    fill: none;
+    stroke: var(--primary-fill);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .cl-thread-dot {
+    fill: var(--primary-fill);
+  }
+
+  /* ---- the site peek ---- */
+  .peek {
+    position: fixed;
+    z-index: 60;
+    display: grid;
+    gap: 2px;
+    width: 340px;
+    padding: 8px 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: 0 12px 32px rgb(0 0 0 / 0.28);
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .peek[hidden] {
+    display: none;
+  }
+  .peek-shot {
+    display: block;
+    margin-bottom: 6px;
+    overflow: hidden;
+    border-radius: 6px;
+  }
+  .peek-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .peek b {
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  /* ---- a number key pressed: the section key goes down as if clicked ---- */
+  .keys .tab.tab-press {
+    background: var(--active);
+  }
+  .keys .tab.tab-press .tab-label {
+    transform: translateY(2px);
+  }
+
+  /* ---- the results: a measured result's how and when opens on hover, or with the list in focus ---- */
+  @media (min-width: 1024px) and (min-height: 640px) {
+    [data-interact] .ov-res .result-how {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition:
+        max-height 240ms var(--ease-out),
+        opacity 200ms ease;
+    }
+    [data-interact] .ov-res .result:hover .result-how,
+    [data-interact] .ov-res .scroll-y:focus-visible .result-how {
+      max-height: 5em;
+      opacity: 0.85;
+    }
+  }
+
+  /* ---- the ladder draws itself: the spans grow (above), then the lines reach out, then the chapters arrive ---- */
+  @media (prefers-reduced-motion: no-preference) {
+    .cl-lines {
+      animation: cl-reach 650ms var(--ease-out) 380ms backwards;
+    }
+    .cl-ch {
+      animation: cl-arrive 420ms var(--ease-out) backwards;
+      animation-delay: calc(560ms + var(--n, 0) * 55ms);
+    }
+  }
+  @keyframes cl-reach {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes cl-arrive {
+    from {
+      opacity: 0;
+      transform: translateX(-12px);
+    }
+  }
+}

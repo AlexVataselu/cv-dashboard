@@ -39,6 +39,7 @@ export function enter() {
   );
   const main = document.getElementById("main");
   if (main) countUp(main);
+  watchResults(true);
 }
 
 /** Filters: the chips and groups that stay glide to their new places; the ones that return fade in. */
@@ -111,12 +112,59 @@ function installPreview() {
   });
 }
 
+/** A result's figure counts to its value: every number in it from 0 ("−40%", "23/23", "4→2"); a
+    figure with no number ("days→hours") rises into place. */
+function playFigure(el: HTMLElement) {
+  const text = (el.dataset.fig ??= el.textContent ?? "");
+  const parts = text.split(/(\d+)/);
+  if (parts.length === 1) {
+    animate(el, { opacity: [0, 1], transform: ["translateY(6px)", "translateY(0)"] }, { duration: 0.4, ease });
+    return;
+  }
+  const start = performance.now();
+  const step = (t: number) => {
+    const p = Math.min(1, (t - start) / 800);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = parts.map((x, i) => (i % 2 ? String(Math.round(Number(x) * e)) : x)).join("");
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+let results: IntersectionObserver[] = [];
+/** The results play as they scroll into view inside their card. The ones already in view at first
+    paint stay as they are (they were read already); on a section switch the visible ones play too. */
+function watchResults(playVisible: boolean) {
+  for (const o of results) o.disconnect();
+  results = [];
+  const figs = [...document.querySelectorAll<HTMLElement>(".ov-res .result > p:first-child")];
+  if (figs.length === 0) return;
+  const box = figs[0].closest<HTMLElement>(".scroll-y");
+  const root = box && getComputedStyle(box).overflowY !== "visible" ? box : null;
+  let first = true;
+  const o = new IntersectionObserver(
+    (entries) => {
+      for (const en of entries) {
+        if (!en.isIntersecting) continue;
+        o.unobserve(en.target);
+        if (first && !playVisible) continue;
+        playFigure(en.target as HTMLElement);
+      }
+      first = false;
+    },
+    { root, threshold: 0.6 },
+  );
+  for (const f of figs) o.observe(f);
+  results.push(o);
+}
+
 /** Runs once, after the first page is idle. */
 export function boot() {
   document.documentElement.dataset.motion = "";
   installFlip();
   installExpand();
   installPreview();
+  watchResults(false);
   // No count-up here: on first load the real figures have already painted, and counting them up
   // again after the page is idle read as a glitch ("13 years"). Section switches still count up.
 }
