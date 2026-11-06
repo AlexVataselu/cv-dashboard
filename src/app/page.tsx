@@ -1,4 +1,3 @@
-import { BrowserFrame } from "@/components/BrowserFrame";
 import { CareerLadder } from "@/components/CareerLadder";
 import { ImpactList } from "@/components/ImpactList";
 import { KpiStrip } from "@/components/KpiStrip";
@@ -11,62 +10,12 @@ import { LinkedStyles } from "@/components/LinkedStyles";
 import { SectionShell } from "@/components/SectionShell";
 import { SkillGroups } from "@/components/SkillGroups";
 import { cv } from "@/content/cv";
-import { period } from "@/content/career";
-import { sites } from "@/content/sites";
 import { HOME_DESCRIPTION, pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({
   description: HOME_DESCRIPTION,
   path: "/",
 });
-
-/** The client sites as a strip of thumbnails beside the title: each a link to the live site. */
-function SitesStrip() {
-  return (
-    <section
-      aria-labelledby="shipped"
-      className="flex shrink-0 items-center gap-3"
-    >
-      <h2
-        id="shipped"
-        className="text-[13px] font-medium text-muted max-[1399px]:sr-only"
-      >
-        Client sites, live
-      </h2>
-      <ul className="flex gap-2">
-        {sites.map((s) => {
-          const role = cv.roles.find((r) => r.id === s.roleId);
-          return (
-            <li key={s.id} className="site-thumb">
-              <a
-                href={s.url}
-                className="block"
-                data-link={s.roleId}
-                aria-describedby={`site-tip-${s.id}`}
-              >
-                <BrowserFrame
-                  image={s.image}
-                  address={s.domain}
-                  alt={`Front page of ${s.domain}`}
-                  sizes="72px"
-                  thumb
-                />
-              </a>
-              <span id={`site-tip-${s.id}`} role="tooltip" className="site-tip">
-                <span className="block font-semibold text-ink">{s.name}</span>
-                <span className="block">{s.note}</span>
-                <span className="block font-mono text-[12px]">
-                  {s.domain}
-                  {role ? ` · ${period(role)}` : ""}
-                </span>
-              </span>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  );
-}
 
 /*
   The Overview on one screen (1024x640 and up), everything in view at once, on a 12-column grid:
@@ -100,7 +49,6 @@ export default function Home() {
     <SectionShell
       title="Overview"
       lead="Senior frontend engineer, 14 years building software."
-      actions={<SitesStrip />}
     >
       <LinkedStyles />
       <div className="panel-grid ov linked">

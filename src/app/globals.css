@@ -2762,55 +2762,8 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
 }
 
-/* ---------- restored: the client-site strip, kinds of work and industries (Overview) ---------- */
+/* ---------- the Overview: kinds of work (the year strip, the kinds) and industries ---------- */
 @layer components {
-  /* the client-site strip by the Overview's title: thumbnails with a tip on hover or focus */
-  .site-thumb {
-    position: relative;
-    width: 72px;
-  }
-  @media (max-width: 1399.98px) {
-    .site-thumb {
-      width: 58px;
-    }
-  }
-  /* seven thumbnails and their gaps fit a 320px screen's 288px of content */
-  @media (max-width: 639.98px) {
-    .site-thumb {
-      width: 34px;
-    }
-  }
-  .site-tip {
-    display: none;
-    position: absolute;
-    z-index: 30;
-    top: calc(100% + 8px);
-    right: 0;
-    width: 260px;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--surface);
-    box-shadow: 0 8px 24px rgb(0 0 0 / 0.14);
-    font-size: 13px;
-    line-height: 1.4;
-    color: var(--muted);
-  }
-  .site-thumb:hover .site-tip,
-  .site-thumb:focus-within .site-tip {
-    display: block;
-  }
-  [data-tips-off] .site-tip {
-    display: none !important;
-  }
-  /* ----- kinds of work: a 100% bar, the year strip, the kinds ----- */
-  .kb {
-    display: flex;
-    gap: 2px;
-    height: 22px;
-    border-radius: 5px;
-    overflow: hidden;
-  }
   .kb > li {
     flex-basis: 0;
     min-width: 0;
