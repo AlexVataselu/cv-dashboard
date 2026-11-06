@@ -3014,3 +3014,44 @@ html[data-backlight="off"]::view-transition-old(root) {
     font-size: 12px;
   }
 }
+/* the Results card: its two groups, and a measured result's how and when */
+@layer components {
+  .result-group {
+    padding: 10px 8px 2px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+  }
+  .result-group:first-child {
+    padding-top: 0;
+  }
+  .result-how {
+    margin-top: 1px;
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--muted);
+    opacity: 0.85;
+  }
+  .result-proj {
+    display: inline-block;
+    width: 10px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--muted);
+  }
+}
+/* the Overview's narrow Results column: the CV's five results stay in view above the fold */
+@layer components {
+  @media (min-width: 1280px) and (min-height: 640px) {
+    [data-js] .ov-res .card-head .meta {
+      display: none;
+    }
+    [data-js] .ov-res .result-group {
+      padding-top: 6px;
+    }
+    [data-js] .ov-res .result-group:first-child {
+      padding-top: 0;
+    }
+  }
+}

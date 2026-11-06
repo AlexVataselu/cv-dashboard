@@ -1,0 +1,70 @@
+{
+  "tool": "Lighthouse 12.6.1, mobile (default throttling), median of 3 runs",
+  "date": "2026-11-05",
+  "sites": {
+    "alexvataselu.vercel.app": {
+      "performance": 96,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpSeconds": 2.1,
+      "cls": 0
+    },
+    "arhivelelitoralului.ro": {
+      "performance": 64,
+      "accessibility": 62,
+      "bestPractices": 100,
+      "seo": 77,
+      "lcpSeconds": 17.5,
+      "cls": 0.014
+    },
+    "azuga365.ro": {
+      "performance": 69,
+      "accessibility": 96,
+      "bestPractices": 100,
+      "seo": 85,
+      "lcpSeconds": 4.8,
+      "cls": 0
+    },
+    "eyeexcellence.ro": {
+      "performance": 49,
+      "accessibility": 80,
+      "bestPractices": 96,
+      "seo": 92,
+      "lcpSeconds": 13.9,
+      "cls": 0
+    },
+    "litoralinlucru.ro": {
+      "performance": 76,
+      "accessibility": 96,
+      "bestPractices": 100,
+      "seo": 92,
+      "lcpSeconds": 6.7,
+      "cls": 0.001
+    },
+    "local-only-v2.vercel.app": {
+      "performance": 58,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpSeconds": 40.1,
+      "cls": 0
+    },
+    "orlrasnov.ro": {
+      "performance": 57,
+      "accessibility": 92,
+      "bestPractices": 75,
+      "seo": 100,
+      "lcpSeconds": 9.5,
+      "cls": 0.004
+    },
+    "www.recuperareacasa.ro": {
+      "performance": 56,
+      "accessibility": 83,
+      "bestPractices": 93,
+      "seo": 82,
+      "lcpSeconds": 50.5,
+      "cls": 0.001
+    }
+  }
+}
