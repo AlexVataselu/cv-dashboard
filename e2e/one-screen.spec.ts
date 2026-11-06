@@ -8,6 +8,7 @@ const ROUTES = ["/", "/experience", "/skills", "/projects", "/education"];
 const hydrated = (page: Page) => expect(page.locator("#skill-live")).toHaveCount(1);
 
 for (const [width, height] of [
+  [2560, 1440], // zoomed to lay out as 1920x1080 (the big-screen rule)
   [1440, 900],
   [1366, 768],
   [1280, 720],
@@ -60,8 +61,12 @@ test.describe("every CV fact is reachable by keyboard", () => {
     await page.goto("/");
     await hydrated(page);
     for (const g of cv.glance) await expect(page.locator(".kpi-label", { hasText: g.label })).toBeInViewport();
-    for (const sel of [".ov-tl", ".ov-res", ".ov-stack", ".ov-skills", ".ov-about"])
+    for (const sel of [".ov-tl", ".ov-res", ".ov-stack", ".ov-kinds", ".ov-skills", ".ov-about", ".ov-ind"])
       await expect(page.locator(sel)).toBeInViewport({ ratio: 0.99 });
+    // The industries card links each live site.
+    // (the CV's three industries come from the freelance work: Kemblimed's 2012 site is not one of them)
+    for (const s of sites.filter((x) => x.roleId !== "kemblimed"))
+      await expect(page.locator(`.ov-ind a[href="${s.url}"]`)).toBeAttached();
     for (const r of cv.roles) await expect(page.locator(".ov-tl")).toContainText(r.company.split(/,| · /)[0].trim());
     // The skills-by-year chart: a year in focus reads what it held and what was new.
     await page.locator('.st-col[data-y="2021"]').focus();
