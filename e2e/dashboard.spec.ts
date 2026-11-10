@@ -66,22 +66,13 @@ test.describe("without JavaScript", () => {
     }
   });
 
-  test("every role opens via its summary and shows its bullets; newest renders open", async ({
-    page,
-  }) => {
+  test("every role's page is shown in turn, with its bullets", async ({ page }) => {
     await page.goto("/experience");
-    const roles = page.locator("details");
-    const count = await roles.count();
-    expect(count).toBeGreaterThan(1);
-    await expect(roles.first()).toHaveJSProperty("open", true);
-    await expect(roles.nth(1)).toHaveJSProperty("open", false);
-    for (let i = 0; i < count; i++) {
-      const role = roles.nth(i);
-      if (i > 0) await role.locator("summary").click();
-      await expect(role).toHaveJSProperty("open", true);
-      const bullets = role.locator("li");
-      expect(await bullets.count()).toBeGreaterThan(0);
-      await expect(bullets.first()).toBeVisible();
+    const roles = page.locator(".rc-ex-role");
+    expect(await roles.count()).toBe(7);
+    for (const role of await roles.all()) {
+      await expect(role.getByRole("heading", { level: 2 })).toBeVisible();
+      await expect(role.locator(".rc-bullets li").first()).toBeVisible();
     }
   });
 });
@@ -92,40 +83,6 @@ test("320x640 has no horizontal overflow on any route", async ({ page }) => {
     await page.goto(r.path);
     const w = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(w, `${r.path} scrollWidth`).toBeLessThanOrEqual(320);
-  }
-});
-
-test("320px: the 'Uses X' badge has its own line and never covers a role's dates, with no shift", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 320, height: 640 });
-  await page.goto("/experience");
-  const summaries = page.locator("details > summary");
-  const plain = await Promise.all((await summaries.all()).map((s) => s.boundingBox()));
-
-  await page.goto("/experience?skill=nextjs");
-  const badges = page.locator("summary").getByText(/^Uses Next\.js/);
-  await expect(badges.first()).toBeVisible();
-  expect(await badges.count()).toBeGreaterThanOrEqual(1);
-
-  const count = await summaries.count();
-  for (let i = 0; i < count; i++) {
-    const summary = summaries.nth(i);
-    const period = summary.locator("[data-period]");
-    const p = (await period.boundingBox())!;
-    // The dates are fully visible: inside the screen and not cut off by their box.
-    expect(p.x, `role ${i} period left`).toBeGreaterThanOrEqual(0);
-    expect(p.x + p.width, `role ${i} period right`).toBeLessThanOrEqual(320);
-    expect(await period.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
-    const badge = summary.getByText(/^Uses /);
-    if ((await badge.count()) > 0) {
-      const b = (await badge.boundingBox())!;
-      const overlaps = b.x < p.x + p.width && p.x < b.x + b.width && b.y < p.y + p.height && p.y < b.y + b.height;
-      expect(overlaps, `role ${i}: badge covers the dates`).toBe(false);
-      expect(b.y, `role ${i}: badge sits below the dates`).toBeGreaterThanOrEqual(p.y + p.height);
-    }
-    // The badge line is reserved, so selecting a skill moves nothing.
-    expect(await summary.boundingBox(), `role ${i} summary box`).toEqual(plain[i]);
   }
 });
 
@@ -146,53 +103,34 @@ test("/projects?skill=expo highlights Powderino in the project list with a text 
   expect(before).toEqual(plain);
 });
 
-test("/skills shows where each skill was used, linking with ?skill kept", async ({ page }) => {
+test("/skills says where each skill was used, in words", async ({ page }) => {
   await page.goto("/skills");
-  await page.getByRole("button", { name: /^Expo\b/ }).hover();
-  const card = page.locator('[data-detail="expo"]');
-  await expect(card).toBeVisible();
-  await expect(card).toContainText("Used in 1 role and 1 project.");
-  await card.getByRole("link", { name: /Powderino/ }).click();
-  await expect(page).toHaveURL(/\/projects\?skill=expo#project-powderino$/);
-  await expect(page.locator("#project-powderino")).toHaveAttribute("data-highlight", "true");
+  const expo = page.locator(".rc-skill", { has: page.locator(".rc-skill-name", { hasText: /^Expo$/ }) });
+  await expect(expo.locator(".rc-skill-years")).toHaveText("5 yrs");
+  await expect(expo.locator(".rc-skill-where")).toHaveText("TryAngle Labs and Powderino");
 });
 
-test("?skill stays in step with the highlight across navigation and Back/Forward", async ({
-  page,
-}) => {
+test("?skill stays in step with the highlight across navigation and Back/Forward", async ({ page }) => {
   const nav = page.getByRole("navigation", { name: "Sections" });
-  const expoChip = page.getByRole("button", { name: /^Expo\b/ });
-  const reactChip = page.getByRole("button", { name: /^React ·/ });
   const powderino = page.locator("article", { hasText: "Powderino" });
   const reamp = page.locator("article", { hasText: "ReAMP" });
 
   await page.goto("/projects");
+  await page.goto("/projects?skill=expo");
+  await expect(powderino).toHaveAttribute("data-highlight", "true");
+  await expect(reamp).not.toHaveAttribute("data-highlight", "true");
   await nav.getByRole("link", { name: "Skills" }).click();
-  await expect(page).toHaveURL(/\/skills$/);
-  await expoChip.click();
   await expect(page).toHaveURL(/\/skills\?skill=expo$/);
-
   await nav.getByRole("link", { name: "Projects" }).click();
   await expect(page).toHaveURL(/\/projects\?skill=expo$/);
   await expect(powderino).toHaveAttribute("data-highlight", "true");
-  await expect(reamp).not.toHaveAttribute("data-highlight", "true");
-
-  // Back to /skills?skill=expo: the chip is still pressed.
-  await page.goBack();
-  await expect(page).toHaveURL(/\/skills\?skill=expo$/);
-  await expect(expoChip).toHaveAttribute("aria-pressed", "true");
-  await reactChip.click();
-  await expect(page).toHaveURL(/\/skills\?skill=react$/);
 
   // Back to the first /projects entry, which had no ?skill: nothing is highlighted.
   await page.goBack();
+  await page.goBack();
+  await page.goBack();
   await expect(page).toHaveURL(/\/projects$/);
   await expect(page.locator('[data-highlight="true"]')).toHaveCount(0);
-
-  // Forward again: the URL says react, so the highlight follows the URL.
-  await page.goForward();
-  await expect(page).toHaveURL(/\/skills\?skill=react$/);
-  await expect(reactChip).toHaveAttribute("aria-pressed", "true");
 });
 
 test("page source has no +40 and no telephone", async ({ request }) => {
@@ -312,65 +250,9 @@ test("no console errors, page errors or HTTP >= 400 across all routes and nav cl
   expect(problems).toEqual([]);
 });
 
-test("Overview thumbnails load the 240px files, not the 640px ones", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 800 });
-  const work: string[] = [];
-  page.on("request", (r) => {
-    if (r.url().includes("/work/")) work.push(new URL(r.url()).pathname);
-  });
-  await page.goto("/");
-  // the live sites' pictures in the industries card
-  const thumbs = page.locator(".ov-ind img");
-  expect(await thumbs.count()).toBeGreaterThan(0);
-  for (const img of await thumbs.all()) {
-    await img.scrollIntoViewIfNeeded();
-    await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.currentSrc)).toMatch(/-240\.(avif|webp)$/);
-  }
-  expect(work.filter((p) => /-(640|1120)\./.test(p))).toEqual([]);
-});
-
-test("prefers-reduced-motion: the chevron and the button press do not animate", async ({ page }) => {
+test("prefers-reduced-motion: the button press does not animate", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/experience");
-  const chev = page.locator("summary .chev").first();
-  expect(await chev.evaluate((el) => getComputedStyle(el).transitionDuration)).toBe("0s");
   const btn = page.locator(".btn").first();
   expect(await btn.evaluate((el) => getComputedStyle(el).transitionProperty)).not.toContain("transform");
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  expect(await chev.evaluate((el) => getComputedStyle(el).transitionDuration)).not.toBe("0s");
 });
-
-test("skills matrix: each cell sits under its role's column head; hovering a role steps back the skills it did not use", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/skills");
-  const centre = (sel: string) =>
-    page.locator(sel).first().evaluate((el) => {
-      const r = el.getBoundingClientRect();
-      return r.left + r.width / 2;
-    });
-  for (const col of ["kemblimed", "lhel", "pentalog", "projects"]) {
-    const head = await centre(`.mx-col[data-col="${col}"]`);
-    const cell = await centre(`.sm-row[data-skill="typescript"] .mx-cell[data-col="${col}"]`);
-    expect(Math.abs(head - cell)).toBeLessThanOrEqual(1);
-  }
-  await page.locator('.mx-col[data-col="lhel"]').hover();
-  const opacity = (id: string) =>
-    page.locator(`.sm-row[data-skill="${id}"]`).evaluate((el) => Number(getComputedStyle(el).opacity));
-  await expect.poll(() => opacity("magento")).toBe(1);
-  await expect.poll(() => opacity("react")).toBeLessThan(0.5);
-});
-
-for (const width of [320, 412, 768, 1280]) {
-  test(`career ladder at ${width}px: every chapter's text and chips fit inside it`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 800 });
-    for (const path of ["/", "/experience"]) {
-      await page.goto(path);
-      const over = await page.$$eval(".cl-ch", (chs) =>
-        chs.filter((c) => c.scrollHeight - c.clientHeight > 3 || c.scrollWidth - c.clientWidth > 1).map((c) => c.getAttribute("data-ch")),
-      );
-      expect(over, path).toEqual([]);
-    }
-  });
-}

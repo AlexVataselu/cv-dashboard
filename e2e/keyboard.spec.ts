@@ -15,7 +15,7 @@ async function tabUntil(page: Page, match: (el: Element) => boolean, max = 45) {
   throw new Error(`focus never matched; saw: ${seen.join(" | ")}`);
 }
 
-test("keyboard only: skip link, nav, role toggles and the command palette", async ({ page }) => {
+test("keyboard only: skip link, nav, the role picker and the command palette", async ({ page }) => {
   await page.goto("/");
 
   // The first Tab reaches the skip link; Enter moves focus into <main>.
@@ -36,16 +36,13 @@ test("keyboard only: skip link, nav, role toggles and the command palette", asyn
   await expect(page).toHaveURL(/\/projects$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Projects");
 
-  // Enter and Space on a role summary toggle it.
+  // The roles are one radio group: Tab reaches the chosen role, arrows choose another.
   await page.goto("/experience");
-  const role = page.locator("details").nth(1);
-  await expect(role).toHaveJSProperty("open", false);
-  // (past the career ladder's chapters and skill chips first)
-  await tabUntil(page, (el) => el.tagName === "SUMMARY" && el.parentElement === document.querySelectorAll("details")[1], 160);
-  await page.keyboard.press("Enter");
-  await expect(role).toHaveJSProperty("open", true);
-  await page.keyboard.press("Space");
-  await expect(role).toHaveJSProperty("open", false);
+  await tabUntil(page, (el) => el instanceof HTMLInputElement && el.type === "radio", 60);
+  await expect(page.getByRole("radio", { checked: true })).toHaveValue("freelance-2025");
+  await page.keyboard.press("ArrowDown");
+  await expect(page.getByRole("radio", { checked: true })).toHaveValue("pentalog");
+  await expect(page.locator("#role-pentalog")).toBeVisible();
 
   // Ctrl+K loads and opens the palette; Esc closes it and focus returns to the trigger.
   await page.keyboard.press("Control+k");

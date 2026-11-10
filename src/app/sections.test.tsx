@@ -13,163 +13,90 @@ const initial = useUiStore.getState();
 beforeEach(() => useUiStore.setState(initial, true));
 
 describe("Overview", () => {
-  it("has exactly one h1 and renders glance, impact, about and skills by first dated use", () => {
+  it("has one h1, the four headline figures, every role in a line, the results and the core stack", () => {
     render(<Home />);
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     for (const g of cv.glance) {
       expect(screen.getByText(g.value, { selector: ".kpi-value", exact: true })).toBeTruthy();
       expect(screen.getByText(g.label)).toBeTruthy();
     }
-    for (const i of cv.impact) {
-      expect(screen.getByText(i.label)).toBeTruthy();
-      expect(screen.getAllByText(i.source).length).toBeGreaterThan(0);
-    }
-    expect(screen.getByText(cv.about)).toBeTruthy();
-    const react = screen.getByRole("button", { name: /^React ·/ });
-    expect(react.textContent).toBe("React · since 2021 · 5 yrs");
-    expect(screen.getByRole("button", { name: "Jest" }).textContent).toBe("Jest");
+    const roles = within(screen.getByRole("region", { name: "Roles, scrollable" })).getAllByRole("link");
+    expect(roles).toHaveLength(cv.roles.length);
+    expect(roles[1].getAttribute("href")).toBe("/experience#role-pentalog");
+    expect(roles[1].textContent).toContain("for Builder.ai");
+    for (const i of cv.impact.slice(0, 4)) expect(screen.getByText(i.label)).toBeTruthy();
+    expect(screen.getByText(`Earlier: ${cv.earlier}`)).toBeTruthy();
   });
 
-  it("shows skills as text only: no bar, gauge or width, so nothing reads as a rating", () => {
+  it("shows the core stack as words with years: no bar, gauge or width, so nothing reads as a rating", () => {
     render(<Home />);
-    const card = screen.getByRole("region", { name: "Skills, by first dated use" });
-    for (const chip of within(card).getAllByRole("button")) {
-      expect(chip.querySelectorAll("[style]")).toHaveLength(0);
-      expect(chip.children.length).toBeLessThanOrEqual(2);
-    }
+    const card = screen.getByRole("region", { name: "Core stack, scrollable" });
+    const chips = Array.from(card.querySelectorAll(".rc-chip"));
+    expect(chips.map((c) => c.textContent)).toContain("React5 yrs");
+    for (const chip of chips) expect(chip.querySelectorAll("[style]")).toHaveLength(0);
   });
 });
 
 describe("Experience", () => {
-  it("lists roles newest first then the Earlier line, using details/summary", () => {
-    const { container } = render(<ExperiencePage />);
-    const details = Array.from(container.querySelectorAll("details"));
-    expect(details).toHaveLength(7);
-    expect(details.every((d) => d.querySelector("summary"))).toBe(true);
-    const text = details.map((d) => d.querySelector("summary")!.textContent ?? "");
-    expect(text[0]).toContain("Freelance, self-employed");
-    expect(text[1]).toContain("Pentalog");
-    expect(text[2]).toContain("TryAngle Labs");
-    expect(text[3]).toContain("healthcare, fintech");
-    expect(text[4]).toContain("L.H.EL");
-    expect(text[5]).toContain("Zega Software");
-    expect(text[6]).toContain("Kemblimed");
-    expect(screen.getByText(cv.earlier, { exact: false })).toBeTruthy();
-    expect(screen.getByText("Earlier")).toBeTruthy();
+  it("lists the roles newest first as a radio group, the newest chosen, then the Earlier line", () => {
+    render(<ExperiencePage />);
+    const radios = screen.getAllByRole("radio") as HTMLInputElement[];
+    expect(radios.map((r) => r.value)).toEqual(cv.roles.map((r) => r.id));
+    expect(radios.filter((r) => r.checked).map((r) => r.value)).toEqual(["freelance-2025"]);
+    expect(screen.getByText(`Earlier: ${cv.earlier}`)).toBeTruthy();
   });
 
-  it("opens only the default role initially and follows expandedRoleId", async () => {
+  it("gives every role a page with its title, company, every bullet and its stack", () => {
     const { container } = render(<ExperiencePage />);
-    const open = () =>
-      Array.from(container.querySelectorAll("details")).map((d) => d.open);
-    expect(open()).toEqual([true, false, false, false, false, false, false]);
-    const summaries = container.querySelectorAll("summary");
-    await userEvent.click(summaries[1]);
-    expect(useUiStore.getState().expandedRoleId).toBe("pentalog");
-    expect(open()).toEqual([false, true, false, false, false, false, false]);
-    await userEvent.click(summaries[1]);
-    expect(useUiStore.getState().expandedRoleId).toBeNull();
-    expect(open()).toEqual([false, false, false, false, false, false, false]);
-  });
-});
-
-describe("Experience, the career ladder", () => {
-  it("has a chapter per role, newest first, each with its skills; L.H.EL lists Magento, PrestaShop, JavaScript, TypeScript, HTML and CSS", () => {
-    const { container } = render(<ExperiencePage />);
-    expect(container.querySelector(".ex")!.getAttribute("data-current")).toBe("freelance-2025");
-    const chapters = [...container.querySelectorAll(".cl-ch")].map((c) => c.getAttribute("data-ch"));
-    expect(chapters).toEqual(["freelance-2025", "projects", "pentalog", "tryangle", "freelance-2021", "lhel", "zega", "kemblimed"]);
-    const chips = (id: string) =>
-      [...container.querySelectorAll(`.cl-ch[data-ch="${id}"] .cl-chip`)].map((c) => [
-        c.querySelector(".skill-name")!.textContent,
-        c.getAttribute("data-how") ?? "listed",
-      ]);
-    expect(chips("lhel")).toEqual([
-      ["Magento", "listed"],
-      ["PrestaShop", "listed"],
-      ["JavaScript", "listed"],
-      ["TypeScript", "listed"],
-      ["HTML", "listed"],
-      ["CSS", "listed"],
-    ]);
-    // estimated skills are marked as such, after the listed ones
-    expect(chips("tryangle").slice(-2)).toEqual([
-      ["Redux", "estimated"],
-      ["Jest", "estimated"],
-    ]);
-    // the first role names no skills: the ones its web work implies
-    expect(chips("kemblimed")).toEqual([
-      ["HTML", "implied"],
-      ["CSS", "implied"],
-      ["JavaScript", "implied"],
-    ]);
+    for (const r of cv.roles) {
+      const page = container.querySelector(`#role-${r.id}`) as HTMLElement;
+      expect(page).toBeTruthy();
+      expect(within(page).getByRole("heading", { level: 2 }).textContent).toBe(r.title);
+      for (const b of r.bullets) expect(within(page).getByText(b)).toBeTruthy();
+      for (const t of r.stack) expect(within(page).getAllByText(t).length).toBeGreaterThan(0);
+    }
+    const pentalog = container.querySelector("#role-pentalog") as HTMLElement;
+    expect(within(pentalog).getByText("weeks to onboard junior engineers")).toBeTruthy();
+    expect(pentalog.textContent).toContain("Pentalog (Globant) for Builder.ai");
   });
 
   it("links every skill on the CV to at least one role, listed or estimated", () => {
     for (const s of cv.skills) {
-      const roles = cv.roles.filter((r) => r.skillIds.includes(s.id) || r.estimatedSkillIds?.includes(s.id));
-      const implied = ["html", "css", "javascript"].includes(s.id);
-      expect(roles.length > 0 || implied, s.id).toBe(true);
+      const used = cv.roles.some((r) => r.skillIds.includes(s.id) || r.estimatedSkillIds?.includes(s.id));
+      expect(used, s.id).toBe(true);
     }
-  });
-
-  it("lists every role's two or three bullets and the earlier role's line", () => {
-    render(<ExperiencePage />);
-    for (const r of cv.roles) for (const b of r.bullets) expect(screen.getByText(b)).toBeTruthy();
-    expect(screen.getByText(cv.earlierDetail!)).toBeTruthy();
   });
 });
 
 describe("Skills", () => {
-  it("draws every skill against the career, by group, as pressable rows that drive the selection", async () => {
+  it("lists every skill once, in five groups, with its years and where it was used", () => {
     const { container } = render(<SkillsPage />);
-    const groups = screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
-    expect(groups).toEqual(["Frontend", "State & data", "Backend", "Testing & quality", "Tooling", "First dated use, by year"]);
-    expect(container.querySelectorAll(".sm-row")).toHaveLength(cv.skills.length);
-    const row = screen.getByRole("button", { name: /^React ·/ });
-    // its name, its dated years for a screen reader, and the short years shown
-    expect(row.textContent).toMatch(/^React · since 2021 · 5 yrs5 yrs/);
-    expect(row.getAttribute("aria-pressed")).toBe("false");
-    await userEvent.click(row);
-    expect(useUiStore.getState().selectedSkill).toBe("react");
-    expect(row.getAttribute("aria-pressed")).toBe("true");
-    expect(container.querySelector(".sm")!.getAttribute("data-active")).toBe("react");
-    await userEvent.click(row);
-    expect(useUiStore.getState().selectedSkill).toBeNull();
-    expect(row.getAttribute("aria-pressed")).toBe("false");
+    const rows = Array.from(container.querySelectorAll(".rc-skill"));
+    expect(rows).toHaveLength(cv.skills.length);
+    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual([
+      "Frontend",
+      "Testing and quality",
+      "State and data",
+      "Backend",
+      "Tooling and delivery",
+    ]);
+    const row = (name: string) => rows.find((r) => r.querySelector(".rc-skill-name")!.textContent === name)!;
+    expect(row("React").querySelector(".rc-skill-years")!.textContent).toBe("5 yrs");
+    expect(row("React").querySelector(".rc-skill-where")!.textContent).toBe(
+      "Pentalog (Globant), TryAngle Labs, Freelance and 3 own projects",
+    );
+    expect(row("Magento").querySelector(".rc-skill-where")!.textContent).toBe("L.H.EL (Superland)");
+    // an estimate is said as one, never counted in years
+    expect(row("Storybook").querySelector(".rc-skill-years")!.textContent).toBe("est.");
+    expect(row("Storybook").querySelector(".rc-skill-where")!.textContent).toBe("likely at Pentalog (Globant)");
   });
 
-  it("marks only what the CV says: the roles that list a skill, the projects that use it, its years", () => {
+  it("marks the core stack, and only it", () => {
     const { container } = render(<SkillsPage />);
-    const row = (id: string) => container.querySelector(`.sm-row[data-skill="${id}"]`)!;
-    const on = (id: string) =>
-      [...row(id).querySelectorAll(".mx-cell[data-on]:not([data-implied], [data-est])")].map((c) => c.getAttribute("data-col"));
-    const est = (id: string) => [...row(id).querySelectorAll(".mx-cell[data-est]")].map((c) => c.getAttribute("data-col"));
-    const implied = (id: string) => [...row(id).querySelectorAll(".mx-cell[data-implied]")].map((c) => c.getAttribute("data-col"));
-    // jQuery: Zega Software only, an ended span (grey bar)
-    expect(on("jquery")).toEqual(["zega"]);
-    expect(row("jquery").querySelector(".mx-bar")!.classList.contains("mx-past")).toBe(true);
-    // Redux: no dated role or project, so no bar; an estimated (dashed) cell at TryAngle Labs
-    expect(on("redux")).toEqual([]);
-    expect(est("redux")).toEqual(["tryangle"]);
-    expect(row("redux").querySelector(".mx-bar")).toBeNull();
-    // Next.js: the 2021 to 2023 freelance work, and two personal projects
-    expect(on("nextjs")).toEqual(["freelance-2021", "projects"]);
-    expect(row("nextjs").querySelector(".mx-proj")!.textContent).toBe("2");
-    // JavaScript: listed for L.H.EL; implied by every web role since 2012, as its 14 years are
-    expect(on("javascript")).toEqual(["lhel"]);
-    expect(implied("javascript")).toEqual(["kemblimed", "zega", "tryangle", "freelance-2021", "pentalog", "freelance-2025"]);
-    // the longest-used first within a group
-    const frontend = [...container.querySelectorAll('[data-group="frontend"] .sm-row')].map((b) => b.getAttribute("data-skill"));
-    expect(frontend.slice(0, 4)).toEqual(["javascript", "html", "css", "typescript"]);
-  });
-
-  it("each skill's card lists every role and project that used it, linking with ?skill= kept", () => {
-    const { container } = render(<SkillsPage />);
-    const card = container.querySelector('[data-detail="magento"]')!;
-    expect(card.textContent).toContain("Used in 1 role and 0 projects.");
-    const link = within(card as HTMLElement).getByRole("link", { name: /L\.H\.EL \(Superland\)/ });
-    expect(link.getAttribute("href")).toBe("/experience?skill=magento#role-lhel");
+    const core = Array.from(container.querySelectorAll(".rc-skill[data-core] .rc-skill-name")).map((n) => n.textContent);
+    expect(core).toContain("React");
+    expect(core).toContain("Vitest");
+    expect(core).not.toContain("jQuery");
   });
 });
 
@@ -287,15 +214,14 @@ describe("Education", () => {
   });
 });
 
+
 describe("skill highlighting", () => {
-  it("marks only matching projects and roles when expo is selected", () => {
+  it("marks only matching projects when expo is selected", () => {
     const projects = render(<ProjectsPage />);
-    const experience = render(<ExperiencePage />);
     act(() => useUiStore.getState().selectSkill("expo"));
     const flag = (root: HTMLElement, sel: string) =>
       Array.from(root.querySelectorAll(sel)).map((e) => e.getAttribute("data-highlight"));
     expect(flag(projects.container, "article")).toEqual([null, "true", null, null, null, null, null, null]);
-    expect(flag(experience.container, "details")).toEqual([null, null, "true", null, null, null, null]);
   });
 });
 
@@ -311,26 +237,19 @@ describe("year counts run to the CV's year, not the clock", () => {
     expect(cv.asOf).toBe(2026);
 
     const home = render(<Home />);
-    const total = new RegExp(`^${cv.glance[0].value} yrs in dated roles`);
-    expect(within(home.container).getByText(total)).toBeTruthy();
-    expect(within(home.container).getByRole("button", { name: /^React ·/ }).textContent).toBe(
-      `React · since 2021 · ${cv.glance[1].value} yrs`,
-    );
-    // Only 2026 evidence (their roles are estimates, never counted): no year count, as the spec says.
-    for (const name of ["Jest", "Node.js"]) {
-      expect(within(home.container).getByRole("button", { name }).textContent).toBe(name);
-    }
+    expect(home.container.querySelector(".rc-role-when")!.textContent).toBe("2025–now · 1 yr");
+    const chips = Array.from(home.container.querySelectorAll(".rc-chip")).map((c) => c.textContent);
+    expect(chips).toContain(`React${cv.glance[1].value} yrs`);
     home.unmount();
 
-    const exp = render(<ExperiencePage />);
-    const first = exp.container.querySelector("summary")!.textContent ?? "";
-    expect(first).toContain("2025–now");
-    expect(first).toContain("1 yr");
-    expect(first).not.toMatch(/\b[2-9] yrs\b/);
-    exp.unmount();
-
     const skills = render(<SkillsPage />);
-    expect(skills.container.querySelector('.sm-row[data-skill="javascript"] .mx-years')!.textContent).toBe("14 yrs");
-    expect(skills.container.textContent).not.toContain("2026:");
+    const years = (name: string) =>
+      Array.from(skills.container.querySelectorAll(".rc-skill"))
+        .find((r) => r.querySelector(".rc-skill-name")!.textContent === name)!
+        .querySelector(".rc-skill-years")!.textContent;
+    expect(years("JavaScript")).toBe("14 yrs");
+    // Only 2026 evidence (their roles are estimates, never counted): no year count, as the spec says.
+    expect(years("Jest")).toBe("");
+    expect(years("Node.js")).toBe("");
   });
 });
