@@ -1,5 +1,5 @@
 import { BrowserFrame } from "@/components/BrowserFrame";
-import { KindPill } from "@/components/Recruiter";
+import { Axis, BeforeAfter, KindPill, Track } from "@/components/Recruiter";
 import { RoleHash } from "@/components/RoleHash";
 import { SectionShell } from "@/components/SectionShell";
 import { cv } from "@/content/cv";
@@ -84,6 +84,10 @@ export default function ExperiencePage() {
                     {client ? ` for ${client}` : null}
                     {r.location ? <span className="text-muted"> · {r.location}</span> : null}
                   </p>
+                  <div className="rc-role-track">
+                    <Track spans={[r]} live={r.end === "now"} label={`${period(r)} on the career, 2012 to now`} />
+                    <Axis />
+                  </div>
                 </header>
 
                 <div className="rc-role-body">
@@ -94,14 +98,17 @@ export default function ExperiencePage() {
                           <li key={x.label}>
                             <span className="rc-result-value tnum">{x.value}</span>
                             <span className="rc-result-label">{x.label}</span>
+                            <BeforeAfter value={x.value} label={x.label} />
                           </li>
                         ))}
                       </ul>
                     ) : null}
                     <h3 className="rc-sub">What I did</h3>
                     <ul className="rc-bullets">
-                      {r.bullets.map((b) => (
-                        <li key={b}>{b}</li>
+                      {r.bullets.map((b, i) => (
+                        <li key={b} style={{ ["--i" as string]: i }}>
+                          {b}
+                        </li>
                       ))}
                     </ul>
                     {r.stack.length > 0 || r.estimatedSkillIds?.length ? (

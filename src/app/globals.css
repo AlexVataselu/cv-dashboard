@@ -3325,7 +3325,7 @@ html[data-backlight="off"]::view-transition-old(root) {
     grid-template-columns: minmax(0, 1fr);
     gap: 2px 16px;
     align-items: baseline;
-    padding: 11px 8px;
+    padding: 10px 8px;
     border-radius: 8px;
     transition: background-color 0.15s var(--ease-out);
   }
@@ -3336,7 +3336,7 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
   @media (min-width: 640px) {
     .rc-role {
-      grid-template-columns: 9.5rem minmax(0, 1fr);
+      grid-template-columns: 5.75rem minmax(0, 1fr);
     }
   }
   .rc-role:hover {
@@ -3354,8 +3354,9 @@ html[data-backlight="off"]::view-transition-old(root) {
   }
   .rc-role-co {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 7px;
+    gap: 0 7px;
     margin-top: 2px;
     font-size: 14px;
   }
@@ -3386,9 +3387,23 @@ html[data-backlight="off"]::view-transition-old(root) {
     font-size: 13px;
     color: var(--muted);
   }
+  .rc-role-yrs {
+    margin-left: 0.3em;
+  }
+  @media (min-width: 640px) {
+    .rc-role-yrs {
+      display: block;
+      margin-left: 0;
+      font-size: 13px;
+      font-weight: 400;
+    }
+  }
+  .rc-nowrap {
+    white-space: nowrap;
+  }
   .rc-stack {
     display: grid;
-    gap: 12px;
+    gap: 8px;
   }
   .rc-stack > div {
     display: grid;
@@ -3643,6 +3658,282 @@ html[data-backlight="off"]::view-transition-old(root) {
     }
     .rc-sk > .rc-sk-tool {
       grid-column: 9 / span 4;
+    }
+  }
+}
+
+/*
+  The data, drawn and moving (2026-11-13). Taste's motion rules: one ease for every UI step
+  (cubic-bezier(.2,.8,.2,1)), bars level in over .6s, a count runs about a second, loops are short
+  and stop; nothing moves because the page scrolled. Every final state is the plain markup, and
+  under prefers-reduced-motion nothing here animates.
+*/
+@layer components {
+  :root {
+    --rc-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* ---------- the career's years: a ruler and tracks ---------- */
+  .rc-axis {
+    position: relative;
+    display: block;
+    height: 14px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .rc-axis > span {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    line-height: 14px;
+  }
+  .rc-axis > span:first-child {
+    transform: none;
+  }
+  .rc-axis > span[data-last] {
+    transform: translateX(-100%);
+    left: 100% !important;
+  }
+  .rc-track {
+    position: relative;
+    display: block;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--rule);
+    background-image: repeating-linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc(100% / 15 - 1px),
+      var(--border) calc(100% / 15 - 1px),
+      var(--border) calc(100% / 15)
+    );
+  }
+  .rc-span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 999px;
+    background: var(--hue, var(--primary));
+    transform-origin: left center;
+  }
+  .rc-now {
+    position: absolute;
+    right: -3px;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    border-radius: 999px;
+    background: var(--hue, var(--primary));
+    box-shadow: 0 0 0 3px var(--surface);
+  }
+
+  /* Overview: a third column on a wide card, under the role on a narrow one */
+  .rc-roles-axis {
+    display: none;
+  }
+  .rc-role .rc-track {
+    grid-column: 1 / -1;
+    margin-top: 6px;
+  }
+  @media (min-width: 640px) {
+    .rc-role {
+      grid-template-columns: 5.75rem minmax(0, 1fr) minmax(7rem, 32%);
+      align-items: center;
+    }
+    .rc-role .rc-track {
+      grid-column: auto;
+      margin-top: 0;
+    }
+    .rc-roles-axis {
+      display: grid;
+      grid-template-columns: 5.75rem minmax(0, 1fr) minmax(7rem, 32%);
+      gap: 16px;
+      padding: 0 8px 4px;
+    }
+    .rc-roles-axis > .rc-axis {
+      grid-column: 3;
+    }
+  }
+  .rc-role:hover .rc-span {
+    filter: brightness(1.15);
+  }
+
+  /* Experience: the role's place in the career, under its company line */
+  .rc-role-track {
+    display: grid;
+    gap: 4px;
+    max-width: 26rem;
+    margin-top: 4px;
+  }
+  .rc-role-track .rc-track {
+    height: 10px;
+  }
+
+  /* Skills: when each skill was used, under its "where" line */
+  .rc-skills-axis {
+    padding: 0 8px 6px;
+  }
+  .rc-skill .rc-track {
+    grid-column: 1 / -1;
+    height: 5px;
+    margin-top: 6px;
+  }
+  .rc-skill .rc-span {
+    background: var(--control);
+  }
+  .rc-skill[data-core] .rc-span {
+    background: var(--primary);
+  }
+  .rc-skill {
+    transition: background-color 0.14s var(--rc-ease);
+  }
+  .rc-skill:hover {
+    background: var(--raised);
+  }
+  .rc-skill:hover .rc-span {
+    background: var(--primary);
+  }
+
+  /* ---------- a result's before and after ---------- */
+  .rc-ba {
+    display: grid;
+    gap: 4px;
+    margin: 6px 0 2px;
+  }
+  .rc-ba-row {
+    display: grid;
+    grid-template-columns: 3.25rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+  }
+  .rc-ba-row > .rc-ba-bar {
+    grid-column: 2;
+  }
+  .rc-ba-key {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .rc-ba-n {
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 1ch;
+  }
+  .rc-ba-bar {
+    display: block;
+    height: 7px;
+    border-radius: 999px;
+    transform-origin: left center;
+  }
+  .rc-ba-before {
+    background: var(--control);
+  }
+  .rc-ba-after {
+    background: var(--hue, var(--primary));
+  }
+  /* Overview tiles: the figure and its bars side by side; the card head says which bar is which */
+  .rc-results > li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 2px;
+  }
+  .rc-results > li > :not(.rc-result-value, .rc-ba) {
+    grid-column: 1 / -1;
+  }
+  .rc-results .rc-ba {
+    grid-row: 1;
+    grid-column: 2;
+    margin: 0;
+  }
+  .rc-results .rc-ba-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px;
+  }
+  .rc-results .rc-ba-key {
+    display: none;
+  }
+  @media (max-width: 639px) {
+    .rc-results {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .rc-results .rc-ba-row > .rc-ba-bar {
+    grid-column: 1;
+  }
+  .rc-results > li {
+    transition: transform 0.18s var(--rc-ease), border-color 0.14s var(--rc-ease);
+  }
+  .rc-results > li:hover {
+    transform: translateY(-2px);
+    border-color: var(--control);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* the career bars draw in along the years, one role (or skill) after another */
+    .rc-span {
+      animation: rc-draw 0.6s var(--rc-ease) both;
+      animation-delay: calc(120ms + var(--i, 0) * 70ms);
+    }
+    /* the current role's end: three soft pulses, then it rests */
+    .rc-now {
+      animation:
+        rc-pop 0.3s var(--rc-ease) both calc(600ms + var(--i, 0) * 70ms),
+        rc-pulse 1.6s ease-out 3 calc(900ms + var(--i, 0) * 70ms);
+    }
+    /* a result's "after" starts where "before" was and slides to where it ended */
+    .rc-ba-before {
+      animation: rc-draw 0.5s var(--rc-ease) both 0.15s;
+    }
+    .rc-ba-after {
+      animation: rc-level 0.9s var(--rc-ease) both 0.55s;
+    }
+    /* Experience: the chosen role arrives, its lines one after another */
+    [data-js] .rc-ex-role {
+      animation: rc-in 0.34s var(--rc-ease) both;
+    }
+    .rc-bullets > li {
+      animation: rc-rise 0.4s var(--rc-ease) both;
+      animation-delay: calc(140ms + var(--i, 0) * 60ms);
+    }
+    .rc-role-results > li {
+      animation: rc-rise 0.4s var(--rc-ease) both 80ms;
+    }
+  }
+  @keyframes rc-draw {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  @keyframes rc-level {
+    from {
+      transform: scaleX(var(--from, 0));
+    }
+  }
+  @keyframes rc-pop {
+    from {
+      transform: scale(0);
+    }
+  }
+  @keyframes rc-pulse {
+    0% {
+      box-shadow: 0 0 0 3px var(--surface), 0 0 0 3px color-mix(in srgb, var(--hue, var(--primary)) 55%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 3px var(--surface), 0 0 0 12px transparent;
+    }
+  }
+  @keyframes rc-in {
+    from {
+      opacity: 0;
+      transform: translateX(12px);
+    }
+  }
+  @keyframes rc-rise {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
     }
   }
 }

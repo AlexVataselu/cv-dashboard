@@ -106,6 +106,13 @@ function installPreview() {
       if (shot) animate(shot, { opacity: [0, 1] }, { duration: 0.22, ease });
       return;
     }
+    if (t.name === "role") {
+      // Experience: the chosen role's results count up as its panel draws in.
+      const panel = t.getAttribute("aria-controls");
+      const el = panel ? document.getElementById(panel) : null;
+      if (el) for (const f of el.querySelectorAll<HTMLElement>(FIGS)) playFigure(f);
+      return;
+    }
     if (t.name !== "project") return;
     const el = document.getElementById(`preview-${t.value}`);
     if (el) animate(el, { opacity: [0, 1], transform: ["translateX(14px)", "translateX(0)"] }, { duration: 0.34, ease });
@@ -131,13 +138,14 @@ function playFigure(el: HTMLElement) {
   requestAnimationFrame(step);
 }
 
+const FIGS = ".rc-results .rc-result-value, .rc-role-results .rc-result-value";
 let results: IntersectionObserver[] = [];
 /** The results play as they scroll into view inside their card. The ones already in view at first
     paint stay as they are (they were read already); on a section switch the visible ones play too. */
 function watchResults(playVisible: boolean) {
   for (const o of results) o.disconnect();
   results = [];
-  const figs = [...document.querySelectorAll<HTMLElement>(".ov-res .result > p:first-child")];
+  const figs = [...document.querySelectorAll<HTMLElement>(FIGS)];
   if (figs.length === 0) return;
   const box = figs[0].closest<HTMLElement>(".scroll-y");
   const root = box && getComputedStyle(box).overflowY !== "visible" ? box : null;

@@ -59,3 +59,33 @@ export const ROLE_SHOT: Record<string, { image: string; address: string; alt: st
   zega: { image: "/work/eved-1", address: "Eved", alt: "Eved, the event marketplace whose backend was built at Zega Software", widths: [640, 960], width: 960, height: 540 },
   kemblimed: { image: "/work/kemblimed", address: "kemblimed.ro", alt: "Front page of kemblimed.ro", widths: [640, 1120], width: 1120, height: 630 },
 };
+
+/** The career's axis: from the first dated year to the CV's year, inclusive (2012 to 2026). */
+export const AXIS = { from: Math.min(...cv.roles.map((r) => r.start)), to: cv.asOf + 1 };
+
+/**
+ * A span on the career's axis, as left and width in percent. "now" (and anything held in the CV's
+ * own year) runs to the axis end; a span shorter than a year still shows as a sliver.
+ */
+export function spanOnAxis(start: number, end: number | "now") {
+  const stop = end === "now" || end >= cv.asOf ? AXIS.to : end;
+  const total = AXIS.to - AXIS.from;
+  const left = ((start - AXIS.from) / total) * 100;
+  const width = Math.max(((stop - start) / total) * 100, 2.5);
+  return { left: Number(left.toFixed(2)), width: Number(Math.min(width, 100 - left).toFixed(2)) };
+}
+
+/**
+ * A result as a before and after, when its figure says both: "4→2" (weeks), "−40%" (from 100 to 60),
+ * "+28%" (from 100 to 128). Words ("days→hours") have no scale to draw, so null.
+ */
+export function beforeAfter(value: string): { before: number; after: number; unit: "count" | "percent" } | null {
+  const arrow = value.match(/^(\d+)\s*→\s*(\d+)$/);
+  if (arrow) return { before: Number(arrow[1]), after: Number(arrow[2]), unit: "count" };
+  const pct = value.match(/^([−+-])(\d+)%$/);
+  if (pct) {
+    const n = Number(pct[2]);
+    return { before: 100, after: pct[1] === "+" ? 100 + n : 100 - n, unit: "percent" };
+  }
+  return null;
+}

@@ -1,6 +1,8 @@
 import { SectionShell } from "@/components/SectionShell";
 import { cv } from "@/content/cv";
+import { Axis, Track } from "@/components/Recruiter";
 import { CORE_STACK, skillWhere, skillYears } from "@/content/recruiter";
+import { deriveSkillLevel } from "@/content/skillLevels";
 import type { SkillGroup } from "@/content/types";
 import { pageMetadata } from "@/lib/site";
 
@@ -48,10 +50,14 @@ export default function SkillsPage() {
                 </h2>
                 <p className="meta tnum">{skills.length}</p>
               </div>
+              <div className="rc-skills-axis">
+                <Axis />
+              </div>
               <div className="scroll-y -mx-2" tabIndex={0} role="region" aria-label={`${title}, scrollable`}>
                 <ul className="rc-skills">
-                  {skills.map((s) => {
+                  {skills.map((s, i) => {
                     const y = skillYears(s.id);
+                    const spans = deriveSkillLevel(s.id, cv).spans;
                     const where = skillWhere(s.id);
                     const core = CORE.has(s.id);
                     return (
@@ -62,6 +68,13 @@ export default function SkillsPage() {
                         </span>
                         <span className="rc-skill-years tnum">{y ?? (where.roles.length || where.projects.length ? "" : "est.")}</span>
                         <span className="rc-skill-where">{whereLine(where)}</span>
+                        {spans.length ? (
+                          <Track
+                            spans={spans}
+                            order={i}
+                            label={`${s.name}: used ${spans.map((x) => `${x.start} to ${x.end >= cv.asOf ? "now" : x.end}`).join(", ")}`}
+                          />
+                        ) : null}
                       </li>
                     );
                   })}
