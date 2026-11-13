@@ -16,6 +16,10 @@ for (const colorScheme of ["light", "dark"] as const) {
         await page.goto(path);
         await expect(page.locator("html")).toHaveAttribute("data-theme", colorScheme);
         await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+        // Contrast is measured on the settled page: wait for the entrance animations (finite ones) to end.
+        await page.waitForFunction(() =>
+          document.getAnimations().every((a) => a.effect?.getTiming().iterations === Infinity || a.playState !== "running"),
+        );
         const results = await new AxeBuilder({ page })
           .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
           .analyze();

@@ -1,15 +1,6 @@
-import { CareerLadder } from "@/components/CareerLadder";
-import { ImpactList } from "@/components/ImpactList";
 import { KpiStrip } from "@/components/KpiStrip";
-import {
-  IndustriesCard,
-  KindsCard,
-  StackCard,
-} from "@/components/OverviewCards";
-import { LinkedStyles } from "@/components/LinkedStyles";
+import { ResultsCard, RolesCard, StackCard } from "@/components/Recruiter";
 import { SectionShell } from "@/components/SectionShell";
-import { SkillGroups } from "@/components/SkillGroups";
-import { cv } from "@/content/cv";
 import { HOME_DESCRIPTION, pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({
@@ -18,73 +9,19 @@ export const metadata = pageMetadata({
 });
 
 /*
-  The Overview on one screen (1024x640 and up), everything in view at once, on a 12-column grid:
-  the four headline figures across the top; the career ladder (6) beside the results (3), with the
-  skills in use by year over the kinds of work in the last column (3); then the skills (6), About (3)
-  and the industries with their live sites (3). A card longer than its slot scrolls inside itself.
-  Below desktop the cards flow one under the other.
-  The whole grid is a `.linked` area: a role hovered or focused on the ladder (or a result) lights
-  its results and skills.
+  The Overview, read the way a recruiter reads a CV: the four headline figures, then where Alex has
+  worked (one line a role, newest first) beside the results and the core stack with its years.
+  One idea a card, nothing to decode. On one screen (1024x640 and up) the roles card runs the
+  height of the two right-hand cards; below desktop the cards flow one under the other.
 */
 export default function Home() {
-  const facts: [string, string][] = [
-    ["Availability", `${cv.availability}, remote (EU)`],
-    ["Industries", "Healthcare, fintech, cultural heritage"],
-    [
-      "Languages",
-      cv.languages
-        .map((l) => `${l.name} (${l.level.toLowerCase()})`)
-        .join(", "),
-    ],
-    // the two degrees; the Education screen has the whole path, high school first
-    [
-      "Education",
-      cv.education
-        .filter((e) => !e.degree.startsWith("High school"))
-        .map((e) => e.degree)
-        .join("; "),
-    ],
-  ];
   return (
-    <SectionShell
-      title="Overview"
-      lead="Senior frontend engineer, 14 years building software."
-    >
-      <LinkedStyles />
-      <div className="panel-grid ov linked">
-        <KpiStrip className="ov-kpis" />
-        <CareerLadder variant="overview" className="ov-tl" />
-        <StackCard className="ov-stack" />
-        <KindsCard className="ov-kinds" />
-        <ImpactList className="ov-res" />
-        <SkillGroups className="ov-skills" />
-        <section aria-labelledby="about" className="card card-col ov-about">
-          <div className="card-head">
-            <h2 id="about" className="card-title">
-              About
-            </h2>
-          </div>
-          <div
-            className="scroll-y"
-            tabIndex={0}
-            role="region"
-            aria-label="About, scrollable"
-          >
-            <p className="text-[15px] leading-relaxed">{cv.about}</p>
-            <dl className="mt-4 grid gap-px overflow-hidden rounded-lg bg-rule">
-              {facts.map(([k, v]) => (
-                <div
-                  key={k}
-                  className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3 bg-raised px-3 py-2"
-                >
-                  <dt className="text-[13px] text-muted">{k}</dt>
-                  <dd className="text-[14px]">{v}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </section>
-        <IndustriesCard className="ov-ind" />
+    <SectionShell title="Overview" lead="Senior frontend engineer for React and React Native teams, 14 years building software.">
+      <div className="panel-grid rc-ov">
+        <KpiStrip className="rc-ov-kpis" />
+        <RolesCard className="rc-ov-roles" />
+        <ResultsCard className="rc-ov-res" />
+        <StackCard className="rc-ov-stack" />
       </div>
     </SectionShell>
   );
